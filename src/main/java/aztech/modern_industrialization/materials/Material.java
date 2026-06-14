@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.MaterialItemPart;
@@ -31,7 +32,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.data.recipes.RecipeOutput;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A read-only material. Build with {@link MaterialBuilder}.
@@ -68,6 +69,7 @@ public class Material {
         return ret;
     }
 
+    @Nullable
     public <T> T get(MaterialProperty<T> prop) {
         return (T) properties.get(prop);
     }

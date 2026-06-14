@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
@@ -32,7 +33,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, @Nullable ItemVariant itemVariant,
         @Nullable FluidVariant fluidVariant) implements BasePacket {

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.config.MIStartupConfig;
@@ -73,7 +74,6 @@ public class MIVillager {
         level5.add(buyItemsFromVillager(MIItem.ANALOG_CIRCUIT, 12, 1, 20));
         level5.add(buyItemsFromVillager(MIItem.MOTOR, 8, 2, 10));
         level5.add(buyItemsFromVillager(MIMaterials.BRONZE.getPart(MIParts.DRILL), 18, 4, 20));
-
     }
 
     private static VillagerTrades.ItemListing sellItemsToVillager(ItemLike soldItem, int numberOfItems, int maxUses, int xp) {

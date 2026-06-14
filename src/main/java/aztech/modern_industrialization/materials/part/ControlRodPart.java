@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.part.MIParts.FUEL_ROD;
 
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.IsotopeParams;
+import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearOrder;
 
 public class ControlRodPart implements PartKeyProvider {
-
     @Override
     public PartKey key() {
         return FUEL_ROD.key;
@@ -45,7 +45,7 @@ public class ControlRodPart implements PartKeyProvider {
                 .withRegister((partContext, part, itemPath1, itemId, itemTag, itemEnglishName) -> NuclearAbsorbable
                         .of(partContext.getMaterialEnglishName() + " Control Rod", itemPath1, maxTemperature,
                                 heatConduction * NuclearConstant.BASE_HEAT_CONDUCTION,
-                                INeutronBehaviour.of(scatteringType,
+                                NeutronBehaviour.of(scatteringType,
                                         new IsotopeParams(thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
                                                 fastScatteringProba),
                                         size),
@@ -60,10 +60,9 @@ public class ControlRodPart implements PartKeyProvider {
                 .withRegister((partContext, part, itemPath1, itemId, itemTag, itemEnglishName) -> NuclearAbsorbable
                         .of(partContext.getMaterialEnglishName() + " Control Rod", itemPath1, maxTemperature,
                                 heatConduction * NuclearConstant.BASE_HEAT_CONDUCTION,
-                                INeutronBehaviour.of(scatteringType, params, size),
+                                NeutronBehaviour.of(scatteringType, params, size),
                                 NuclearConstant.DESINTEGRATION_BY_ROD,
                                 SortOrder.NUCLEAR.create(NuclearOrder.CONTROL_ROD)))
                 .withCustomPath("%s_control_rod");
     }
-
 }

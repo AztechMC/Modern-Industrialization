@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import aztech.modern_industrialization.MICapabilities;
@@ -43,9 +44,8 @@ import java.util.List;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHolder, CableTierHolder {
-
     public EnergyHatch(BEP bep, MachineGuiParameters guiParams, boolean input, CableTier tier) {
-        super(bep, guiParams, new OrientationComponent.Params(!input, false, false));
+        super(bep, guiParams, input ? OrientationComponent.Params.noFacingNoOutput() : OrientationComponent.Params.noFacing(false, false));
 
         this.input = input;
         this.tier = tier;
@@ -53,8 +53,8 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
         this.energy = new EnergyComponent(this, 30 * 20 * tier.getEu());
         insertable = energy.buildInsertable((CableTier tier2) -> tier2 == tier);
         extractable = energy.buildExtractable((CableTier tier2) -> tier2 == tier);
-        EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        EnergyBar.Params energyBarParams = new EnergyBar.Params(76, 39);
+        registerGuiComponent(new EnergyBar(energyBarParams, energy::getEu, energy::getCapacity));
 
         this.registerComponents(energy);
     }

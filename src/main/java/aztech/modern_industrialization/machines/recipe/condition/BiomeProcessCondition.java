@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.recipe.condition;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
@@ -72,7 +73,7 @@ public record BiomeProcessCondition(Either<ResourceKey<Biome>, TagKey<Biome>> bi
         biome.ifLeft(rk -> {
             list.add(MIText.RequiresBiome.text(biomeId(rk.location())));
         }).ifRight(tag -> {
-            var holderLookup = CommonProxy.INSTANCE.getClientPlayer().registryAccess();
+            var holderLookup = MICommonProxy.INSTANCE.getClientPlayer().registryAccess();
             var biomeNames = holderLookup.lookupOrThrow(tag.registry()).get(tag).map(named -> {
                 return named.stream()
                         .map(holder -> biomeId(holder.unwrapKey().orElseThrow().location()))

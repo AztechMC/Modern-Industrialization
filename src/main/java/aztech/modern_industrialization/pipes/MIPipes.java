@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MI;
@@ -117,7 +118,7 @@ public class MIPipes {
                 pipeId,
                 prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())),
                 ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                SortOrder.PIPES.and(color));
         register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.FLUID_PIPES, itemDef, "Fluid Pipes");
     }
@@ -130,7 +131,7 @@ public class MIPipes {
                 pipeId,
                 prop -> new PipeItem(prop, type, new ItemNetworkData()),
                 ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                SortOrder.PIPES.and(color));
         register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.ITEM_PIPES, itemDef, "Item Pipes");
     }

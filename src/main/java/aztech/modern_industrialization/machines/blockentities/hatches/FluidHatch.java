@@ -21,8 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
@@ -32,18 +35,20 @@ import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
+import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
+import net.minecraft.network.chat.Component;
 
 public class FluidHatch extends HatchBlockEntity {
     public FluidHatch(BEP bep, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
-        super(bep, guiParams, new OrientationComponent.Params(true, false, true));
+        super(bep, guiParams, OrientationComponent.Params.noFacing(false, true));
 
         this.input = input;
         this.upgradesToSteel = upgradesToSteel;
         this.inventory = inventory;
 
         registerComponents(inventory);
-        registerGuiComponent(new AutoExtract.Server(orientation, input));
+        registerGuiComponent(new AutoExtract(orientation, input));
     }
 
     private final boolean input;
@@ -88,5 +93,12 @@ public class FluidHatch extends HatchBlockEntity {
                 inventory.autoExtractFluids(level, worldPosition, orientation.outputDirection);
             }
         }
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        return List.of(MITooltips.line(MIText.HatchCapacityFluid)
+                .arg(FluidHelper.getFluidAmountLarge(inventory.getFluidStacks().getFirst().getCapacity()), t -> t.setStyle(MITooltips.NUMBER_TEXT))
+                .build());
     }
 }

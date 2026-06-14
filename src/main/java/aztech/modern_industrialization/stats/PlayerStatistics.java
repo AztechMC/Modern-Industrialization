@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.stats;
 
 import aztech.modern_industrialization.compat.argonauts.ArgonautsFacade;
@@ -47,7 +48,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PlayerStatistics {
     public static final PlayerStatistics DUMMY = new PlayerStatistics(null, null);
@@ -149,8 +150,7 @@ public class PlayerStatistics {
                 if (val != Items.AIR && val != Fluids.EMPTY) {
                     map.put(val, new StatisticValue(tag.getCompound(key)));
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         }
     }
 
@@ -169,8 +169,7 @@ public class PlayerStatistics {
                 if (val != Items.AIR) {
                     map.put(val, tag.getLong(key));
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         }
     }
 

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization;
 
 import java.util.List;
@@ -28,7 +29,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public enum MIText {
-
     ModernIndustrialization("Modern Industrialization"),
     AbsorptionProbability("Absorption Probability"),
     AcceptAnyFluidFuels("Consumes any Fluid Fuel (Check REI for EU/mb production)"),
@@ -136,12 +136,16 @@ public enum MIText {
     FluidSlotOutput("Fluid Output, Left Click to Extract"),
     GeneratedResources("MI Generated Resources"),
     GeneratedResourcesDescription("Resources from the modern_industrialization/generated_resources folder."),
+    GeneratorCurrentEu("Production: %s"),
+    GeneratorMaxEu("Max Production: %s"),
     GravichestplateDisabled("Gravichestplate disabled!"),
     GravichestplateEnabled("Gravichestplate enabled!"),
     GunpowderTime("Overclock: %s"),
     GunpowderUpgrade("Double MI Steam Machines speed for 2 minutes"),
     GunpowderUpgradeMachine("Use Gunpowder to double this machine speed for 2 minutes"),
     HasBetterYieldAssemblerRecipe("Has an Assembler recipe with better yield."),
+    HatchCapacityFluid("Has a capacity of %s."),
+    HatchCapacityItem("Has a capacity of %s slots."),
     HeatConduction("Heat Conduction %s/°kCt"),
     ItemAutoExtractOff("Item auto-eject disabled"),
     ItemAutoExtractOn("Item auto-eject enabled"),
@@ -311,5 +315,4 @@ public enum MIText {
     public MutableComponent text(Object... args) {
         return Component.translatable(getTranslationKey(), args);
     }
-
 }

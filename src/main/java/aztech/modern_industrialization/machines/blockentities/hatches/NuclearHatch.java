@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import static aztech.modern_industrialization.machines.components.NeutronHistoryComponent.Type.*;
@@ -34,7 +35,9 @@ import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
+import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
@@ -46,6 +49,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import com.google.common.base.Preconditions;
 import java.util.*;
 import java.util.stream.Collectors;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -53,10 +57,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
-
+public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
     private final MIInventory inventory;
 
     public final NeutronHistoryComponent neutronHistory;
@@ -66,7 +69,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
-                new OrientationComponent.Params(false, false, false));
+                OrientationComponent.Params.noFacingNoOutput(!isFluid, isFluid));
 
         this.isFluid = isFluid;
         SlotPositions slotPos = new SlotPositions.Builder().addSlot(68, 31).addSlots(98, 22, 1, 2).build();
@@ -92,9 +95,10 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         neutronHistory = new NeutronHistoryComponent();
         registerComponents(inventory, nuclearReactorComponent, neutronHistory);
 
-        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, NuclearConstant.MAX_TEMPERATURE);
-        registerGuiComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
+        TemperatureBar.Params temperatureParams = new TemperatureBar.Params(43, 63, NuclearConstant.MAX_TEMPERATURE);
+        registerGuiComponent(new TemperatureBar(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
 
+        registerGuiComponent(new AutoExtract(this.orientation, AutoExtract.Display.BOTH));
     }
 
     @Override
@@ -113,25 +117,42 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     @Override
+    public MachineModelClientData getMachineModelData() {
+        var data = super.getMachineModelData();
+        data.outputDirection = Direction.UP;
+        data.itemAutoExtract = orientation.extractItems;
+        data.fluidAutoExtract = orientation.extractFluids;
+        return data;
+    }
+
+    @Override
     public final void tick() {
         super.tick();
         this.clearMachineLock();
 
         if (isFluid) {
+            if (!level.isClientSide() && orientation.extractFluids) {
+                this.inventory.autoInsertFluids(level, worldPosition, Direction.UP);
+                this.inventory.autoExtractFluids(level, worldPosition, Direction.UP);
+            }
+
             fluidNeutronProductTick(1, true);
         } else {
+            if (!level.isClientSide() && orientation.extractItems) {
+                this.inventory.autoInsertItems(level, worldPosition, Direction.UP);
+                this.inventory.autoExtractItems(level, worldPosition, Direction.UP);
+            }
+
             ItemVariant itemVariant = (ItemVariant) this.getVariant();
             if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
                 if (abs.getNeutronProduct() != null) {
-                    try (Transaction tx = Transaction.openOuter()) {
+                    try (Transaction tx = Transaction.openRoot()) {
                         this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
                                 AbstractConfigurableStack::canPipesExtract, true);
-                        tx.abort();
                     }
                 }
             }
         }
-
     }
 
     @Override
@@ -142,7 +163,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     @Override
     public double getHeatTransferCoeff() {
         @Nullable
-        INuclearComponent<?> component = getComponent();
+        NuclearComponent<?> component = getComponent();
 
         return Math.max(NuclearConstant.BASE_HEAT_CONDUCTION + (component != null ? component.getHeatConduction() : 0), 0);
     }
@@ -228,7 +249,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                 }
 
                 if (abs.getRemainingDesintegrations(stack) == 0) {
-                    try (Transaction tx = Transaction.openOuter()) {
+                    try (Transaction tx = Transaction.openRoot()) {
                         ConfigurableItemStack absStack = this.inventory.getItemStacks().get(0);
                         absStack.updateSnapshots(tx);
                         absStack.setAmount(0);
@@ -240,8 +261,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
                             if (inserted == abs.getNeutronProductAmount()) {
                                 tx.commit();
-                            } else {
-                                tx.abort();
                             }
                         } else {
                             tx.commit();
@@ -267,7 +286,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public void fluidNeutronProductTick(int neutron, boolean simul) {
         if (isFluid) {
             @Nullable
-            INuclearComponent<FluidVariant> component = (INuclearComponent<FluidVariant>) this.getComponent();
+            NuclearComponent<FluidVariant> component = (NuclearComponent<FluidVariant>) this.getComponent();
 
             if (component == null) {
                 return;
@@ -283,7 +302,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             }
 
             if (simul || actualRecipe > 0) {
-                try (Transaction tx = Transaction.openOuter()) {
+                try (Transaction tx = Transaction.openRoot()) {
                     long extracted = this.inventory.fluidStorage.extractAllSlot(component.getVariant(), actualRecipe, tx,
                             AbstractConfigurableStack::canPipesInsert);
                     this.inventory.fluidStorage.insert(component.getNeutronProduct(), extracted * component.getNeutronProductAmount(), tx,
@@ -300,7 +319,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     private void checkComponentMaxTemperature() {
         if (!isFluid) {
             @Nullable
-            INuclearComponent<?> component = this.getComponent();
+            NuclearComponent<?> component = this.getComponent();
 
             if (component != null) {
                 if (component.getMaxTemperature() < this.getTemperature()) {
@@ -332,7 +351,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         } else {
             neutronHistory.addValue(thermalNeutronReceived, neutronNumber);
         }
-
     }
 
     @Override
@@ -371,5 +389,4 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             return Collections.emptyList();
         }
     }
-
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MI;
@@ -35,7 +36,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 
 public class UpgradeProvider extends MIRecipesProvider {
-
     public UpgradeProvider(PackOutput packOutput) {
         super(packOutput);
     }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.multiblocks.world;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ChunkPosMultiMap<T> {
     private final Map<LevelAccessor, HashMap<ChunkPos, Set<T>>> storage = new HashMap<>();

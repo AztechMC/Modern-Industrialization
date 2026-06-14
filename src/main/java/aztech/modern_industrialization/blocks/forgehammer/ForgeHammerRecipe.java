@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.MIRegistries;
@@ -46,7 +47,6 @@ public record ForgeHammerRecipe(
         int count,
         ItemStack result,
         int hammerDamage) implements Recipe<RecipeInput> {
-
     private static final MapCodec<ForgeHammerRecipe> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Ingredient.CODEC.fieldOf("ingredient").forGetter(ForgeHammerRecipe::ingredient),

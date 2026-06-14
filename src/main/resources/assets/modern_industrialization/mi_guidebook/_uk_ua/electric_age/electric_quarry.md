@@ -11,13 +11,24 @@ item_ids:
 
 # Кращі багатоблоки
 
+## Електричний кар'єр
+
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="electric_quarry" />
+</GameScene>
+
 Електричний кар'єр є електричним варіантом парового кар'єру. Забезпечте його предметами та енергією та дивіться, як ваші ресурси ЇДУТЬ БРРР!
 
 Його структура точно така ж, як у парового кар'єра, за винятком роз'єму входу енергії.
 
 <Recipe id="modern_industrialization:electric_age/machine/electric_quarry_asbl" />
 
-Кращий і більший великий паровий котел! Ця вдосконалена версія може виробляти до 1024 mb/т пари!
+## Покращений великий паровий котел
+
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="advanced_large_steam_boiler" />
+</GameScene>
+
+Кращий і більший великий паровий котел! Ця вдосконалена версія може виробляти до 1024 мВ/т пари!
 
 <Recipe id="modern_industrialization:electric_age/machine/advanced_large_steam_boiler_asbl" />
-

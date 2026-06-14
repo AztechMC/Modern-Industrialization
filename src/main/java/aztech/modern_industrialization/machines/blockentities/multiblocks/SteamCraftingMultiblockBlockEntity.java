@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -38,25 +40,31 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
-
     private final OverclockComponent overclockComponent;
 
-    public SteamCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType,
+    public SteamCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, ShapeTemplate shapeTemplate,
+            MachineRecipeType recipeType,
             List<OverclockComponent.Catalyst> overclockCatalysts) {
-        super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
+        super(bep, blockId, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
 
         this.overclockComponent = new OverclockComponent(overclockCatalysts);
         this.recipeType = recipeType;
         registerGuiComponent(
-                new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter, overclockComponent::getTicks));
+                new CraftingMultiblockGui(() -> shapeValid.shapeValid, crafter::getProgress, crafter, overclockComponent::getTicks));
         this.registerComponents(overclockComponent);
+    }
+
+    public SteamCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType,
+            List<OverclockComponent.Catalyst> overclockCatalysts) {
+        this(bep, MI.id(name), shapeTemplate, recipeType, overclockCatalysts);
     }
 
     @Override

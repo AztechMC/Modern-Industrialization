@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIFluids;
@@ -30,7 +31,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
-import aztech.modern_industrialization.recipe.json.IMIRecipeBuilder;
+import aztech.modern_industrialization.recipe.json.MIRecipeBuilder;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import java.util.Map;
 import net.minecraft.data.PackOutput;
@@ -41,7 +42,6 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 public class CompatRecipesProvider extends MIRecipesProvider {
-
     private RecipeOutput consumer;
     private String currentCompatModid;
     private ICondition[] conditions = null;
@@ -159,7 +159,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
         addCompatRecipe(id, new MachineRecipeBuilder(machine, eu, duration).addItemInput(input, 1).addItemOutput(output, outputAmount));
     }
 
-    private void addCompatRecipe(String id, IMIRecipeBuilder recipeJson) {
+    private void addCompatRecipe(String id, MIRecipeBuilder recipeJson) {
         id = "compat/%s/%s".formatted(currentCompatModid, id);
         recipeJson.offerTo(consumer.withConditions(conditions), id);
     }

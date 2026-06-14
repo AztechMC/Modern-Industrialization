@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage;
 
 import aztech.modern_industrialization.MIText;
@@ -30,8 +31,8 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Sto
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.SnapshotJournal;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -47,11 +48,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
         implements SingleSlotStorage<T>, WrenchableBlockEntity {
-
     @Override
     public long getVersion() {
         return version;
@@ -202,20 +202,20 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         return behaviour.getCapacityForResource(resource);
     }
 
-    private class ResourceParticipant extends SnapshotParticipant<ResourceAmount<T>> {
+    private class ResourceParticipant extends SnapshotJournal<ResourceAmount<T>> {
         @Override
         protected ResourceAmount<T> createSnapshot() {
             return new ResourceAmount<>(resource, amount);
         }
 
         @Override
-        protected void readSnapshot(ResourceAmount<T> snapshot) {
+        protected void revertToSnapshot(ResourceAmount<T> snapshot) {
             resource = snapshot.resource();
             amount = snapshot.amount();
         }
 
         @Override
-        protected void onFinalCommit() {
+        protected void onRootCommit(ResourceAmount<T> originalState) {
             onChanged();
         }
     }
@@ -285,12 +285,10 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
                 amount = 0;
             }
         }
-
     }
 
     @Override
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-
         if (behaviour.isLockable()) {
             tag.putBoolean("locked", isLocked);
         }

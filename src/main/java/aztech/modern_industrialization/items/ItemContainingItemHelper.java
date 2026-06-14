@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIComponents;
@@ -36,7 +37,6 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
-
     default boolean handleStackedOnOther(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
         if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
             Mutable<ItemStack> ref = new MutableObject<>(slot.getItem());

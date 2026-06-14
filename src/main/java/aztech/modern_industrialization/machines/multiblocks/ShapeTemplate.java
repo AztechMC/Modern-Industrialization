@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -29,7 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An immutable description of a multiblock shape.
@@ -112,8 +113,7 @@ public class ShapeTemplate {
 
         private int iController, jController, kController;
 
-        private record KeyDefinition(SimpleMember member, @Nullable HatchFlags flags) {
-        }
+        private record KeyDefinition(SimpleMember member, @Nullable HatchFlags flags) {}
 
         public LayeredBuilder(MachineCasing hatchCasing, String[][] layers) {
             innerBuilder = new Builder(hatchCasing);

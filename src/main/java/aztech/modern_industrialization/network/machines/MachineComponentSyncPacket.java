@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
@@ -33,7 +34,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record MachineComponentSyncPacket(int syncId, int componentIndex, byte[] data) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, MachineComponentSyncPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             MachineComponentSyncPacket::syncId,

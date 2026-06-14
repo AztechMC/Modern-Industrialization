@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.nuclear;
 
 import static aztech.modern_industrialization.nuclear.NeutronFate.*;
@@ -28,10 +29,9 @@ import static aztech.modern_industrialization.nuclear.NeutronFate.*;
 import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
 import java.util.Optional;
 import java.util.Random;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class NuclearGridHelper {
-
     private static final int[] dX = { 1, 0, -1, 0 };
     private static final int[] dY = { 0, 1, 0, -1 };
 
@@ -40,7 +40,6 @@ public class NuclearGridHelper {
     private static final int MAX_SPLIT = 30;
 
     public static boolean simulate(NuclearGrid grid, NuclearEfficiencyHistoryComponent efficiencyHistory) {
-
         int sizeX = grid.getSizeX();
         int sizeY = grid.getSizeY();
 
@@ -53,7 +52,7 @@ public class NuclearGridHelper {
                 final int y = j;
 
                 @Nullable
-                INuclearTile tile = grid.getNuclearTile(i, j);
+                NuclearTile tile = grid.getNuclearTile(i, j);
                 if (tile == null) {
                     continue;
                 }
@@ -88,7 +87,7 @@ public class NuclearGridHelper {
                         // Loop until we exit the grid
                         while (true) {
                             @Nullable
-                            INuclearTile secondTile = grid.getNuclearTile(posX, posY);
+                            NuclearTile secondTile = grid.getNuclearTile(posX, posY);
 
                             if (secondTile == null) {
                                 grid.registerNeutronFate(neutronNumber, type, ESCAPE);
@@ -98,7 +97,7 @@ public class NuclearGridHelper {
                             secondTile.addNeutronsToFlux(neutronNumber, type);
 
                             @Nullable
-                            INuclearComponent<?> component = secondTile.getComponent();
+                            NuclearComponent<?> component = secondTile.getComponent();
                             if (component != null) {
                                 double interactionProba = component.getNeutronBehaviour().interactionTotalProbability(type);
 
@@ -150,7 +149,7 @@ public class NuclearGridHelper {
         for (int i = 0; i < sizeX; ++i) {
             for (int j = 0; j < sizeY; ++j) {
                 @Nullable
-                INuclearTile tile = grid.getNuclearTile(i, j);
+                NuclearTile tile = grid.getNuclearTile(i, j);
                 if (tile != null) {
                     heatTransferCoeff[i][j] = tile.getHeatTransferCoeff();
                 }
@@ -170,7 +169,7 @@ public class NuclearGridHelper {
                 for (int i = 0; i < sizeX; i++) {
                     for (int j = 0; j < sizeY; j++) {
                         @Nullable
-                        INuclearTile tile = grid.getNuclearTile(i, j);
+                        NuclearTile tile = grid.getNuclearTile(i, j);
                         if (tile == null) {
                             continue;
                         }
@@ -190,7 +189,7 @@ public class NuclearGridHelper {
                                 int j2 = j + dY[k];
 
                                 @Nullable
-                                INuclearTile secondTile = grid.getNuclearTile(i2, j2);
+                                NuclearTile secondTile = grid.getNuclearTile(i2, j2);
 
                                 if (secondTile != null) {
                                     double temperatureB = secondTile.getTemperature();
@@ -221,7 +220,7 @@ public class NuclearGridHelper {
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
                 @Nullable
-                INuclearTile maybeTile = grid.getNuclearTile(i, j);
+                NuclearTile maybeTile = grid.getNuclearTile(i, j);
 
                 if (maybeTile != null) {
                     maybeTile.nuclearTick(efficiencyHistory);
@@ -230,7 +229,5 @@ public class NuclearGridHelper {
         }
 
         return hasFuel;
-
     }
-
 }

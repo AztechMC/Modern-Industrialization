@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.kubejs.machine;
 
 import aztech.modern_industrialization.machines.components.OverclockComponent;
@@ -34,7 +35,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
 public class ExtraMachineConfig {
-
     public static class CraftingSingleBlock {
         private final SingleBlockCraftingMachines.Config config;
 

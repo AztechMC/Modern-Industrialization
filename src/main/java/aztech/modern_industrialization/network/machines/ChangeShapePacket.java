@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network.machines;
 
-import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.network.BasePacket;
@@ -34,7 +34,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record ChangeShapePacket(int syncId, int shapeLine, boolean clickedLeftButton) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, ChangeShapePacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             ChangeShapePacket::syncId,
@@ -50,7 +49,7 @@ public record ChangeShapePacket(int syncId, int shapeLine, boolean clickedLeftBu
 
         AbstractContainerMenu menu = ctx.getPlayer().containerMenu;
         if (menu.containerId == syncId && menu instanceof MachineMenuServer machineMenu) {
-            ShapeSelection.Server shapeSelection = machineMenu.blockEntity.guiComponents.get(GuiComponents.SHAPE_SELECTION);
+            var shapeSelection = machineMenu.blockEntity.guiComponents.getOrThrow(ShapeSelection.class);
             shapeSelection.behavior.handleClick(shapeLine, clickedLeftButton ? -1 : +1);
         }
     }

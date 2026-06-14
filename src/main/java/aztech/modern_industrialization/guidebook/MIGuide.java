@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.guidebook;
 
 import aztech.modern_industrialization.MI;
@@ -39,6 +40,5 @@ public class MIGuide {
                 .build();
     }
 
-    private MIGuide() {
-    }
+    private MIGuide() {}
 }

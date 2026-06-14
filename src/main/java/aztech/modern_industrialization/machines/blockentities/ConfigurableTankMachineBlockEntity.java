@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -40,7 +41,6 @@ import java.util.List;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
     private final MIInventory inventory;
 
     public ConfigurableTankMachineBlockEntity(BEP bep) {
@@ -54,7 +54,7 @@ public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity imple
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlots(68, 20, 3, 3).build();
         inventory = new MIInventory(Collections.emptyList(), stacks, SlotPositions.empty(), fluidPositions);
 
-        registerGuiComponent(new AutoExtract.Server(orientation));
+        registerGuiComponent(new AutoExtract(orientation));
         registerComponents(inventory);
     }
 
@@ -64,7 +64,7 @@ public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity imple
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.CONFIGURABLE_TANK);
         orientation.writeModelData(data);
         return data;

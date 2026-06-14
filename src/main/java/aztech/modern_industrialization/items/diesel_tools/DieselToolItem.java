@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items.diesel_tools;
 
 import aztech.modern_industrialization.MIComponents;
@@ -296,7 +297,6 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
-
         final int defaultMb = 100;
         float speedMultiplier = this.getMiningSpeedMultiplier(stack);
         int costMb = (int) (defaultMb / speedMultiplier);

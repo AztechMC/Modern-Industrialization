@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.materials.Material;
@@ -29,7 +30,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 
 public class MaterialRecipesProvider extends MIRecipesProvider {
-
     public MaterialRecipesProvider(PackOutput packOutput) {
         super(packOutput);
     }

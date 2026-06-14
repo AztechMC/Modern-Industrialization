@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
@@ -43,9 +44,7 @@ import net.neoforged.neoforge.common.Tags;
  * Standard conversion recipes for all materials.
  */
 public final class StandardRecipes {
-
     public static void apply(MaterialBuilder.RecipeContext ctx) {
-
         // CRAFTING
         add3By3Crafting(ctx, TINY_DUST, DUST, true);
         add3By3Crafting(ctx, NUGGET, INGOT, true);
@@ -175,7 +174,6 @@ public final class StandardRecipes {
         new SmeltingRecipeBuilder(ctx, WIRE_MAGNETIC, WIRE, 0.0f, false);
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.VACUUM_FREEZER, "hot_ingot", 32, 250).addTaggedPartInput(HOT_INGOT, 1).addPartOutput(INGOT, 1);
-
     }
 
     /**
@@ -212,7 +210,6 @@ public final class StandardRecipes {
             new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, bigPart).addTaggedPartInput(smallPart, 9).addPartOutput(bigPart, 1);
         }
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.UNPACKER, smallPart).addTaggedPartInput(bigPart, 1).addPartOutput(smallPart, 9);
-
     }
 
     private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, PartKeyProvider inputPart, PartKeyProvider outputPart,
@@ -220,5 +217,4 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.CUTTING_MACHINE, name).addTaggedPartInput(inputPart, 1).addPartOutput(outputPart, amount)
                 .addFluidInput("modern_industrialization:lubricant", 1);
     }
-
 }

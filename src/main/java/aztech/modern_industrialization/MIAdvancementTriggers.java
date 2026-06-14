@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization;
 
 import java.util.function.Supplier;
@@ -31,8 +32,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class MIAdvancementTriggers {
-    private MIAdvancementTriggers() {
-    }
+    private MIAdvancementTriggers() {}
 
     // Triggers
     private static final DeferredRegister<CriterionTrigger<?>> DR = DeferredRegister.create(Registries.TRIGGER_TYPE, MI.ID);

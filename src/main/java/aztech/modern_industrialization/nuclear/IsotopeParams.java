@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.nuclear;
 
 public class IsotopeParams {
@@ -30,9 +31,9 @@ public class IsotopeParams {
     public final double thermalScattering;
 
     public IsotopeParams(double thermalAbsorbProba, double fastAbsorptionProba, double thermalScatteringProba, double fastScatteringProba) {
-        this.thermalAbsorption = INeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
-        this.fastAbsorption = INeutronBehaviour.crossSectionFromProba(fastAbsorptionProba);
-        this.thermalScattering = INeutronBehaviour.crossSectionFromProba(thermalScatteringProba);
-        this.fastScattering = INeutronBehaviour.crossSectionFromProba(fastScatteringProba);
+        this.thermalAbsorption = NeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
+        this.fastAbsorption = NeutronBehaviour.crossSectionFromProba(fastAbsorptionProba);
+        this.thermalScattering = NeutronBehaviour.crossSectionFromProba(thermalScatteringProba);
+        this.fastScattering = NeutronBehaviour.crossSectionFromProba(fastScatteringProba);
     }
 }

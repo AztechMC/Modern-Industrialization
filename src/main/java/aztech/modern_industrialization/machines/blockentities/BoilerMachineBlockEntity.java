@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MIFluids;
@@ -52,7 +53,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
     public static final int WATER_SLOT_X = 50;
     public static final int WATER_SLOT_Y = 32;
 
@@ -89,13 +89,12 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         fuelBurning = new FuelBurningComponent(steamHeater, 1);
         this.isActiveComponent = new IsActiveComponent();
 
-        ProgressBar.Parameters progressParams = new ProgressBar.Parameters(133, 50, "furnace", true);
-        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(42, 75, 1500);
-        registerGuiComponent(new ProgressBar.Server(progressParams, () -> (float) fuelBurning.getBurningProgress()));
-        registerGuiComponent(new TemperatureBar.Server(temperatureParams, () -> (int) steamHeater.getTemperature()));
+        ProgressBar.Params progressParams = new ProgressBar.Params(133, 50, "furnace", 14, 14, true);
+        TemperatureBar.Params temperatureParams = new TemperatureBar.Params(42, 75, 1500);
+        registerGuiComponent(new ProgressBar(progressParams, () -> (float) fuelBurning.getBurningProgress()));
+        registerGuiComponent(new TemperatureBar(temperatureParams, () -> (int) steamHeater.getTemperature()));
 
         this.registerComponents(inventory, isActiveComponent, steamHeater, fuelBurning);
-
     }
 
     @Override
@@ -104,7 +103,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData(bronze ? MachineCasings.BRICKED_BRONZE : MachineCasings.BRICKED_STEEL);
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);

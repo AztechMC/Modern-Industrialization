@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.tag;
 
 import appeng.api.features.P2PTunnelAttunement;
@@ -31,7 +32,6 @@ import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
@@ -45,11 +45,10 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MIItemTagProvider extends ItemTagsProvider {
     private final boolean runtimeDatagen;
@@ -62,13 +61,9 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
+        for (var entry : TagsToGenerate.getTags().entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
-            var items = entry.getValue().stream()
-                    .map(ItemLike::asItem)
-                    .sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey))
-                    .toList();
-            for (var item : items) {
+            for (var item : entry.getValue()) {
                 if (optional) {
                     tag(entry.getKey()).addOptional(BuiltInRegistries.ITEM.getKey(item));
                 } else {

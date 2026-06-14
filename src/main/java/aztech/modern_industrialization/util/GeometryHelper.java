@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.util;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 public final class GeometryHelper {
-    private GeometryHelper() {
-    }
+    private GeometryHelper() {}
 
     /**
      * Vectors to the right of the face, i.e. the X axis in the XY plane of the
@@ -49,7 +49,7 @@ public final class GeometryHelper {
 
     /**
      * Project onto a face.
-     * 
+     *
      * @return (x coordinate, y coordinate, 0) in the XY plane of the face.
      */
     public static Vec3 toFaceCoords(Vec3 posInBlock, Direction face) {

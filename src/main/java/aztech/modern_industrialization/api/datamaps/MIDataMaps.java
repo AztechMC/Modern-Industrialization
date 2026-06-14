@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.api.datamaps;
 
 import aztech.modern_industrialization.MI;
@@ -72,6 +73,5 @@ public final class MIDataMaps {
             })
             .build();
 
-    private MIDataMaps() {
-    }
+    private MIDataMaps() {}
 }

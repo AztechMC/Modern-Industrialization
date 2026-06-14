@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.stats;
 
 import java.util.HashMap;
@@ -46,8 +47,7 @@ public class PlayerStatisticsData extends SavedData {
         }
     }
 
-    private PlayerStatisticsData() {
-    }
+    private PlayerStatisticsData() {}
 
     public PlayerStatistics get(UUID uuid) {
         Objects.requireNonNull(uuid);

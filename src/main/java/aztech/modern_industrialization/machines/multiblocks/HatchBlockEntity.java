@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -42,13 +43,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class HatchBlockEntity extends MachineBlockEntity implements Tickable {
-    public HatchBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
+    public HatchBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.@Nullable Params orientationParams) {
         super(bep, guiParams, orientationParams);
 
-        registerComponents(new IComponent.ClientOnly() {
+        registerComponents(new MachineComponent.ClientOnly() {
             @Override
             public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 if (matchedCasing != null) {
@@ -63,7 +64,9 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
         });
     }
 
+    @Nullable
     private ResourceLocation lastSyncedMachineCasing = null;
+    @Nullable
     private ResourceLocation matchedCasing = null;
 
     public abstract HatchType getHatchType();
@@ -103,7 +106,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineCasing casing = isMatched() ? MachineCasings.get(matchedCasing) : null;
         MachineModelClientData data = new MachineModelClientData(casing);
         orientation.writeModelData(data);
@@ -133,25 +136,17 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
         setChanged();
     }
 
-    protected void tickTransfer() {
-    }
+    protected void tickTransfer() {}
 
-    public void appendItemInputs(List<ConfigurableItemStack> list) {
-    }
+    public void appendItemInputs(List<ConfigurableItemStack> list) {}
 
-    public void appendItemOutputs(List<ConfigurableItemStack> list) {
-    }
+    public void appendItemOutputs(List<ConfigurableItemStack> list) {}
 
-    public void appendFluidInputs(List<ConfigurableFluidStack> list) {
-    }
+    public void appendFluidInputs(List<ConfigurableFluidStack> list) {}
 
-    public void appendFluidOutputs(List<ConfigurableFluidStack> list) {
-    }
+    public void appendFluidOutputs(List<ConfigurableFluidStack> list) {}
 
-    public void appendEnergyInputs(List<EnergyComponent> list) {
-    }
+    public void appendEnergyInputs(List<EnergyComponent> list) {}
 
-    public void appendEnergyOutputs(List<EnergyComponent> list) {
-
-    }
+    public void appendEnergyOutputs(List<EnergyComponent> list) {}
 }

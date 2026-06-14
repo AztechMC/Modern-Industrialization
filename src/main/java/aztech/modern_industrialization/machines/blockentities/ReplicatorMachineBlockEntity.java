@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -55,7 +56,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
     private final IsActiveComponent isActiveComponent;
     private final MachineInventoryComponent inventoryComponent;
     private final RedstoneControlComponent redstoneControl;
@@ -66,12 +66,11 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
     public static final TagKey<Fluid> BLACKLISTED_FLUIDS = FluidTags.create(MI.id("replicator_blacklist"));
 
     public ReplicatorMachineBlockEntity(BEP bep) {
-
         super(bep, new MachineGuiParameters.Builder("replicator", true).build(), new OrientationComponent.Params(true, true, false));
 
         this.isActiveComponent = new IsActiveComponent();
         this.redstoneControl = new RedstoneControlComponent();
-        ProgressBar.Parameters progressBarParams = new ProgressBar.Parameters(85, 34, "arrow");
+        ProgressBar.Params progressBarParams = new ProgressBar.Params(85, 34, "arrow");
 
         long capacity = FluidType.BUCKET_VOLUME * 256;
 
@@ -86,7 +85,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         this.inventoryComponent = new MachineInventoryComponent(itemInputs, itemOutputs, fluidInput, Collections.emptyList(), itemSlotPositions,
                 fluidSlotPositions);
 
-        this.registerComponents(isActiveComponent, inventoryComponent, redstoneControl, new IComponent() {
+        this.registerComponents(isActiveComponent, inventoryComponent, redstoneControl, new MachineComponent() {
             @Override
             public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 tag.putInt("progressTick", progressTick);
@@ -98,10 +97,9 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
             }
         });
 
-        registerGuiComponent(new ProgressBar.Server(progressBarParams, () -> (float) progressTick / 20));
-        registerGuiComponent(new AutoExtract.Server(orientation, false));
-        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
-
+        registerGuiComponent(new ProgressBar(progressBarParams, () -> (float) progressTick / 20));
+        registerGuiComponent(new AutoExtract(orientation, false));
+        registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
     }
 
     @Override
@@ -110,7 +108,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
@@ -154,7 +152,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 return false;
             }
 
-            try (Transaction tx = Transaction.openOuter()) {
+            try (Transaction tx = Transaction.openRoot()) {
                 MIItemStorage itemStorage = new MIItemStorage(inventoryComponent.getItemOutputs());
                 MIFluidStorage fluidStorage = new MIFluidStorage(inventoryComponent.getFluidInputs());
 

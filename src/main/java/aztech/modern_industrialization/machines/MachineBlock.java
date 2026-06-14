@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.blocks.TickableBlock;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.List;
 import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
@@ -46,14 +47,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MachineBlock extends Block implements TickableBlock {
-
-    private final BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor;
+    private final BiFunction<BlockPos, BlockState, ? extends MachineBlockEntity> blockEntityConstructor;
+    @Nullable
     private volatile MachineBlockEntity blockEntityInstance = null; // Used for tooltip, information, BER registration, etc...
 
-    public MachineBlock(BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor, Properties properties) {
+    public MachineBlock(BiFunction<BlockPos, BlockState, ? extends MachineBlockEntity> blockEntityConstructor, Properties properties) {
         super(properties);
         this.blockEntityConstructor = blockEntityConstructor;
     }
@@ -159,7 +160,7 @@ public class MachineBlock extends Block implements TickableBlock {
             // Well... we pull the information from the model, so nothing to do here.
             return state;
         } else {
-            return CommonProxy.INSTANCE.getMachineCasingBlockState(state, renderView, pos);
+            return MICommonProxy.INSTANCE.getMachineCasingBlockState(state, renderView, pos);
         }
     }
 }

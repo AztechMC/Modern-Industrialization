@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.machine.component.ItemAccess;
@@ -41,6 +42,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An item stack that can be configured.
@@ -48,8 +50,7 @@ import net.minecraft.world.item.Items;
 public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> implements ItemAccess {
     private int adjustedCapacity = 64;
 
-    public ConfigurableItemStack() {
-    }
+    public ConfigurableItemStack() {}
 
     public ConfigurableItemStack(CompoundTag compound, HolderLookup.Provider registries) {
         super(compound, registries);
@@ -103,7 +104,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
@@ -150,6 +151,11 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
             return 0; // Make sure we don't get negative counts if this happens!
         }
         return Math.min(key.getMaxStackSize(), adjustedCapacity) - amount;
+    }
+
+    @Override
+    public long getTotalCapacityFor(Item instance) {
+        return Math.min(ItemVariant.of(instance).getMaxStackSize(), adjustedCapacity);
     }
 
     /**

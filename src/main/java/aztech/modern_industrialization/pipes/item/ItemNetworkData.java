@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
@@ -35,9 +36,7 @@ public class ItemNetworkData extends PipeNetworkData {
     }
 
     @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-
-    }
+    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {}
 
     @Override
     public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {

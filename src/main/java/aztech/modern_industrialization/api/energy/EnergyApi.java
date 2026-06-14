@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MI;
@@ -34,7 +35,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * MI's energy API. It uses the same types as GrandPower (i.e. {@link ILongEnergyStorage},
@@ -318,8 +319,7 @@ public class EnergyApi {
     }
 
     private static class ExtractOnlyMIStorage extends WrappedMIStorage {
-        @Nullable
-        private static EnergyApi.ExtractOnlyMIStorage of(@Nullable ILongEnergyStorage miStorage) {
+        private static EnergyApi.@Nullable ExtractOnlyMIStorage of(@Nullable ILongEnergyStorage miStorage) {
             return miStorage == null || !miStorage.canExtract() ? null : new ExtractOnlyMIStorage(miStorage);
         }
 

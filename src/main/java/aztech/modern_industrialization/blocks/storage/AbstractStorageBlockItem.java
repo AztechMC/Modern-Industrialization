@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.items.ContainerItem;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.List;
 import java.util.function.Consumer;
@@ -36,7 +37,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> extends BlockItem implements ContainerItem<T> {
-
     public final StorageBehaviour<T> behaviour;
 
     public AbstractStorageBlockItem(AbstractStorageBlock<T> block, Properties properties) {
@@ -49,7 +49,6 @@ public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> ext
         if (!isUnlocked(stack)) {
             tooltip.add(MIText.Locked.text());
         }
-
     }
 
     public StorageBehaviour<T> getBehaviour() {
@@ -60,6 +59,6 @@ public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> ext
     @Override
     @SuppressWarnings("rawtype")
     public void initializeClient(Consumer stupidClientProperties) {
-        CommonProxy.INSTANCE.withStandardItemRenderer(stupidClientProperties);
+        MICommonProxy.INSTANCE.withStandardItemRenderer(stupidClientProperties);
     }
 }

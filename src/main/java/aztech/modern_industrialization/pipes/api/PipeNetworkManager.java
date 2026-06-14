@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.api;
 
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -39,7 +40,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.neoforged.fml.loading.FMLEnvironment;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PipeNetworkManager {
     private static final boolean DEBUG_CHECKS = !FMLEnvironment.production;
@@ -157,7 +158,7 @@ public class PipeNetworkManager {
             if (!network.data.equals(otherNetwork.data)) {
                 network.data = network.merge(otherNetwork);
             }
-            for (Map.Entry<BlockPos, PipeNetworkNode> entry : otherNetwork.getRawNodeMap().entrySet()) {
+            for (Map.Entry<BlockPos, @Nullable PipeNetworkNode> entry : otherNetwork.getRawNodeMap().entrySet()) {
                 PipeNetworkNode node = entry.getValue();
                 BlockPos nodePos = entry.getKey();
                 if (node != null) {
@@ -217,7 +218,7 @@ public class PipeNetworkManager {
         // to it.
         if (unvisitedNodes.size() > 0) {
             PipeNetwork newNetwork = createNetwork(network.data.clone());
-            for (Map.Entry<BlockPos, PipeNetworkNode> entry : unvisitedNodes.entrySet()) {
+            for (Map.Entry<BlockPos, @Nullable PipeNetworkNode> entry : unvisitedNodes.entrySet()) {
                 PipeNetworkNode node = entry.getValue();
                 BlockPos nodePos = entry.getKey();
                 if (node != null) {

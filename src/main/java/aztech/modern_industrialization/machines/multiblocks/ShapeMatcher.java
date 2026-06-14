@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.multiblocks;
 
 import static net.minecraft.core.Direction.*;
@@ -34,7 +35,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Status of a multiblock shape bound to some position and direction.
@@ -112,7 +113,7 @@ public class ShapeMatcher implements ChunkEventListener {
      * Return true if there was a match, and append matched hatches to the list if
      * it's not null.
      */
-    public boolean matches(BlockPos pos, Level world, @Nullable List<HatchBlockEntity> hatches) {
+    public boolean matches(BlockPos pos, Level world) {
         SimpleMember simpleMember = simpleMembers.get(pos);
         if (simpleMember == null)
             return false;
@@ -125,9 +126,7 @@ public class ShapeMatcher implements ChunkEventListener {
         if (be instanceof HatchBlockEntity hatch) {
             HatchFlags flags = hatchFlags.get(pos);
             if (flags != null && flags.allows(hatch.getHatchType()) && !hatch.isMatched()) {
-                if (matchedHatches != null) {
-                    matchedHatches.add(hatch);
-                }
+                matchedHatches.add(hatch);
                 return true;
             }
         }
@@ -154,7 +153,7 @@ public class ShapeMatcher implements ChunkEventListener {
         for (BlockPos pos : simpleMembers.keySet()) {
             // TODO: check if the chunk is loaded
 
-            if (!matches(pos, world, matchedHatches)) {
+            if (!matches(pos, world)) {
                 matchSuccessful = false;
             }
         }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIComponents;
@@ -40,7 +41,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class PortableStorageUnit extends Item implements ItemContainingItemHelper {
-
     public static final Reference2LongMap<Item> CAPACITY_PER_BATTERY = new Reference2LongOpenHashMap<>();
     private final static int MAX_BATTERY_COUNT = 10000;
 
@@ -71,7 +71,6 @@ public class PortableStorageUnit extends Item implements ItemContainingItemHelpe
 
     @Override
     public StorageBehaviour<ItemVariant> getBehaviour() {
-
         return new StorageBehaviour<>() {
             @Override
             public long getCapacityForResource(ItemVariant resource) {

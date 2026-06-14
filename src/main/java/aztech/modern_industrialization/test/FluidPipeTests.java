@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.test;
 
 import aztech.modern_industrialization.MI;
@@ -65,8 +66,7 @@ public class FluidPipeTests {
             pipe.addInConnection(Direction.EAST);
             pipe.addOutConnection(Direction.WEST);
         });
-        helper.pipe(new BlockPos(1, 2, 0), fluidPipe, pipe -> {
-        });
+        helper.pipe(new BlockPos(1, 2, 0), fluidPipe, pipe -> {});
         helper.startSequence()
                 .thenIdle(1)
                 .thenExecute(() -> {
@@ -114,7 +114,7 @@ public class FluidPipeTests {
                     helper.destroyBlock(extensionTank);
                     helper.emptyTank(extensionTank, MIMaterials.BRONZE);
                     var tank = (TankBlockEntity) helper.getBlockEntity(extensionTank);
-                    try (var tx = Transaction.openOuter()) {
+                    try (var tx = Transaction.openRoot()) {
                         // hacky way to toggle lock :P
                         tank.insert(FluidVariant.of(Fluids.LAVA), 1000, tx);
                         tank.toggleLocked();

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
@@ -99,7 +100,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         Slot slot = slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             if (index < 36) {
                 // Try to insert into the upgrade slot.
                 if (moveItemStackTo(slot.getItem(), 57, 58, false)) {
@@ -238,8 +239,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         @Override
-        public void setChanged() {
-        }
+        public void setChanged() {}
 
         @Override
         public int getMaxStackSize(ItemStack stack) {

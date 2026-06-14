@@ -21,9 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.test.framework;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.Material;
@@ -35,12 +37,15 @@ import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import org.jspecify.annotations.Nullable;
 
 public class MIGameTestHelper extends GameTestHelper {
     public MIGameTestHelper(GameTestInfo testInfo) {
@@ -87,11 +92,16 @@ public class MIGameTestHelper extends GameTestHelper {
         throw new RuntimeException("Unreachable!");
     }
 
-    public void assertFluid(BlockPos pos, Fluid fluid, int amount) {
-        var fluidHandler = getLevel().getCapability(Capabilities.FluidHandler.BLOCK, absolutePos(pos), null);
-        if (fluidHandler == null) {
-            fail("Could not find fluid handler", pos);
+    public <T, C extends @Nullable Object> T requireCapability(BlockCapability<T, C> cap, BlockPos pos, C context) {
+        var ret = getLevel().getCapability(cap, absolutePos(pos), context);
+        if (ret == null) {
+            fail("Could not find capability " + cap.name(), pos);
         }
+        return ret;
+    }
+
+    public void assertFluid(BlockPos pos, Fluid fluid, int amount) {
+        var fluidHandler = requireCapability(Capabilities.FluidHandler.BLOCK, pos, null);
         boolean foundAny = false;
         var fluidName = BuiltInRegistries.FLUID.getKey(fluid);
         for (int i = 0; i < fluidHandler.getTanks(); ++i) {
@@ -111,15 +121,20 @@ public class MIGameTestHelper extends GameTestHelper {
     }
 
     public void assertNoFluid(BlockPos pos) {
-        var fluidHandler = getLevel().getCapability(Capabilities.FluidHandler.BLOCK, absolutePos(pos), null);
-        if (fluidHandler == null) {
-            fail("Could not find fluid handler", pos);
-        }
+        var fluidHandler = requireCapability(Capabilities.FluidHandler.BLOCK, pos, null);
         for (int i = 0; i < fluidHandler.getTanks(); ++i) {
             var stack = fluidHandler.getFluidInTank(i);
             if (!stack.isEmpty()) {
                 fail("Expected no fluid, got %s".formatted(stack), pos);
             }
+        }
+    }
+
+    public void assertEnergy(BlockPos pos, long energy, @Nullable Direction side) {
+        var miEnergyHandler = requireCapability(EnergyApi.SIDED, pos, side);
+        long storedEnergy = miEnergyHandler.getAmount();
+        if (storedEnergy != energy) {
+            fail("Expected energy to be " + energy + ", was " + storedEnergy, pos);
         }
     }
 }

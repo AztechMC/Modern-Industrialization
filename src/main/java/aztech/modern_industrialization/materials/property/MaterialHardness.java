@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.property;
 
 public enum MaterialHardness {
@@ -34,5 +35,4 @@ public enum MaterialHardness {
     MaterialHardness(double timeFactor) {
         this.timeFactor = timeFactor;
     }
-
 }

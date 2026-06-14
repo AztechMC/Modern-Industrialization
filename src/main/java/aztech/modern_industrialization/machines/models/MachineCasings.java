@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.models;
 
 import aztech.modern_industrialization.MI;
@@ -37,15 +38,13 @@ import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("Convert2MethodRef")
 public class MachineCasings {
-
     public static final Map<ResourceLocation, MachineCasing> registeredCasings = new HashMap<>();
 
-    public record CasingName(MachineCasing casing, String englishName) {
-    }
+    public record CasingName(MachineCasing casing, String englishName) {}
 
     public static final List<CasingName> translations = new ArrayList<>();
 

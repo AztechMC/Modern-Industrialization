@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.MIComponents;
@@ -37,7 +38,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
-
     public AbstractTankBlockEntity(BlockEntityType<?> bet,
             BlockPos pos,
             BlockState state) {
@@ -71,5 +71,4 @@ public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity
     }
 
     public abstract boolean onPlayerUse(Player player);
-
 }

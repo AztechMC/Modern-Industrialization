@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MI;
@@ -88,6 +89,5 @@ public final class MIArmorMaterials {
         DR.register(modEventBus);
     }
 
-    private MIArmorMaterials() {
-    }
+    private MIArmorMaterials() {}
 }

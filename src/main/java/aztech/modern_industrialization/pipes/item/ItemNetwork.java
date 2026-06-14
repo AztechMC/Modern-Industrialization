@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.inventory.WhitelistedItemStorage;
@@ -41,6 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jspecify.annotations.Nullable;
 
 public class ItemNetwork extends PipeNetwork {
     public static final int TICK_RATE = 60;
@@ -49,7 +51,7 @@ public class ItemNetwork extends PipeNetwork {
     int inactiveTicks = 0;
     long lastMovedItems = 0;
 
-    public ItemNetwork(int id, PipeNetworkData data) {
+    public ItemNetwork(int id, @Nullable PipeNetworkData data) {
         super(id, data == null ? new ItemNetworkData() : data);
     }
 
@@ -108,7 +110,7 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private static int moveAll(ServerLevel world, ExtractionSource target, List<? extends IItemSink> sinks, Predicate<ItemStack> filter,
+    private static int moveAll(ServerLevel world, ExtractionSource target, List<? extends ItemSink> sinks, Predicate<ItemStack> filter,
             int maxToMove) {
         IItemHandler source = target.storage();
         int moved = 0;
@@ -121,7 +123,7 @@ public class ItemNetwork extends PipeNetwork {
                 continue;
             }
 
-            moved += IItemSink.listMoveAll(sinks, world, target, i, maxToMove - moved);
+            moved += ItemSink.listMoveAll(sinks, world, target, i, maxToMove - moved);
             if (moved >= maxToMove) {
                 break;
             }
@@ -147,7 +149,7 @@ public class ItemNetwork extends PipeNetwork {
                     var target = connection.cache.getCapability();
                     if (target != null && target.getSlots() > 0) {
                         PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.insertPriority, PriorityBucket::new);
-                        InsertTarget it = new InsertTarget(connection, new IItemSink.HandlerWrapper(target, entry.getPos(), connection.direction));
+                        InsertTarget it = new InsertTarget(connection, new ItemSink.HandlerWrapper(target, entry.getPos(), connection.direction));
 
                         if (connection.whitelist || (target instanceof WhitelistedItemStorage wis && wis.currentlyWhitelisted())) {
                             bucket.whitelist.add(it);
@@ -199,14 +201,14 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private interface Aggregate extends IItemSink {
+    private interface Aggregate extends ItemSink {
         int getPriority();
     }
 
     private static class WhitelistAggregate implements Aggregate {
         private final int priority;
         // Used when the inserted item doesn't have NBT
-        private final Map<Item, List<IItemSink>> map = new IdentityHashMap<>();
+        private final Map<Item, List<ItemSink>> map = new IdentityHashMap<>();
         // Used when the inserted item has NBT.
         private final List<InsertTarget> targets;
 
@@ -221,7 +223,7 @@ public class ItemNetwork extends PipeNetwork {
                             map.computeIfAbsent(stack.getItem(), v -> new ArrayList<>()).add(target.target);
                         }
                     }
-                } else if (target.target instanceof WhitelistedItemStorage wis) {
+                } else if (target.target.handler() instanceof WhitelistedItemStorage wis) {
                     WHITELIST_CACHED_SET.clear();
                     wis.getWhitelistedItems(WHITELIST_CACHED_SET);
                     for (Item item : WHITELIST_CACHED_SET) {
@@ -241,9 +243,9 @@ public class ItemNetwork extends PipeNetwork {
                 return insertTargets(targets, world, source, sourceSlot, maxAmount);
             }
 
-            List<IItemSink> targets = map.get(stack.getItem());
+            List<ItemSink> targets = map.get(stack.getItem());
             if (targets != null) {
-                return IItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount);
+                return ItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount);
             }
             return 0;
         }
@@ -297,6 +299,5 @@ public class ItemNetwork extends PipeNetwork {
         return moved;
     }
 
-    private record InsertTarget(ItemNetworkNode.ItemConnection connection, IItemSink target) {
-    }
+    private record InsertTarget(ItemNetworkNode.ItemConnection connection, ItemSink.HandlerWrapper target) {}
 }

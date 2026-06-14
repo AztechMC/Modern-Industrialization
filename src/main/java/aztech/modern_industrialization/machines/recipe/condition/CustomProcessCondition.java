@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
@@ -66,8 +67,7 @@ public class CustomProcessCondition implements MachineProcessCondition {
 
     private record Definition(
             BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate,
-            ItemStack icon, List<Component> description) {
-    }
+            ItemStack icon, List<Component> description) {}
 
     static final MapCodec<CustomProcessCondition> CODEC = Codec.STRING.fieldOf("custom_id").xmap(CustomProcessCondition::new, c -> c.id);
     static final StreamCodec<RegistryFriendlyByteBuf, CustomProcessCondition> STREAM_CODEC = StreamCodec.composite(

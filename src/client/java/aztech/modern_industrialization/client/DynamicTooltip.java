@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.client;
 
-import aztech.modern_industrialization.util.RenderHelper;
+import aztech.modern_industrialization.client.util.RenderHelper;
 import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;

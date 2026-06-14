@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
@@ -39,7 +40,6 @@ import net.neoforged.neoforge.items.IItemHandler;
  * Interface use for Tanks, Barrels, SteamMiningDrill and other items that can contain a resource.
  */
 public interface ContainerItem<T extends TransferVariant<?>> {
-
     default T getResource(ItemStack stack) {
         return stack.getOrDefault(getComponentType(), getDefaultComponent()).resource();
     }
@@ -108,8 +108,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
         return stack.getOrDefault(getComponentType(), getDefaultComponent()).amount() == 0;
     }
 
-    default void onChange(ItemStack stack) {
-    }
+    default void onChange(ItemStack stack) {}
 
     StorageBehaviour<T> getBehaviour();
 

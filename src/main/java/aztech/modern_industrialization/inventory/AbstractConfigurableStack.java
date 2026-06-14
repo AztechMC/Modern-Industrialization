@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.SnapshotJournal;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -38,12 +39,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import org.jspecify.annotations.Nullable;
 
-public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotParticipant<ResourceAmount<K>>
-        implements StorageView<K>, IConfigurableSlot {
+public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotJournal<ResourceAmount<K>>
+        implements StorageView<K>, ConfigurableSlot {
     private final Map<ChangeListener, Object> listeners = new IdentityHashMap<>();
     protected K key = getBlankVariant();
     protected long amount = 0;
+    @Nullable
     protected T lockedInstance = null;
     protected boolean playerLocked = false;
     protected boolean machineLocked = false;
@@ -53,8 +56,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     protected boolean pipesInsert = false;
     protected boolean pipesExtract = false;
 
-    public AbstractConfigurableStack() {
-    }
+    public AbstractConfigurableStack() {}
 
     public AbstractConfigurableStack(AbstractConfigurableStack<T, K> other) {
         this.key = other.key;
@@ -105,6 +107,8 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     protected abstract K readVariantFromNbt(CompoundTag compound, HolderLookup.Provider registries);
 
     protected abstract long getRemainingCapacityFor(K key);
+
+    public abstract long getTotalCapacityFor(T instance);
 
     @Override
     public SlotConfig getConfig() {
@@ -192,6 +196,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         updatedLockedInstance();
     }
 
+    @Nullable
     public T getLockedInstance() {
         return lockedInstance;
     }
@@ -234,17 +239,25 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     /**
      * Lock range of stacks (without overriding existing locks).
      */
-    public static <T, K extends TransferVariant<T>> void playerLockNoOverride(T instance, List<? extends AbstractConfigurableStack<T, K>> stacks) {
+    public static <T, K extends TransferVariant<T>> void playerLockNoOverride(T instance, long requiredAmount,
+            List<? extends AbstractConfigurableStack<T, K>> stacks) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean allowEmptyStacks = iter == 1;
 
             for (AbstractConfigurableStack<T, K> stack : stacks) {
                 if (stack.lockedInstance == null || stack.lockedInstance == stack.getEmptyInstance()) {
                     if (stack.key.isOf(instance) || (stack.isResourceBlank() && allowEmptyStacks)) {
+                        var capacity = stack.getTotalCapacityFor(instance);
+                        if (capacity <= 0) {
+                            continue;
+                        }
                         stack.lockedInstance = instance;
                         stack.playerLocked = true;
                         stack.notifyListeners();
-                        return;
+                        requiredAmount -= capacity;
+                        if (requiredAmount <= 0) {
+                            return;
+                        }
                     }
                 }
             }
@@ -319,13 +332,13 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     }
 
     @Override
-    public void readSnapshot(ResourceAmount<K> ra) {
+    public void revertToSnapshot(ResourceAmount<K> ra) {
         this.amount = ra.amount();
         this.key = ra.resource();
     }
 
     @Override
-    protected void onFinalCommit() {
+    protected void onRootCommit(ResourceAmount<K> originalState) {
         notifyListeners();
     }
 

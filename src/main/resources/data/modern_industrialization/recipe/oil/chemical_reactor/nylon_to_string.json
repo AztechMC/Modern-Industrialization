@@ -3,7 +3,8 @@
   "eu": 8,
   "duration": 100,
   "item_inputs": {
-    "item": "minecraft:string"
+    "item": "minecraft:string",
+    "probability": 0
   },
   "fluid_inputs": [
     {
@@ -12,7 +13,6 @@
     }
   ],
   "item_outputs": {
-    "item": "minecraft:string",
-    "amount": 2
+    "item": "minecraft:string"
   }
 }

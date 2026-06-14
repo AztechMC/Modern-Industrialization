@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.BEP;
 
 public class TransformerMachineBlockEntity extends AbstractStorageMachineBlockEntity {
-
     public TransformerMachineBlockEntity(BEP bep, CableTier from, CableTier to) {
         super(bep, from, to, getTransformerName(from, to), 200 * Math.min(from.eu, to.eu), from.eu < to.eu);
     }

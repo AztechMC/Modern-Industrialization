@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.TransferHelper;
 import java.util.ArrayList;
@@ -39,12 +40,12 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public final class MIInventory implements IComponent {
+public final class MIInventory implements MachineComponent {
     public static final MIInventory EMPTY;
 
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> outputCache;
+    private @Nullable BlockCapabilityCache<IItemHandler, @Nullable Direction> outputCache;
 
     public final MIItemStorage itemStorage;
     public final MIFluidStorage fluidStorage;

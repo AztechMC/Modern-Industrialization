@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
@@ -36,7 +37,6 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
 
 public class MIParts {
-
     public static final BatteryPart BATTERY = new BatteryPart();
     public static final BarrelPart BARREL = new BarrelPart();
     public static final PartTemplate BLADE = new PartTemplate("Blade", "blade");
@@ -73,8 +73,8 @@ public class MIParts {
     public static final CasingPart MACHINE_CASING_PIPE = new CasingPart("Pipe Machine Casing", "machine_casing_pipe");
     public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("Special Casing", "machine_casing_special");
     public static final PartTemplate NUGGET = new PartTemplate("Nugget", "nugget");
-    public static final OrePart ORE = new OrePart(false);
-    public static final OrePart ORE_DEEPSLATE = new OrePart(true);
+    public static final OrePart ORE = new OrePart(OrePart.TYPE_STONE);
+    public static final OrePart ORE_DEEPSLATE = new OrePart(OrePart.TYPE_DEEPSLATE);
     public static final PartTemplate PLATE = new PartTemplate("Plate", "plate");
     public static final RawMetalPart RAW_METAL = new RawMetalPart(false);
     public static final RawMetalPart RAW_METAL_BLOCK = new RawMetalPart(true);
@@ -124,5 +124,4 @@ public class MIParts {
 
     public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
             MACHINE_CASING_PIPE, RAW_METAL_BLOCK);
-
 }

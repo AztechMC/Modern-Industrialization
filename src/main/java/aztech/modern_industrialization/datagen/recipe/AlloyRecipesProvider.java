@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
@@ -59,7 +60,6 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
     }
 
     public static class AlloyBuilder {
-
         public final String output;
         private int totalAmount;
         private final List<String> ingredients = new ArrayList<>();
@@ -103,7 +103,5 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
             dusts.offerTo(consumer, "alloy/mixer/" + output + "/dust");
             tinyDusts.offerTo(consumer, "alloy/mixer/" + output + "/tiny_dust");
         }
-
     }
-
 }

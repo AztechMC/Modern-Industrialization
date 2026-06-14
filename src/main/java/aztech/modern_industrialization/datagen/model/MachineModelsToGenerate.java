@@ -21,52 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.model;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import com.google.gson.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MachineModelsToGenerate {
-    static final Map<String, MachineModelProperties> props = new HashMap<>();
+    public static final Map<String, MachineModelProperties> props = new HashMap<>();
+
+    public static void register(String machine, MachineModelProperties model) {
+        props.put(machine, model);
+    }
 
     public static void register(String machine, MachineCasing defaultCasing, String overlay, boolean front, boolean top, boolean side,
             boolean active) {
-        props.put(machine, new MachineModelProperties(defaultCasing, overlay, front, top, side, active));
-    }
+        var builder = new MachineModelProperties.Builder(defaultCasing);
 
-    record MachineModelProperties(MachineCasing defaultCasing, String overlay, boolean front, boolean top, boolean side, boolean active) {
-        void addToMachineJson(JsonObject obj) {
-            obj.addProperty("casing", defaultCasing.key.getPath());
-
-            var defaultOverlays = new JsonObject();
-
-            if (top) {
-                defaultOverlays.addProperty("top", "modern_industrialization:block/machines/%s/overlay_top".formatted(overlay));
-                if (active) {
-                    defaultOverlays.addProperty("top_active", "modern_industrialization:block/machines/%s/overlay_top_active".formatted(overlay));
-                }
+        if (top) {
+            builder.addOverlay("top", MI.id("block/machines/%s/overlay_top".formatted(overlay)));
+            if (active) {
+                builder.addOverlay("top_active", MI.id("block/machines/%s/overlay_top_active".formatted(overlay)));
             }
-            if (front) {
-                defaultOverlays.addProperty("front", "modern_industrialization:block/machines/%s/overlay_front".formatted(overlay));
-                if (active) {
-                    defaultOverlays.addProperty("front_active",
-                            "modern_industrialization:block/machines/%s/overlay_front_active".formatted(overlay));
-                }
-            }
-            if (side) {
-                defaultOverlays.addProperty("side", "modern_industrialization:block/machines/%s/overlay_side".formatted(overlay));
-                if (active) {
-                    defaultOverlays.addProperty("side_active", "modern_industrialization:block/machines/%s/overlay_side_active".formatted(overlay));
-                }
-            }
-
-            defaultOverlays.addProperty("output", "modern_industrialization:block/overlays/output");
-            defaultOverlays.addProperty("item_auto", "modern_industrialization:block/overlays/item_auto");
-            defaultOverlays.addProperty("fluid_auto", "modern_industrialization:block/overlays/fluid_auto");
-
-            obj.add("default_overlays", defaultOverlays);
         }
+        if (front) {
+            builder.addOverlay("front", MI.id("block/machines/%s/overlay_front".formatted(overlay)));
+            if (active) {
+                builder.addOverlay("front_active", MI.id("block/machines/%s/overlay_front_active".formatted(overlay)));
+            }
+        }
+        if (side) {
+            builder.addOverlay("side", MI.id("block/machines/%s/overlay_side".formatted(overlay)));
+            if (active) {
+                builder.addOverlay("side_active", MI.id("block/machines/%s/overlay_side_active".formatted(overlay)));
+            }
+        }
+
+        builder.addOverlay("output", MI.id("block/overlays/output"));
+        builder.addOverlay("item_auto", MI.id("block/overlays/item_auto"));
+        builder.addOverlay("fluid_auto", MI.id("block/overlays/fluid_auto"));
+
+        register(machine, builder.build());
     }
 }

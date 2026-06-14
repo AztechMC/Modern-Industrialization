@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
@@ -168,7 +169,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
      * loops.
      *
      * <p>
-     * 
+     *
      * <pre>
      * {@code
      * for (StorageView<T> view : storage.nonEmptyViews()) {
@@ -186,7 +187,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
      * if the version hasn't changed since the last time, <b>and the storage instance is the same</b>, the storage has the same contents.
      * This can be used to avoid re-scanning the contents of the storage, which could be an expensive operation.
      * It may be used like that:
-     * 
+     *
      * <pre>
      * {@code
      * // Store storage and version:
@@ -215,8 +216,10 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
      * and implementations are encouraged to throw an exception if that happens.
      */
     default long getVersion() {
-        if (Transaction.isOpen()) {
-            throw new IllegalStateException("getVersion() may not be called during a transaction.");
+        switch (Transaction.getLifecycle()) {
+            case OPEN, CLOSING -> {
+                throw new IllegalStateException("getVersion() may not be called during a transaction.");
+            }
         }
 
         return TransferApiImpl.version.getAndIncrement();

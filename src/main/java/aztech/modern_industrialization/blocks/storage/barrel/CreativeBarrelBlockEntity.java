@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.MIRegistries;
@@ -28,9 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class CreativeBarrelBlockEntity extends BarrelBlockEntity {
-
     public CreativeBarrelBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.CREATIVE_BARREL_BE.get(), pos, state);
     }
-
 }

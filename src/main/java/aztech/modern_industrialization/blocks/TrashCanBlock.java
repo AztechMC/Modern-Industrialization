@@ -21,9 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks;
 
 import aztech.modern_industrialization.MICapabilities;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +39,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class TrashCanBlock extends Block {
     public TrashCanBlock(Properties properties) {
@@ -68,17 +71,17 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public @NotNull ItemStack getStackInSlot(int slot) {
+        public ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;
         }
 
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
         @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
@@ -88,7 +91,7 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        public boolean isItemValid(int slot, ItemStack stack) {
             return true;
         }
     }
@@ -102,7 +105,7 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return FluidStack.EMPTY;
         }
 
@@ -112,7 +115,7 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return true;
         }
 
@@ -122,12 +125,12 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             return FluidStack.EMPTY;
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             return FluidStack.EMPTY;
         }
     }
@@ -140,8 +143,47 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public @NotNull ItemStack getContainer() {
+        public ItemStack getContainer() {
             return container;
+        }
+    }
+
+    private static class TrashEnergyStorage implements MIEnergyStorage {
+        private static final TrashEnergyStorage INSTANCE = new TrashEnergyStorage();
+
+        @Override
+        public boolean canConnect(CableTier cableTier) {
+            return true;
+        }
+
+        @Override
+        public long receive(long maxReceive, boolean simulate) {
+            return maxReceive;
+        }
+
+        @Override
+        public long extract(long maxExtract, boolean simulate) {
+            return 0;
+        }
+
+        @Override
+        public long getAmount() {
+            return 0;
+        }
+
+        @Override
+        public long getCapacity() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public boolean canExtract() {
+            return false;
+        }
+
+        @Override
+        public boolean canReceive() {
+            return true;
         }
     }
 
@@ -151,6 +193,7 @@ public class TrashCanBlock extends Block {
             event.registerItem(Capabilities.ItemHandler.ITEM, (stack, ctx) -> TrashItemHandler.INSTANCE, blockItem);
             event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, pos, state, be, direction) -> TrashFluidHandler.INSTANCE, block);
             event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new TrashFluidHandlerItem(stack), blockItem);
+            event.registerBlock(EnergyApi.SIDED, (level, pos, state, be, direction) -> TrashEnergyStorage.INSTANCE, block);
         });
     }
 }

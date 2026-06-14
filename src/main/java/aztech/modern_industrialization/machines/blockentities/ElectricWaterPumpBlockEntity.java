@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MICapabilities;
@@ -64,11 +65,10 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
 
         this.registerComponents(inventory, redstoneControl, casing, energy);
 
-        registerGuiComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
-        registerGuiComponent(new SlotPanel.Server(this)
+        registerGuiComponent(new EnergyBar(new EnergyBar.Params(18, 32), energy::getEu, energy::getCapacity));
+        registerGuiComponent(new SlotPanel(this)
                 .withRedstoneControl(redstoneControl)
                 .withCasing(casing));
-
     }
 
     private final MIInventory inventory;
@@ -98,7 +98,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData(casing.getCasing());
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);

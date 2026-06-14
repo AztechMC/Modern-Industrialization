@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.MIComponents;
@@ -35,7 +36,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
-
     public BarrelBlockEntity(BlockEntityType type,
             BlockPos pos,
             BlockState state) {

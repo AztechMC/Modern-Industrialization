@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MI;
@@ -39,6 +40,5 @@ public final class ItemHelper {
                 .build();
     }
 
-    private ItemHelper() {
-    }
+    private ItemHelper() {}
 }

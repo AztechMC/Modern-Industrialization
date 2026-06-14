@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
@@ -50,7 +51,8 @@ public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfig
         boolean containsResourceAlready = false;
         long totalInserted = 0;
 
-        outer: for (int iter = 0; iter < 2; ++iter) {
+        outer:
+        for (int iter = 0; iter < 2; ++iter) {
             for (S stack : stacks) {
                 if (!filter.test(stack))
                     continue;

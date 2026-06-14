@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.item;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
@@ -30,11 +31,11 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.config.MIServerConfig;
-import aztech.modern_industrialization.pipes.api.IPipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
+import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -61,7 +62,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ItemNetworkNode extends PipeNetworkNode {
     final List<ItemConnection> connections = new ArrayList<>();
@@ -89,7 +90,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeEndpointType[] getConnections(BlockPos pos) {
+    public @Nullable PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
             connections[direction.get3DDataValue()] = PIPE;
@@ -191,15 +192,15 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     public static final Codec<PipeEndpointType> CONNECTION_TYPE_CODEC = Codec.INT.comapFlatMap(
             i -> switch (i) {
-            case 0 -> DataResult.success(BLOCK_IN);
-            case 1 -> DataResult.success(BLOCK_IN_OUT);
-            case 2 -> DataResult.success(BLOCK_OUT);
-            default -> DataResult.error(() -> "Unknown item pipe connection type: " + i);
+                case 0 -> DataResult.success(BLOCK_IN);
+                case 1 -> DataResult.success(BLOCK_IN_OUT);
+                case 2 -> DataResult.success(BLOCK_OUT);
+                default -> DataResult.error(() -> "Unknown item pipe connection type: " + i);
             },
             ItemNetworkNode::encodeConnectionType);
 
     @Override
-    public IPipeMenuProvider getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
+    public PipeMenuProvider getConnectionGui(Direction guiDirection, PipeScreenHandlerHelper helper) {
         for (ItemConnection connection : connections) {
             if (connection.direction == guiDirection) {
                 return connection.new ScreenHandlerFactory(helper, getType().getIdentifier());
@@ -251,6 +252,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
         final Map<Item, List<ItemStack>> stacksCache = new IdentityHashMap<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
+        @Nullable
         BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = null;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int insertPriority, int extractPriority) {
@@ -373,11 +375,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return TransferHelper.extractMatching(player.getInventory(), what::matches, maxAmount, false).getCount();
         }
 
-        private class ScreenHandlerFactory implements IPipeMenuProvider {
+        private class ScreenHandlerFactory implements PipeMenuProvider {
             private final ItemPipeInterface iface;
             private final ResourceLocation pipeType;
 
-            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, ResourceLocation pipeType) {
+            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, ResourceLocation pipeType) {
                 this.iface = new ItemPipeInterface() {
                     @Override
                     public boolean isWhitelist() {
@@ -478,6 +480,5 @@ public class ItemNetworkNode extends PipeNetworkNode {
         return new InGameInfo(itemNetwork.lastMovedItems, itemNetwork.inactiveTicks);
     }
 
-    public record InGameInfo(long movedItems, int pulse) {
-    }
+    public record InGameInfo(long movedItems, int pulse) {}
 }

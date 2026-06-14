@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MI;
@@ -42,6 +43,7 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -57,7 +59,6 @@ import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         implements Tickable, FluidStorageComponentHolder {
-
     private static final int[] X_SIZES = new int[] { 3, 5, 7 };
     private static final int[] Y_SIZES = new int[] { 3, 4, 5, 6, 7 };
     private static final int[] Z_SIZES = new int[] { 3, 4, 5, 6, 7 };
@@ -78,8 +79,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     private static ShapeSelection.LineInfo createLineInfo(int[] sizes, MIText baseText) {
         return new ShapeSelection.LineInfo(
-                sizes.length,
-                IntStream.of(sizes).mapToObj(baseText::text).toList(),
+                IntStream.of(sizes).<Component>mapToObj(baseText::text).toList(),
                 false);
     }
 
@@ -148,15 +148,14 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     private LargeTankFluidDisplay.Data oldFluidData;
 
     public LargeTankMultiblockBlockEntity(BEP bep) {
-
         super(bep, new MachineGuiParameters.Builder("large_tank", false).build(), new OrientationComponent.Params(false, false, false));
 
         activeShape = new ActiveShapeComponent(shapeTemplates);
-        fluidStorage = new FluidStorageComponent();
+        fluidStorage = new FluidStorageComponent(this::setChanged);
 
         this.registerComponents(activeShape, fluidStorage);
 
-        this.registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
+        this.registerGuiComponent(new ShapeSelection(new ShapeSelection.Behavior() {
             @Override
             public void handleClick(int clickedLine, int delta) {
                 int shape = activeShape.getActiveShapeIndex();
@@ -182,15 +181,15 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
                 int shape = activeShape.getActiveShapeIndex();
 
                 return switch (line) {
-                case 0 -> getXComponent(shape);
-                case 1 -> getYComponent(shape);
-                default -> getZComponent(shape);
+                    case 0 -> getXComponent(shape);
+                    case 1 -> getYComponent(shape);
+                    default -> getZComponent(shape);
                 };
             }
         }, createLineInfo(X_SIZES, MIText.ShapeTextWidth), createLineInfo(Y_SIZES, MIText.ShapeTextHeight),
                 createLineInfo(Z_SIZES, MIText.ShapeTextDepth)));
         // Must be after shape selection because we render text in the selection panel
-        this.registerGuiComponent(new LargeTankFluidDisplay.Server(this::getFluidData));
+        this.registerGuiComponent(new LargeTankFluidDisplay(this::getFluidData));
     }
 
     public LargeTankFluidDisplay.Data getFluidData() {
@@ -218,16 +217,14 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection);
-
     }
 
     @Override
     public void tick() {
         if (!level.isClientSide) {
             link();
-            setChanged();
             if (!this.getFluidData().equals(oldFluidData)) {
                 oldFluidData = this.getFluidData();
                 sync(false);
@@ -250,13 +247,19 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
             long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
             fluidStorage.setCapacity(capacity);
 
-            invalidateCapabilities();
+            // Already set it here such that the setController and setChanged calls below
+            // will see the correct comparator output of the tank
+            shapeValid.shapeValid = true;
+
             for (var hatch : shapeMatcher.getMatchedHatches()) {
                 if (hatch instanceof LargeTankHatch tankHatch) {
                     tankHatch.setController(this);
                 }
             }
         }
+
+        setChanged();
+        invalidateCapabilities();
     }
 
     public IFluidHandler getExposedFluidHandler() {
@@ -276,7 +279,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     public int[] getCornerPosition() {
-
         int index = activeShape.getActiveShapeIndex();
         int sizeX = X_SIZES[getXComponent(index)];
         int sizeY = Y_SIZES[getYComponent(index)];
@@ -302,7 +304,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         }
 
         return cornerPosition;
-
     }
 
     @Override
@@ -310,4 +311,17 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         return List.of(new MITooltips.Line(MIText.LargeTankTooltips).arg(BUCKET_PER_STRUCTURE_BLOCK).build());
     }
 
+    @Override
+    protected boolean hasComparatorOutput() {
+        return true;
+    }
+
+    @Override
+    public int getComparatorOutput() {
+        if (isShapeValid()) {
+            return StorageUtil.calculateComparatorOutput(fluidStorage.getFluidStorage());
+        } else {
+            return 0;
+        }
+    }
 }

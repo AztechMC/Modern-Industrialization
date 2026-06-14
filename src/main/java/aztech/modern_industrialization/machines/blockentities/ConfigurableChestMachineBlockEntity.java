@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -39,7 +40,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
     private final MIInventory inventory;
 
     public ConfigurableChestMachineBlockEntity(BEP bep) {
@@ -53,7 +53,7 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
         SlotPositions itemPositions = new SlotPositions.Builder().addSlots(8, 30, 9, 3).build();
         inventory = new MIInventory(stacks, Collections.emptyList(), itemPositions, SlotPositions.empty());
 
-        registerGuiComponent(new AutoExtract.Server(orientation));
+        registerGuiComponent(new AutoExtract(orientation));
         registerComponents(inventory);
     }
 
@@ -63,7 +63,7 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.STEEL_CRATE);
         orientation.writeModelData(data);
         return data;

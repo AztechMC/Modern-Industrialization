@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.kubejs.registration;
 
 import aztech.modern_industrialization.MIFluids;
@@ -33,18 +34,18 @@ public class RegisterFluidsEventJS implements KubeEvent {
         color |= 0xff000000; // Color must always be fully opaque
 
         var fluidTexture = switch (texture) {
-        case "lava" -> FluidTexture.LAVA_LIKE;
-        case "plasma" -> FluidTexture.PLASMA_LIKE;
-        case "steam" -> FluidTexture.STEAM_LIKE;
-        case "water" -> FluidTexture.WATER_LIKE;
-        default -> throw new IllegalArgumentException("Invalid texture type: " + texture);
+            case "lava" -> FluidTexture.LAVA_LIKE;
+            case "plasma" -> FluidTexture.PLASMA_LIKE;
+            case "steam" -> FluidTexture.STEAM_LIKE;
+            case "water" -> FluidTexture.WATER_LIKE;
+            default -> throw new IllegalArgumentException("Invalid texture type: " + texture);
         };
         var opacityValue = switch (opacity) {
-        case "low" -> FluidDefinition.LOW_OPACITY;
-        case "medium" -> FluidDefinition.MEDIUM_OPACITY;
-        case "high" -> FluidDefinition.NEAR_OPACITY;
-        case "full" -> FluidDefinition.FULL_OPACITY;
-        default -> throw new IllegalArgumentException("Invalid opacity type: " + opacity);
+            case "low" -> FluidDefinition.LOW_OPACITY;
+            case "medium" -> FluidDefinition.MEDIUM_OPACITY;
+            case "high" -> FluidDefinition.NEAR_OPACITY;
+            case "full" -> FluidDefinition.FULL_OPACITY;
+            default -> throw new IllegalArgumentException("Invalid opacity type: " + opacity);
         };
 
         MIFluids.fluid(englishName, internalName, color, opacityValue, fluidTexture, isGas);

@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.inventory;
 
 import java.util.List;
 import java.util.Map;
 
 public abstract class ChangeListener {
-
     protected abstract void onChange();
 
     protected abstract boolean isValid(Object token); // TODO: do we really need the token? (it's unused for now)

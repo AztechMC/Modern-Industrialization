@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.MIRegistries;
@@ -37,8 +38,8 @@ import net.minecraft.world.inventory.Slot;
 public abstract class MachineMenuCommon extends ConfigurableScreenHandler implements GuiComponent.MenuFacade {
     public final MachineGuiParameters guiParams;
 
-    MachineMenuCommon(int syncId, Inventory playerInventory, MIInventory inventory, MachineGuiParameters guiParams,
-            ComponentStorage<? extends GuiComponent.Common> guiComponents) {
+    protected MachineMenuCommon(int syncId, Inventory playerInventory, MIInventory inventory, MachineGuiParameters guiParams,
+            ComponentStorage<? extends GuiComponent> guiComponents) {
         super(MIRegistries.MACHINE_MENU.get(), syncId, playerInventory, inventory);
         this.guiParams = guiParams;
 
@@ -61,14 +62,12 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
         for (int i = 0; i < inventory.getItemStacks().size(); ++i) {
             ConfigurableItemStack stack = inventory.getItemStacks().get(i);
             // FIXME: markDirty and insert predicate
-            this.addSlot(stack.new ConfigurableItemSlot(() -> {
-            }, inventory.itemPositions.getX(i), inventory.itemPositions.getY(i), s -> true), SlotGroup.CONFIGURABLE_STACKS);
+            this.addSlot(stack.new ConfigurableItemSlot(() -> {}, inventory.itemPositions.getX(i), inventory.itemPositions.getY(i), s -> true), SlotGroup.CONFIGURABLE_STACKS);
         }
         for (int i = 0; i < inventory.getFluidStacks().size(); ++i) {
             ConfigurableFluidStack stack = inventory.getFluidStacks().get(i);
             // FIXME: markDirty
-            this.addSlot(stack.new ConfigurableFluidSlot(() -> {
-            }, inventory.fluidPositions.getX(i), inventory.fluidPositions.getY(i)), SlotGroup.CONFIGURABLE_STACKS);
+            this.addSlot(stack.new ConfigurableFluidSlot(() -> {}, inventory.fluidPositions.getX(i), inventory.fluidPositions.getY(i)), SlotGroup.CONFIGURABLE_STACKS);
         }
     }
 

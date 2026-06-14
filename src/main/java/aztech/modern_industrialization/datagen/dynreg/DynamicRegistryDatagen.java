@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.dynreg;
 
 import java.util.ArrayList;
@@ -57,6 +58,5 @@ public final class DynamicRegistryDatagen {
         return builder;
     }
 
-    private DynamicRegistryDatagen() {
-    }
+    private DynamicRegistryDatagen() {}
 }

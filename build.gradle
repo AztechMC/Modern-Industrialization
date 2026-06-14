@@ -3,10 +3,10 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.72'
-    id 'com.diffplug.spotless' version '6.25.0'
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.+"
+    id 'net.neoforged.moddev' version '2.0.112'
+    id 'dev.lukebemish.immaculate' version '0.1.13'
+    id 'net.neoforged.licenser' version '0.7.5'
+    id 'me.modmuss50.mod-publish-plugin' version '1.0.0'
 }
 
 version = System.getenv("MI_VERSION")
@@ -18,9 +18,6 @@ base {
 }
 
 logger.lifecycle("Modern Industrialization version ${version}")
-
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
 
 java {
     toolchain {
@@ -66,38 +63,11 @@ repositories {
         }
     }
     maven {
-        name 'Jitpack for MI'
+        name 'Jitpack'
         url 'https://jitpack.io'
         content {
-            includeGroup "com.github.KubeJS-Mods"
-            includeGroup "com.github.GabrielOlvH"
-            /* For Magna */
-            includeGroup "com.github.Draylar.omega-config"
-            /* For KubeJS */
-            includeGroup "com.github.llamalad7.mixinextras"
             // For KubeJS
             includeGroup "com.github.rtyley"
-        }
-    }
-    // to build indrev
-    maven {
-        name = "CottonMC"
-        url = "https://server.bbkr.space/artifactory/libs-release"
-        content {
-            includeGroup "io.github.cottonmc"
-        }
-    }
-    maven {
-        name = "dblsaiko"
-        url = "https://maven.dblsaiko.net/"
-    }
-    maven {
-        name = "Technici4n"
-        url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
-        content {
-            includeGroup "net.fabricmc.fabric-api"
-            includeGroup "dev.technici4n"
-            includeGroup "dev.latvian.mods"
         }
     }
     maven {
@@ -106,23 +76,11 @@ repositories {
             includeGroup "dev.ftb.mods"
         }
     }
-    maven {
-        url "https://maven.parchmentmc.net/"
-        content {
-            includeGroup "org.parchmentmc.data"
-        }
-    }
-    // For the "No Indium?" mod
-    maven {
-        url = 'https://maven.cafeteria.dev/releases/'
-        content {
-            includeGroup "me.luligabi"
-        }
-    }
     // For KubeJS & FTBTeams/FTBQuests
     maven {
         url "https://maven.latvian.dev/releases"
         content {
+            includeGroup "dev.latvian.apps"
             includeGroup "dev.latvian.mods"
             includeGroup "dev.ftb.mods"
         }
@@ -231,6 +189,7 @@ configurations {
 
 dependencies {
     api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
+    api "org.jspecify:jspecify:${project.jspecify_version}"
     implementation "org.appliedenergistics:guideme:${project.guideme_version}"
 
     compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
@@ -245,13 +204,15 @@ dependencies {
     }
 
     compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
-    if (project.runtime_itemlist_mod == "emi") {
+    if (project.runtime_itemlist_mod.endsWith("emi")) {
         localRuntimeOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
-        // Add JEI so that we can use EMI's builtin compat layer
-        localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+        if (project.runtime_itemlist_mod == "jemi") {
+            // Add JEI so that we can use EMI's builtin compat layer
+            localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+        }
     }
 
-    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi", "none"])) {
+    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi", "jemi", "none"])) {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
@@ -279,6 +240,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             guideme_version_range: guideme_version_range,
             ae2_version_range: ae2_version_range,
             jei_version_range: jei_version_range,
+            kubejs_version_range: kubejs_version_range,
     ]
     inputs.properties replaceProperties
 
@@ -304,7 +266,101 @@ jar {
     from sourceSets.client.output
 }
 
-// configure the maven publication
+import java.util.regex.Matcher
+
+abstract class GeneratePackageInfos extends DefaultTask {
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    abstract ConfigurableFileCollection getFiles();
+
+    @TaskAction
+    void generatePackageInfos() {
+        getFiles().each { javaFile ->
+            def packageInfoFile = new File(javaFile.parent, 'package-info.java')
+            if (!packageInfoFile.exists()) {
+                def pkgName = javaFile.toString().replaceAll(Matcher.quoteReplacement(File.separator), '/')
+                pkgName = pkgName.substring(pkgName.indexOf('aztech/modern_industrialization/'), pkgName.lastIndexOf('/'))
+                pkgName = pkgName.replaceAll('/', '.')
+
+                def pkgInfoText = """
+                    |@NullMarked
+                    |package $pkgName;
+                    |
+                    |import org.jspecify.annotations.NullMarked;
+                """.stripMargin().trim()
+
+                packageInfoFile.text = pkgInfoText
+            }
+        }
+    }
+}
+final generatePackageInfos = tasks.register('generatePackageInfos', GeneratePackageInfos) {
+    it.files.from fileTree("src/client/java")
+    it.files.from fileTree("src/main/java")
+}
+
+immaculate {
+    workflows.register('misc') {
+        files.from fileTree(projectDir).filter {
+            it.name.endsWith('.gradle') || it.name.endsWith('.md') || it.name == '.gitignore'
+        }
+
+        noTrailingSpaces()
+        noTabs()
+        trailingNewline()
+    }
+    workflows.register('java') {
+        java()
+        googleFixImports()
+        eclipse() {
+            version '3.42.0'
+            config = file('eclipse-format.xml')
+        }
+
+        noTrailingSpaces()
+        noTabs()
+        trailingNewline()
+
+        custom 'noNotNull', { String fileContents ->
+            if (fileContents.contains('@NotNull') || fileContents.contains('@Nonnull')) {
+                throw new GradleException('@NotNull and @Nonnull are disallowed.')
+            }
+        }
+
+        custom 'jspecifyNullable', { String fileContents ->
+            return fileContents
+                    .replace('javax.annotation.Nullable', 'org.jspecify.annotations.Nullable')
+                    .replace('org.jetbrains.annotations.Nullable', 'org.jspecify.annotations.Nullable')
+        }
+    }
+}
+
+license {
+    include '**/*.java'
+}
+
+// the misc immaculate workflow processes resources, so we need some ordering
+// afterEvaluate because miscImmaculateCheck is only registered later
+afterEvaluate {
+    tasks.named('miscImmaculateCheck') {
+        mustRunAfter tasks.named('processResources')
+    }
+}
+
+tasks.named('licenseFormat').configure {
+    mustRunAfter generatePackageInfos
+}
+tasks.named('immaculateApply').configure {
+    mustRunAfter generatePackageInfos
+}
+
+tasks.register('applyAllFormatting') {
+    dependsOn generatePackageInfos
+    dependsOn tasks.named('licenseFormat')
+    dependsOn tasks.named('immaculateApply')
+}
+
+// Publishing
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -325,90 +381,46 @@ publishing {
     }
 }
 
-spotless {
-    format 'misc', {
-        target '*.gradle', '*.md', '.gitignore'
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
-    java {
-        importOrder()
-
-        removeUnusedImports()
-
-        eclipse().configFile('eclipse-format.xml')
-
-        indentWithSpaces()
-        endWithNewline()
-        licenseHeaderFile 'LICENSE.java'
-    }
-}
-
-def releaseChannel = "release"
-def changelog = System.getenv("CHANGELOG") ?: "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
+def releaseChannel = "stable"
+def changelogContents = System.getenv("CHANGELOG") ?: "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
 if (version.toLowerCase().contains("alpha")) {
     releaseChannel = "alpha"
-    changelog = "THIS IS AN ALPHA RELEASE, MAKE A BACKUP BEFORE INSTALLING AND FREQUENTLY WHILE PLAYING, AND PLEASE REPORT ANY ISSUE YOU MAY FIND ON OUR ISSUE TRACKER.\n\n" + changelog
+    changelogContents = "THIS IS AN ALPHA RELEASE, MAKE A BACKUP BEFORE INSTALLING AND FREQUENTLY WHILE PLAYING, AND PLEASE REPORT ANY ISSUE YOU MAY FIND ON OUR ISSUE TRACKER.\n\n" + changelogContents
 } else if (version.toLowerCase().contains("beta")) {
     releaseChannel = "beta"
-    changelog = "This is a beta release. It is expected to be mostly stable, but in any case please report any issue you may find.\n\n" + changelog
+    changelogContents = "This is a beta release. It is expected to be mostly stable, but in any case please report any issue you may find.\n\n" + changelogContents
 }
 
-// Publishing
-if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
+import me.modmuss50.mpp.ReleaseType
+
+publishMods {
+    file = tasks.named("jar").flatMap { it.archiveFile }
+    version = project.version
+    changelog = changelogContents
+    type = ReleaseType.of(releaseChannel)
+    displayName = "Modern Industrialization v${project.version}"
+    modLoaders = ["neoforge"]
+
+    def shared = { platform ->
+        platform.minecraftVersions.add project.minecraft_version
+
+        platform.requires "guideme"
+        platform.optional "jade", "emi", "jei"
+    }
+
     curseforge {
-        apiKey = System.getenv().get("CURSEFORGE_API_KEY")
-        project {
-            id = project.curseforge_project
-            releaseType = releaseChannel
-            changelogType = "markdown"
-            delegate.changelog = changelog
-
-            addGameVersion project.minecraft_version
-            addGameVersion "NeoForge"
-            addGameVersion "Java 21"
-
-            relations {
-                requiredDependency "guideme"
-                optionalDependency "wthit"
-                optionalDependency "emi"
-                optionalDependency "jei"
-                optionalDependency "roughly-enough-items"
-                embeddedLibrary "grandpower"
-            }
-            mainArtifact(tasks.named("jar").flatMap { it.archiveFile }) {
-                displayName = "Modern Industrialization v${version}"
-            }
-        }
-        options {
-            forgeGradleIntegration = false
-        }
-        afterEvaluate {
-            tasks.getByName("curseforge${project.curseforge_project}").dependsOn tasks.jar
-        }
+        projectId = project.curseforge_project
+        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+        javaVersions.add JavaVersion.VERSION_21
+        shared it
+        embeds "grandpower"
+        optional "roughly-enough-items"
     }
-}
 
-modrinth {
-    token = System.getenv("MODRINTH_API_KEY")
-    projectId = project.modrinth_project
-    versionNumber = version
-    versionName = "Modern Industrialization v${version}"
-    delegate.changelog = changelog
-    versionType = releaseChannel
-    uploadFile = tasks.jar
-    gameVersions = [project.minecraft_version]
-    loaders = ["neoforge"]
-    dependencies {
-        required.project "guideme"
-        optional.project "wthit"
-        optional.project "emi"
-        optional.project "jei"
-        optional.project "rei"
+    modrinth {
+        projectId = project.modrinth_project
+        accessToken = providers.environmentVariable("MODRINTH_API_KEY")
+        shared it
+        optional "rei"
     }
-}
-tasks.modrinth.onlyIf {
-    System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")
 }

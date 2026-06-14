@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
@@ -48,6 +49,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A fluid stack that can be configured.
@@ -115,7 +117,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
@@ -162,6 +164,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return FluidVariant.fromNbt(compound, registries);
     }
 
+    @Override
     public long getCapacity() {
         return capacity;
     }
@@ -169,6 +172,11 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     @Override
     protected long getRemainingCapacityFor(FluidVariant key) {
         return getRemainingSpace();
+    }
+
+    @Override
+    public long getTotalCapacityFor(Fluid instance) {
+        return capacity;
     }
 
     public void setAmount(long amount) {
@@ -247,8 +255,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         }
 
         @Override
-        public void set(ItemStack stack) {
-        }
+        public void set(ItemStack stack) {}
 
         @Override
         public void setChanged() {

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.kubejs.material;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
@@ -30,12 +31,10 @@ import dev.latvian.mods.kubejs.event.KubeEvent;
 import java.util.function.Consumer;
 
 public class AddMaterialsEventJS implements KubeEvent {
-
     public void createMaterial(String englishName, String materialName, int color, Consumer<MaterialBuilderJSWrapper> builder) {
         var materialBuilder = new MaterialBuilder(englishName, materialName).set(MaterialProperty.MEAN_RGB, color);
         var materialBuilderJS = new MaterialBuilderJSWrapper(materialBuilder);
         builder.accept(materialBuilderJS);
         MaterialRegistry.addMaterial(materialBuilder);
     }
-
 }

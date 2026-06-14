@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.api;
 
 import java.util.*;
@@ -29,7 +30,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A pipe network. It is very important that you create a new empty data object
@@ -39,8 +40,8 @@ public abstract class PipeNetwork {
     protected int id;
     public PipeNetworkManager manager;
     public PipeNetworkData data;
-    private final Map<BlockPos, PipeNetworkNode> nodes = new HashMap<>();
-    private final Map<Long, Map<BlockPos, PipeNetworkNode>> nodesByChunk = new HashMap<>();
+    private final Map<BlockPos, @Nullable PipeNetworkNode> nodes = new HashMap<>();
+    private final Map<Long, Map<BlockPos, @Nullable PipeNetworkNode>> nodesByChunk = new HashMap<>();
     private final List<PosNode> tickingNodesCache = new ArrayList<>();
     boolean tickingCacheValid = false;
 
@@ -63,17 +64,17 @@ public abstract class PipeNetwork {
     /**
      * <b>Only access nodes that are ticking, for example with {@link #iterateTickingNodes}!</b>
      */
-    public void tick(ServerLevel world) {
-    }
+    public void tick(ServerLevel world) {}
 
     /**
      * Allow merging networks when the player explicitly requests to do so. When
      * this function is called, it must return a new PipeNetworkData without
      * modifying either itself or its parameter.
-     * 
+     *
      * @return null if there can be no merge, or the new pipe network data should
      *         there be a merge.
      */
+    @Nullable
     public PipeNetworkData merge(PipeNetwork other) {
         return null;
     }
@@ -82,8 +83,7 @@ public abstract class PipeNetwork {
      * Called when the network is removed from the world.
      * At that point, all the nodes are already gone.
      */
-    public void onRemove() {
-    }
+    public void onRemove() {}
 
     @Nullable
     public PipeNetworkNode getNode(BlockPos pos) {
@@ -107,7 +107,7 @@ public abstract class PipeNetwork {
         }
     }
 
-    public Map<BlockPos, PipeNetworkNode> getRawNodeMap() {
+    public Map<BlockPos, @Nullable PipeNetworkNode> getRawNodeMap() {
         return Collections.unmodifiableMap(this.nodes);
     }
 

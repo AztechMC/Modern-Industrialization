@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIFluids;
@@ -29,7 +30,7 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 
-public class FuelBurningComponent implements IComponent {
+public class FuelBurningComponent implements MachineComponent {
     /**
      * How many EUs worth of heat can be produced every tick at most.
      */
@@ -123,7 +124,8 @@ public class FuelBurningComponent implements IComponent {
         }
 
         // Refill buffer with item fuel
-        outer: while (burningEuBuffer < maxEuProduction) {
+        outer:
+        while (burningEuBuffer < maxEuProduction) {
             // Find first item fuel
             for (ConfigurableItemStack stack : itemInputs) {
                 var fuel = stack.getResource().toStack((int) stack.getAmount());
@@ -142,7 +144,8 @@ public class FuelBurningComponent implements IComponent {
             break;
         }
         // Refill buffer with fluid fuel
-        outer: while (burningEuBuffer < 5 * 20 * maxEuProduction) {
+        outer:
+        while (burningEuBuffer < 5 * 20 * maxEuProduction) {
             for (ConfigurableFluidStack stack : fluidInputs) {
                 if (!stack.isEmpty()) {
                     long euPerMb = FluidFuel.getEu(stack.getResource().getFluid()) * burningEuMultiplier;

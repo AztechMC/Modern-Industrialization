@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.jade.server;
 
 import aztech.modern_industrialization.MI;
@@ -33,7 +34,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import snownee.jade.api.Accessor;
 import snownee.jade.api.fluid.JadeFluidObject;
 import snownee.jade.api.ui.IDisplayHelper;

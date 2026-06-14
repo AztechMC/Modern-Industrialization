@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIFluids;
@@ -39,7 +40,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class SteamHeaterComponent extends TemperatureComponent {
-
     private static final int STEAM_TO_WATER = 16;
 
     /**
@@ -78,7 +78,6 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
     // return eu produced
     public double tick(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs) {
-
         double euProducedLowPressure = 0;
         if (acceptLowPressure) {
             euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM.asFluid(), 1);
@@ -113,21 +112,19 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
     private double tryMakeSteam(List<ConfigurableFluidStack> input, List<ConfigurableFluidStack> output, Fluid water, Fluid steam, int euPerSteamMb) {
         return tryMakeSteam(new MIFluidStorage(input), new MIFluidStorage(output), water, steam, euPerSteamMb);
-
     }
 
     // Return true if any steam was made.
     private double tryMakeSteam(MIFluidStorage input, MIFluidStorage output, Fluid water, Fluid steam, int euPerSteamMb) {
-
         FluidVariant waterKey = FluidVariant.of(water);
         FluidVariant steamKey = FluidVariant.of(steam);
 
         if (getTemperature() > 100d) {
             long steamProduction = (long) ((getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);
 
-            try (Transaction tx = Transaction.openOuter()) {
+            try (Transaction tx = Transaction.openRoot()) {
                 long inserted;
-                try (Transaction simul = Transaction.openNested(tx)) { // insertion Simulation
+                try (Transaction simul = Transaction.open(tx)) { // insertion Simulation
                     inserted = output.insertAllSlot(steamKey, steamProduction, simul);
                 }
                 if (inserted > 0) {

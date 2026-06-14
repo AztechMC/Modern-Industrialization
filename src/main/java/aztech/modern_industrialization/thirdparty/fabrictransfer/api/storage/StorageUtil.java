@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
@@ -33,7 +34,7 @@ import java.util.function.Predicate;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper functions to work with {@link Storage}s.
@@ -43,15 +44,14 @@ import org.jetbrains.annotations.Nullable;
  * If the resource is known, there will generally be a more performance efficient way.
  */
 public final class StorageUtil {
-    private StorageUtil() {
-    }
+    private StorageUtil() {}
 
     /**
      * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
      *
      * <p>
      * Here is a usage example with fluid variant storages:
-     * 
+     *
      * <pre>
      * {
      *     &#64;code
@@ -63,7 +63,7 @@ public final class StorageUtil {
      * // Move up to one bucket in total from source to target, outside of a transaction:
      *     long amountMoved = StorageUtil.move(source, target, variant -> true, FluidConstants.BUCKET, null);
      * // Move exactly one bucket in total, only of water:
-     *     try (Transaction transaction = Transaction.openOuter()) {
+     *     try (Transaction transaction = Transaction.openRoot()) {
      *         Predicate<FluidVariant> filter = variant -> variant.isOf(Fluids.WATER);
      *         long waterMoved = StorageUtil.move(source, target, filter, FluidConstants.BUCKET, transaction);
      *         if (waterMoved == FluidConstants.BUCKET) {
@@ -94,7 +94,7 @@ public final class StorageUtil {
 
         long totalMoved = 0;
 
-        try (Transaction iterationTransaction = Transaction.openNested(transaction)) {
+        try (Transaction iterationTransaction = Transaction.open(transaction)) {
             for (StorageView<T> view : from.nonEmptyViews()) {
                 T resource = view.getResource();
                 if (!filter.test(resource))
@@ -103,7 +103,7 @@ public final class StorageUtil {
                 // check how much can be extracted
                 long maxExtracted = simulateExtract(view, resource, maxAmount - totalMoved, iterationTransaction);
 
-                try (Transaction transferTransaction = iterationTransaction.openNested()) {
+                try (Transaction transferTransaction = Transaction.open(iterationTransaction)) {
                     // check how much can be inserted
                     long accepted = to.insert(resource, maxExtracted, transferTransaction);
 
@@ -139,11 +139,11 @@ public final class StorageUtil {
     /**
      * Convenient helper to simulate an insertion, i.e. get the result of insert without modifying any state.
      * The passed transaction may be null if a new transaction should be opened for the simulation.
-     * 
+     *
      * @see Storage#insert
      */
     public static <T> long simulateInsert(Storage<T> storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
-        try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+        try (Transaction simulateTransaction = Transaction.open(transaction)) {
             return storage.insert(resource, maxAmount, simulateTransaction);
         }
     }
@@ -151,11 +151,11 @@ public final class StorageUtil {
     /**
      * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
      * The passed transaction may be null if a new transaction should be opened for the simulation.
-     * 
+     *
      * @see Storage#insert
      */
     public static <T> long simulateExtract(Storage<T> storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
-        try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+        try (Transaction simulateTransaction = Transaction.open(transaction)) {
             return storage.extract(resource, maxAmount, simulateTransaction);
         }
     }
@@ -163,11 +163,11 @@ public final class StorageUtil {
     /**
      * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
      * The passed transaction may be null if a new transaction should be opened for the simulation.
-     * 
+     *
      * @see Storage#insert
      */
     public static <T> long simulateExtract(StorageView<T> storageView, T resource, long maxAmount, @Nullable TransactionContext transaction) {
-        try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+        try (Transaction simulateTransaction = Transaction.open(transaction)) {
             return storageView.extract(resource, maxAmount, simulateTransaction);
         }
     }
@@ -175,14 +175,14 @@ public final class StorageUtil {
     /**
      * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
      * The passed transaction may be null if a new transaction should be opened for the simulation.
-     * 
+     *
      * @see Storage#insert
      * @apiNote This function handles the method overload conflict for objects that implement both {@link Storage} and {@link StorageView}.
      */
     // Object & is used to have a different erasure than the other overloads.
     public static <T, S extends Object & Storage<T> & StorageView<T>> long simulateExtract(S storage, T resource, long maxAmount,
             @Nullable TransactionContext transaction) {
-        try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+        try (Transaction simulateTransaction = Transaction.open(transaction)) {
             return storage.extract(resource, maxAmount, simulateTransaction);
         }
     }
@@ -354,7 +354,7 @@ public final class StorageUtil {
         if (storage == null)
             return null;
 
-        try (Transaction nested = Transaction.openNested(transaction)) {
+        try (Transaction nested = Transaction.open(transaction)) {
             for (StorageView<T> view : storage.nonEmptyViews()) {
                 // Extract below could change the resource, so we have to query it before extracting.
                 T resource = view.getResource();

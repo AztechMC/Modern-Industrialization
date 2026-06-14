@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import static aztech.modern_industrialization.machines.multiblocks.HatchTypes.*;
@@ -47,7 +48,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
-
     public record Tier(ResourceLocation coilBlockId, long maxBaseEu, String englishName) {
         public String getTranslationKey() {
             return "ebf_tier.modern_industrialization." + coilBlockId.getPath();
@@ -112,14 +112,14 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
         this.upgrades = new UpgradeComponent();
         this.overdrive = new OverdriveComponent();
         this.registerComponents(upgrades, overdrive);
-        registerGuiComponent(new SlotPanel.Server(this)
+        registerGuiComponent(new SlotPanel(this)
                 .withRedstoneControl(redstoneControl)
                 .withUpgrades(upgrades)
                 .withOverdrive(overdrive));
 
         var tierComponents = tiers.stream().map(Tier::getDisplayName).toList();
 
-        registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
+        registerGuiComponent(new ShapeSelection(new ShapeSelection.Behavior() {
             @Override
             public void handleClick(int clickedLine, int delta) {
                 activeShape.incrementShape(ElectricBlastFurnaceBlockEntity.this, delta);
@@ -129,7 +129,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
             public int getCurrentIndex(int line) {
                 return activeShape.getActiveShapeIndex();
             }
-        }, new ShapeSelection.LineInfo(tiers.size(), tierComponents, true)));
+        }, new ShapeSelection.LineInfo(tierComponents, true)));
     }
 
     private final UpgradeComponent upgrades;

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network.pipes;
 
 import aztech.modern_industrialization.network.BasePacket;
@@ -33,7 +34,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record IncrementPriorityPacket(int syncId, int channel, int delta) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, IncrementPriorityPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             IncrementPriorityPacket::syncId,

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
@@ -32,11 +33,10 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 
 public class FusionReactorBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
-
     public FusionReactorBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate) {
         super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
 
-        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
+        registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
     }
 
     @Override
@@ -52,5 +52,10 @@ public class FusionReactorBlockEntity extends AbstractElectricCraftingMultiblock
     @Override
     public long getMaxRecipeEu() {
         return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public boolean oneFluidInputPerStack() {
+        return true;
     }
 }

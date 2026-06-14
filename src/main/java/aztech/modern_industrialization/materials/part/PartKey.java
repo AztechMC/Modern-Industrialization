@@ -21,16 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.part;
 
-import org.jetbrains.annotations.NotNull;
-
 /*
-Key to be type safe in the material builder
-
+ * Key to be type safe in the material builder
  */
 public final class PartKey implements Comparable<PartKey>, PartKeyProvider {
-
     public final String key;
 
     public PartKey(String key) {
@@ -56,7 +53,7 @@ public final class PartKey implements Comparable<PartKey>, PartKeyProvider {
     }
 
     @Override
-    public int compareTo(@NotNull PartKey o) {
+    public int compareTo(PartKey o) {
         return key.compareTo(o.key);
     }
 

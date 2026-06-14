@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -33,7 +34,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record AdjustSlotCapacityPacket(int syncId, int slotId, boolean isIncrease, boolean isShiftDown) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, AdjustSlotCapacityPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             AdjustSlotCapacityPacket::syncId,

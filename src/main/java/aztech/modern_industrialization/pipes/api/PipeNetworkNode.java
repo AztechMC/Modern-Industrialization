@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.api;
 
-import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -34,22 +35,21 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class PipeNetworkNode {
+    @Nullable
     protected PipeNetwork network;
 
-    public void updateConnections(Level world, BlockPos pos) {
-    }
+    public void updateConnections(Level world, BlockPos pos) {}
 
-    public void buildInitialConnections(Level world, BlockPos pos) {
-    }
+    public void buildInitialConnections(Level world, BlockPos pos) {}
 
     /**
      * Get connections. Must return a size 6 array containing the 6 connections in
      * the Direction order. Null can be used to render no connection.
      */
-    public abstract PipeEndpointType[] getConnections(BlockPos pos);
+    public abstract @Nullable PipeEndpointType[] getConnections(BlockPos pos);
 
     public abstract void removeConnection(Level world, BlockPos pos, Direction direction);
 
@@ -59,7 +59,7 @@ public abstract class PipeNetworkNode {
      * Get the connection screen handler factory, or null if there is not gui for
      * this connection.
      */
-    public IPipeMenuProvider getConnectionGui(Direction direction, IPipeScreenHandlerHelper helper) {
+    public PipeMenuProvider getConnectionGui(Direction direction, PipeScreenHandlerHelper helper) {
         return null;
     }
 
@@ -79,8 +79,7 @@ public abstract class PipeNetworkNode {
         return new CompoundTag();
     }
 
-    public void appendDroppedStacks(List<ItemStack> droppedStacks) {
-    }
+    public void appendDroppedStacks(List<ItemStack> droppedStacks) {}
 
     /**
      * Return true if something was done.
@@ -89,6 +88,5 @@ public abstract class PipeNetworkNode {
         return false;
     }
 
-    public void onUnload() {
-    }
+    public void onUnload() {}
 }

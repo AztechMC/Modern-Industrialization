@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MI;
@@ -39,6 +40,7 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.stream.IntStream;
+import net.minecraft.network.chat.Component;
 
 public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
     private static final int MAX_HEIGHT = MIStartupConfig.INSTANCE.maxDistillationTowerHeight.getAsInt();
@@ -49,12 +51,12 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
         this.upgrades = new UpgradeComponent();
         this.overdrive = new OverdriveComponent();
         this.registerComponents(upgrades, overdrive);
-        registerGuiComponent(new SlotPanel.Server(this)
+        registerGuiComponent(new SlotPanel(this)
                 .withRedstoneControl(redstoneControl)
                 .withUpgrades(upgrades)
                 .withOverdrive(overdrive));
 
-        registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
+        registerGuiComponent(new ShapeSelection(new ShapeSelection.Behavior() {
             @Override
             public void handleClick(int clickedLine, int delta) {
                 activeShape.incrementShape(DistillationTowerBlockEntity.this, delta);
@@ -65,8 +67,7 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
                 return activeShape.getActiveShapeIndex();
             }
         }, new ShapeSelection.LineInfo(
-                MAX_HEIGHT,
-                IntStream.range(1, MAX_HEIGHT + 1).mapToObj(MIText.ShapeTextHeight::text).toList(),
+                IntStream.range(1, MAX_HEIGHT + 1).<Component>mapToObj(MIText.ShapeTextHeight::text).toList(),
                 false)));
     }
 

@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.GeometryHelper;
 import aztech.modern_industrialization.util.Simulation;
@@ -86,7 +87,7 @@ import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.Mutable;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The steam drill. The item stack contains the following information:
@@ -97,7 +98,6 @@ import org.jetbrains.annotations.Nullable;
 public class SteamDrillItem
         extends Item
         implements DynamicToolItem, ItemContainingItemHelper, ActivatableItem {
-
     public static final StorageBehaviour<ItemVariant> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
         @Override
         public long getCapacityForResource(ItemVariant resource) {
@@ -108,7 +108,6 @@ public class SteamDrillItem
             int burnTicks = item.toStack().getBurnTime(null);
             return burnTicks > 0;
         }
-
     };
 
     private static final int FULL_WATER = 18000;
@@ -147,7 +146,7 @@ public class SteamDrillItem
 
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return !newStack.is(this) || !canUse(newStack) || CommonProxy.INSTANCE.shouldSteamDrillForceBreakReset();
+        return !newStack.is(this) || !canUse(newStack) || MICommonProxy.INSTANCE.shouldSteamDrillForceBreakReset();
     }
 
     @Override
@@ -164,7 +163,7 @@ public class SteamDrillItem
             if (isCorrectToolForDrops(stack, state)) {
                 float speed = 4.0f;
 
-                Player player = CommonProxy.INSTANCE.findUser(stack);
+                Player player = MICommonProxy.INSTANCE.findUser(stack);
 
                 if (player != null && !should3by3(stack, player)) {
                     speed *= 4f;
@@ -186,8 +185,7 @@ public class SteamDrillItem
         return ItemAttributeModifiers.EMPTY;
     }
 
-    public record Area(BlockPos center, BlockPos corner1, BlockPos corner2) {
-    }
+    public record Area(BlockPos center, BlockPos corner1, BlockPos corner2) {}
 
     @Nullable
     public Area getArea(BlockGetter level, Player player, ItemStack stack, boolean rayTraceOnly) {
@@ -279,7 +277,8 @@ public class SteamDrillItem
             return;
         }
 
-        outer: for (var entity : event.getDrops()) {
+        outer:
+        for (var entity : event.getDrops()) {
             if (entity.getItem().isEmpty()) {
                 continue;
             }
@@ -307,8 +306,7 @@ public class SteamDrillItem
         }
     }
 
-    private record ClickedBlock(BlockPos pos, Direction face) {
-    }
+    private record ClickedBlock(BlockPos pos, Direction face) {}
 
     private static final ThreadLocal<Boolean> recursiveMineBlock = ThreadLocal.withInitial(() -> false);
 
@@ -568,6 +566,5 @@ public class SteamDrillItem
     }
 
     public record SteamDrillTooltipData(int waterLevel, int burnTicks, int maxBurnTicks, ItemVariant variant, long amount)
-            implements TooltipComponent {
-    }
+            implements TooltipComponent {}
 }

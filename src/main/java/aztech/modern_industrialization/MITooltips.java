@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
@@ -41,10 +42,15 @@ import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -61,11 +67,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class MITooltips {
-
     public static final PriorityQueue<TooltipAttachment> TOOLTIPS = new PriorityQueue<>();
 
     public static final Style DEFAULT_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
@@ -100,11 +104,11 @@ public class MITooltips {
     public static void attachTooltip(ItemStack stack, List<Component> lines) {
         boolean hasPrintRequiredShift = false;
         for (var tooltip : TOOLTIPS) {
-            Optional<List<? extends Component>> maybeComponents = tooltip.tooltipLines.apply(stack, stack.getItem());
-            if (!tooltip.requiresShift || CommonProxy.INSTANCE.hasShiftDown()) {
-                maybeComponents.ifPresent(lines::addAll);
+            var maybeComponents = tooltip.tooltipLines.apply(stack, stack.getItem());
+            if (!tooltip.requiresShift || MICommonProxy.INSTANCE.hasShiftDown()) {
+                lines.addAll(maybeComponents);
             } else if (tooltip.requiresShift && !hasPrintRequiredShift) {
-                if (maybeComponents.isPresent()) {
+                if (!maybeComponents.isEmpty()) {
                     lines.add(MIText.TooltipsShiftRequired.text().setStyle(DEFAULT_STYLE));
                     hasPrintRequiredShift = true;
                 }
@@ -161,8 +165,7 @@ public class MITooltips {
         }
     };
 
-    public record NumberWithMax(Number number, Number max) {
-    }
+    public record NumberWithMax(Number number, Number max) {}
 
     public static final Parser<NumberWithMax> EU_MAXED_PARSER = new Parser<>() {
         @Override
@@ -213,9 +216,9 @@ public class MITooltips {
     public static final TooltipAttachment DATA_DRIVEN = TooltipAttachment.ofMultilines((stack, item) -> {
         var dataMap = stack.getItemHolder().getData(MIDataMaps.ITEM_TOOLTIPS);
         if (dataMap != null) {
-            return Optional.of(dataMap.components());
+            return dataMap.components();
         } else {
-            return Optional.empty();
+            return List.of();
         }
     }).setPriority(-100);
 
@@ -276,19 +279,17 @@ public class MITooltips {
 
     public static final TooltipAttachment MACHINE_TOOLTIPS = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
-                if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock
-                        && !machineBlock.getBlockEntityInstance().getTooltips().isEmpty()) {
-                    return Optional.of((((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).getBlockEntityInstance()).getTooltips());
-
+                if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock) {
+                    return machineBlock.getBlockEntityInstance().getTooltips();
                 } else {
-                    return Optional.empty();
+                    return List.of();
                 }
             });
 
     public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
                 if (item instanceof NuclearAbsorbable) {
-                    List<Component> tooltips = new LinkedList<>();
+                    List<Component> tooltips = new ArrayList<>();
                     long remAbs = ((NuclearAbsorbable) itemStack.getItem()).getRemainingDesintegrations(itemStack);
                     tooltips.add(new MITooltips.Line(MIText.RemAbsorption).arg(remAbs)
                             .arg(((NuclearAbsorbable) itemStack.getItem()).desintegrationMax).build());
@@ -296,9 +297,9 @@ public class MITooltips {
                         long totalEu = (long) fuel.totalEUbyDesintegration * fuel.desintegrationMax;
                         tooltips.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
                     }
-                    return Optional.of(tooltips);
+                    return tooltips;
                 } else {
-                    return Optional.empty();
+                    return List.of();
                 }
             });
 
@@ -306,7 +307,7 @@ public class MITooltips {
             (itemStack, item) -> {
                 if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof OreBlock) {
                     OreBlock oreBlock = (OreBlock) ((BlockItem) itemStack.getItem()).getBlock();
-                    List<Component> lines = new LinkedList<>();
+                    List<Component> lines = new ArrayList<>();
 
                     if (MIClientConfig.INSTANCE.defaultOreGenTooltips.getAsBoolean()) {
                         if (oreBlock.params.generate) {
@@ -317,11 +318,11 @@ public class MITooltips {
                             lines.add(new Line(MIText.OreNotGenerated).build());
                         }
 
-                        return Optional.of(lines);
+                        return lines;
                     }
                 }
 
-                return Optional.empty();
+                return List.of();
             });
 
     public static final TooltipAttachment REDSTONE_CONTROL_MODULE = TooltipAttachment.ofMultilines(
@@ -336,9 +337,9 @@ public class MITooltips {
                             .arg(requiredSignal.text().setStyle(NUMBER_TEXT), COMPONENT).build());
                     lines.add(line(MIText.UseItemToChange).arg("use", KEYBIND_PARSER).build());
 
-                    return Optional.of(lines);
+                    return lines;
                 } else {
-                    return Optional.empty();
+                    return List.of();
                 }
             });
 
@@ -349,14 +350,14 @@ public class MITooltips {
             (itemStack, item) -> {
                 var upgrade = itemStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
                 if (upgrade != null) {
-                    List<Component> lines = new LinkedList<>();
+                    List<Component> lines = new ArrayList<>();
                     lines.add(new Line(MIText.TooltipSpeedUpgrade).arg(upgrade.maxExtractedItems()).build());
                     if (itemStack.getCount() > 1) {
                         lines.add(new Line(MIText.TooltipSpeedUpgradeStack).arg(itemStack.getCount() * upgrade.maxExtractedItems()).build());
                     }
-                    return Optional.of(lines);
+                    return lines;
                 } else {
-                    return Optional.empty();
+                    return List.of();
                 }
             });
 
@@ -364,16 +365,16 @@ public class MITooltips {
             (itemStack, item) -> {
                 if (UpgradeComponent.getExtraEu(item) > 0) {
 
-                    List<Component> lines = new LinkedList<>();
+                    List<Component> lines = new ArrayList<>();
                     lines.add(new Line(MIText.MachineUpgrade).arg(UpgradeComponent.getExtraEu(itemStack.getItem()), EU_PER_TICK_PARSER).build());
 
                     if (itemStack.getCount() > 1) {
                         lines.add(new Line(MIText.MachineUpgradeStack)
                                 .arg(itemStack.getCount() * UpgradeComponent.getExtraEu(itemStack.getItem()), EU_PER_TICK_PARSER).build());
                     }
-                    return Optional.of(lines);
+                    return lines;
                 } else {
-                    return Optional.empty();
+                    return List.of();
                 }
             });
 
@@ -388,13 +389,13 @@ public class MITooltips {
     public static final TooltipAttachment DIESEL_TOOLS = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
                 if (item instanceof DieselToolItem tool) {
-                    return Optional.of(List.of(
+                    return List.of(
                             line(MIText.ToolConfiguration).build(),
                             line(MIText.DieselToolFuelHelp1).arg("use", KEYBIND_PARSER).build(),
                             line(MIText.DieselToolFuelHelp2).build(),
-                            line(MIText.DieselToolToggle).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
+                            line(MIText.DieselToolToggle).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build());
                 } else {
-                    return Optional.empty();
+                    return List.of();
                 }
             });
 
@@ -422,9 +423,9 @@ public class MITooltips {
 
     public static final TooltipAttachment PIPE_HELP = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
-                return (item instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe())) ? Optional.of(List.of(
+                return (item instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe())) ? List.of(
                         line(MIText.PipeHelp1).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
-                        line(MIText.PipeHelp2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build())) : Optional.empty();
+                        line(MIText.PipeHelp2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()) : List.of();
             });
 
     // Long Tooltip with only text, no need of MIText
@@ -445,10 +446,10 @@ public class MITooltips {
 
         MITooltips.TooltipAttachment.ofMultilines((itemStack, item) -> {
             if (attachTo.test(item)) {
-                return Optional.of(Arrays.stream(translationKey).map((key) -> Component.translatable(key).withStyle(DEFAULT_STYLE))
-                        .collect(Collectors.toList()));
+                return Arrays.stream(translationKey).map((key) -> Component.translatable(key).withStyle(DEFAULT_STYLE))
+                        .collect(Collectors.toList());
             } else {
-                return Optional.empty();
+                return List.of();
             }
         });
     }
@@ -476,8 +477,7 @@ public class MITooltips {
     }
 
     public static class TooltipAttachment implements Comparable<TooltipAttachment> {
-
-        public final BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines;
+        public final BiFunction<ItemStack, Item, List<? extends Component>> tooltipLines;
         public boolean requiresShift = true;
         public int priority = 0;
 
@@ -486,26 +486,27 @@ public class MITooltips {
         }
 
         public static TooltipAttachment of(ItemLike itemLike, Line line) {
-
             return new TooltipAttachment(
-                    (itemStack, item) -> itemStack.getItem() == itemLike.asItem() ? Optional.of(List.of(line.build())) : Optional.empty());
+                    (itemStack, item) -> itemStack.getItem() == itemLike.asItem() ? List.of(line.build()) : List.of());
         }
 
         public static TooltipAttachment of(BiFunction<ItemStack, Item, Optional<? extends Component>> tooltipLines) {
-
-            return new TooltipAttachment((itemStack, item) -> tooltipLines.apply(itemStack, item).map(List::of));
+            return new TooltipAttachment((itemStack, item) -> {
+                var component = tooltipLines.apply(itemStack, item);
+                return component.isEmpty() ? List.of() : List.of(component.get());
+            });
         }
 
-        public static TooltipAttachment ofMultilines(BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines) {
+        public static TooltipAttachment ofMultilines(BiFunction<ItemStack, Item, List<? extends Component>> tooltipLines) {
             return new TooltipAttachment(tooltipLines);
         }
 
         public static TooltipAttachment ofMultilines(ItemLike itemLike, List<? extends Component> tooltipLines) {
             return new TooltipAttachment((itemStack, item) -> {
                 if (itemStack.getItem() == itemLike.asItem()) {
-                    return Optional.of(tooltipLines);
+                    return tooltipLines;
                 } else {
-                    return Optional.empty();
+                    return List.of();
                 }
             });
         }
@@ -515,7 +516,7 @@ public class MITooltips {
                     Arrays.stream(tooltipLines).map((text) -> text.text().withStyle(DEFAULT_STYLE)).collect(Collectors.toList()));
         }
 
-        private TooltipAttachment(BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines) {
+        private TooltipAttachment(BiFunction<ItemStack, Item, List<? extends Component>> tooltipLines) {
             this.tooltipLines = tooltipLines;
             MITooltips.TOOLTIPS.add(this);
         }
@@ -531,7 +532,7 @@ public class MITooltips {
         }
 
         @Override
-        public int compareTo(@NotNull MITooltips.TooltipAttachment o) {
+        public int compareTo(MITooltips.TooltipAttachment o) {
             return -Integer.compare(priority, o.priority);
         }
     }
@@ -545,11 +546,10 @@ public class MITooltips {
     }
 
     public static class Line {
-
         public final MIText baseText;
         public final Style baseStyle;
 
-        public final List<Component> args = new LinkedList<>();
+        public final List<Component> args = new ArrayList<>();
 
         public Line(MIText baseText, Style style) {
             this.baseText = baseText;
@@ -579,5 +579,4 @@ public class MITooltips {
     public interface Parser<T> {
         Component parse(T t);
     }
-
 }

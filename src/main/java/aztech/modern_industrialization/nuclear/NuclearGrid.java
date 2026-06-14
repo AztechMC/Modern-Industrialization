@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class NuclearGrid {
     private final int sizeX;
@@ -46,13 +47,11 @@ public final class NuclearGrid {
     }
 
     @Nullable
-    public INuclearTile getNuclearTile(int x, int y) {
+    public NuclearTile getNuclearTile(int x, int y) {
         return hatchesGrid[x][y];
     }
 
-    public void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape) {
-    }
+    public void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape) {}
 
-    public void registerNeutronCreation(int neutronNumber, NeutronType type) {
-    }
+    public void registerNeutronCreation(int neutronNumber, NeutronType type) {}
 }

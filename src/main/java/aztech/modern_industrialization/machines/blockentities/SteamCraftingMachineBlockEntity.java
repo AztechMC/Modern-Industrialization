@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.machines.BEP;
@@ -42,17 +43,16 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 
 public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
-
     private final OverclockComponent overclockComponent;
 
     public SteamCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory, MachineGuiParameters guiParams,
-            ProgressBar.Parameters progressBarParams, MachineTier tier, List<OverclockComponent.Catalyst> overclockCatalysts) {
+            ProgressBar.Params progressBarParams, MachineTier tier, List<OverclockComponent.Catalyst> overclockCatalysts) {
         super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
         this.overclockComponent = new OverclockComponent(overclockCatalysts);
 
-        GunpowderOverclockGui.Parameters gunpowderOverclockGuiParams = new GunpowderOverclockGui.Parameters(progressBarParams.renderX,
-                progressBarParams.renderY + 20);
-        registerGuiComponent(new GunpowderOverclockGui.Server(gunpowderOverclockGuiParams, overclockComponent::getTicks));
+        GunpowderOverclockGui.Params gunpowderOverclockGuiParams = new GunpowderOverclockGui.Params(progressBarParams.renderX(),
+                progressBarParams.renderY() + 20);
+        registerGuiComponent(new GunpowderOverclockGui(gunpowderOverclockGuiParams, overclockComponent::getTicks));
         this.registerComponents(overclockComponent);
     }
 
@@ -62,7 +62,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         orientation.writeModelData(data);
         data.isActive = isActiveComponent.isActive;

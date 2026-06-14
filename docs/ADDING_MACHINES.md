@@ -51,7 +51,7 @@ MIMachineEvents.registerRecipeTypes(event => {
         .withItemInputs()
         .withItemOutputs();
 });
-``` 
+```
 
 ## Adding a single block crafting machine
 Single block crafting machines are the "standard" single block crafting machines.
@@ -71,6 +71,9 @@ The following parameters need to be provided, in order:
 - GUI configuration:
   - 5: Height of the background in the machine screen.
   - 6: Where the progress bar is located, in pixels, and the type of progress bar to use. You can look at the available progress bars [here](../src/main/resources/assets/modern_industrialization/textures/gui/progress_bar/).
+
+    By default, the progress bar has 20x20 pixels. This can be changed by adding a width and a height as 4th and 5th parameters when creating it.
+    For example, for a 40x20 long arrow: `event.progressBar(x pos, y pos, "long_arrow", 40, 20)`.
   - 7: Where the efficiency bar goes. This is where the current overclock is displayed (only in electric machines).
   - 8: Where the energy bar goes. This is where the current energy is displayed (only in electric machines).
 - Slot configuration:
@@ -177,7 +180,7 @@ MIMachineEvents.registerMachines(event => {
         }
     }
     const pyrolyseShape = pyrolyseShapeBuilder.build();
-    
+
     // register multiblock as steam or electric next...
 ```
 
@@ -277,7 +280,7 @@ With KubeJS, the texture can go in the following folders respectively:
 - `kubejs/assets/modern_industrialization/textures/blocks/machines/pyrolyse_overlays/overlay_front_active.png`.
 
 ### Extra multiblock configuration options
-Both steam and electric have an optional config function parameter that can be added to the end for further customization. 
+Both steam and electric have an optional config function parameter that can be added to the end for further customization.
 ```
     event.simpleSteamCraftingMultiBlock(
         /* GENERAL PARAMETERS */
@@ -345,7 +348,7 @@ To add casings, use either KubeJS custom blocks or the material system.**
 A single block generator is a block that generates energy at a constant rate from consuming fluids or item, like the diesel generator or the steam turbine.
 The registration is similar to a single block crafting machine but will take different parameters.
 
-For example, 
+For example,
 ```js
 MIMachineEvents.registerMachines(event => {
     event.simpleGeneratorSingleBlock(
@@ -356,11 +359,11 @@ MIMachineEvents.registerMachines(event => {
         50000, // its internal energy storage (eu)
         128000, // its fluid storage (mB), this is optional if it doesn't consume fluids (default is 0)
         builder => {
-            builder.fluidFuels() // the builder is used to specify which kind of fuel it will accept and 
+            builder.fluidFuels() // the builder is used to specify which kind of fuel it will accept and
             // how much energy it will generate from it. (See below)
-        }, 
+        },
             // ---- SAME AS FOR A SINGLE BLOCK CRAFTING MACHINE ----
-        "ev",  // the casing 
+        "ev",  // the casing
         "diesel_generator", // the folder of the model
             // front overlay?, top overlay?, side overlay?
         true, true, true
@@ -377,7 +380,7 @@ builder.item("minecraft:coal", 100) // This will make the generator accept coal 
 builder.fluid("minecraft:lava", 10) // This will make the generator accept lava and generate 10 EU/mb. Cannot be combined with fluidFuels().
 
 // multiple fuels can be added ex:
-builder.item("minecraft:coal", 100).fluid("minecraft:lava", 10); 
+builder.item("minecraft:coal", 100).fluid("minecraft:lava", 10);
 // will automatically add the correct input slot in the machine inventory
 ```
 

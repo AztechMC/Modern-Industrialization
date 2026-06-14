@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage.tank.creativetank;
 
 import aztech.modern_industrialization.MIRegistries;
@@ -35,7 +36,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
-
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.CREATIVE_TANK_BE.get(), pos, state);
     }

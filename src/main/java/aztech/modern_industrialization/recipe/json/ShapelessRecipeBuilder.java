@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.MI;
@@ -34,7 +35,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 
-public class ShapelessRecipeBuilder implements IMIRecipeBuilder {
+public class ShapelessRecipeBuilder implements MIRecipeBuilder {
     private final ItemStack resultStack;
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
 

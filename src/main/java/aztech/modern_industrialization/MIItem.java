@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization;
 
 import static aztech.modern_industrialization.items.SortOrder.*;
@@ -35,7 +36,7 @@ import aztech.modern_industrialization.items.armor.MIArmorMaterials;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
+import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
@@ -199,13 +200,13 @@ public final class MIItem {
     public static final ItemDefinition<Item> MIXED_PLATE_NUCLEAR = item("Nuclear Mixed Plate", "mixed_plate_nuclear", MATERIALS.and("nuclear"));
 
     // Others
-    public static final ItemDefinition<Item> WAX = item("Wax", "wax", HoneycombItem::new, ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> WAX = item("Wax", "wax", WaxItem::new, ITEMS_ORDERED.next());
     public static final ItemDefinition<NuclearComponentItem> SMALL_HEAT_EXCHANGER = NuclearComponentItem.of(
             "Small Heat Exchanger", "small_heat_exchanger",
-            2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);
+            2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION, NeutronBehaviour.NO_INTERACTION);
     public static final ItemDefinition<NuclearComponentItem> LARGE_HEAT_EXCHANGER = NuclearComponentItem.of(
             "Large Heat Exchanger", "large_heat_exchanger",
-            1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);
+            1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION, NeutronBehaviour.NO_INTERACTION);
 
     public static final ItemDefinition<ConfigCardItem> CONFIG_CARD = item("Pipe Config Card", "config_card", ConfigCardItem::new, PIPES);
 
@@ -217,7 +218,6 @@ public final class MIItem {
             Function<Item.Properties, T> ctor,
             BiConsumer<Item, ItemModelProvider> modelGenerator,
             SortOrder sortOrder) {
-
         var holder = ITEMS.registerItem(path, ctor);
         var def = new ItemDefinition<>(englishName, holder, modelGenerator, sortOrder);
         ITEM_DEFINITIONS.put(holder.getId(), def);
@@ -234,14 +234,12 @@ public final class MIItem {
     }
 
     public static ItemDefinition<Item> itemNoModel(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> {
-        }, sortOrder);
+        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> {}, sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {
-        }, sortOrder);
+        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {}, sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
@@ -251,6 +249,5 @@ public final class MIItem {
         }, sortOrder);
     }
 
-    private MIItem() {
-    }
+    private MIItem() {}
 }

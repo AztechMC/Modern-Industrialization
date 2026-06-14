@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.api;
 
 import java.util.HashMap;
@@ -28,13 +29,14 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A pipe network type.
  */
 public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     private final ResourceLocation identifier;
-    private final BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor;
+    private final BiFunction<Integer, @Nullable PipeNetworkData, PipeNetwork> networkCtor;
     private final Supplier<PipeNetworkNode> nodeCtor;
     /**
      * A "serial number" allowing type comparison for rendering.
@@ -42,12 +44,12 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     private final int serialNumber;
     private final int color;
     private final boolean opensGui;
-    Object renderer;
+    public Object renderer;
 
-    private static Map<ResourceLocation, PipeNetworkType> types = new HashMap<>();
+    private static final Map<ResourceLocation, PipeNetworkType> types = new HashMap<>();
     private static int nextSerialNumber = 0;
 
-    private PipeNetworkType(ResourceLocation identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
+    private PipeNetworkType(ResourceLocation identifier, BiFunction<Integer, @Nullable PipeNetworkData, PipeNetwork> networkCtor,
             Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui, int serialNumber) {
         this.identifier = identifier;
         this.networkCtor = networkCtor;
@@ -61,7 +63,7 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         return identifier;
     }
 
-    BiFunction<Integer, PipeNetworkData, PipeNetwork> getNetworkCtor() {
+    BiFunction<Integer, @Nullable PipeNetworkData, PipeNetwork> getNetworkCtor() {
         return networkCtor;
     }
 
@@ -77,6 +79,7 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         return opensGui;
     }
 
+    @Nullable
     public static PipeNetworkType get(ResourceLocation identifier) {
         return types.get(identifier);
     }

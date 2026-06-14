@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MIFluids;
@@ -69,7 +70,7 @@ public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);

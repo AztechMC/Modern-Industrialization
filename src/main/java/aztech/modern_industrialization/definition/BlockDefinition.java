@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.definition;
 
 import aztech.modern_industrialization.MIItem;
@@ -38,10 +39,9 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class BlockDefinition<T extends Block> extends Definition implements ItemLike, Supplier<T> {
-
     private final DeferredBlock<T> block;
     public final ItemDefinition<BlockItem> blockItem;
 
@@ -50,16 +50,16 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
     public final MIBlockLoot blockLoot;
     public final List<TagKey<Block>> tags;
 
+    @Nullable
     private BiConsumer<Block, Item> onBlockRegistrationEvent;
 
     public BlockDefinition(String englishName, DeferredBlock<T> block,
             BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor,
             BiConsumer<Block, BaseModelProvider> modelGenerator,
             BiConsumer<Item, ItemModelProvider> itemModelGenerator,
-            MIBlockLoot blockLoot,
+            @Nullable MIBlockLoot blockLoot,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
-
         super(englishName, block.getId().getPath(), false);
         this.block = block;
         this.blockItem = MIItem.item(
@@ -80,12 +80,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
 
     @Override
     public Item asItem() {
-        if (blockItem != null) {
-            return blockItem.asItem();
-        } else {
-            return null;
-        }
-
+        return blockItem.asItem();
     }
 
     public T asBlock() {

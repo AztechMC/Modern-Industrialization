@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.items.PortableStorageUnit;
 
 public class BatteryPart implements PartKeyProvider {
-
     @Override
     public PartKey key() {
         return new PartKey("battery");

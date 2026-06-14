@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.MIText;
@@ -58,21 +59,28 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
-        var checkPos = switch (relativePosition) {
-        case BELOW -> context.getBlockEntity().getBlockPos().below();
-        case BEHIND -> {
-            var direction = context.getBlockEntity().orientation.facingDirection;
-            yield context.getBlockEntity().getBlockPos().relative(direction.getOpposite());
-        }
+        return switch (relativePosition) {
+            case BELOW -> {
+                var checkPos = context.getBlockEntity().getBlockPos().below();
+                yield context.getLevel().getBlockState(checkPos).is(block);
+            }
+            case BEHIND -> {
+                var orientation = context.getBlockEntity().orientation;
+                if (!orientation.params.hasFacing) {
+                    yield false;
+                }
+                var direction = orientation.facingDirection;
+                var checkPos = context.getBlockEntity().getBlockPos().relative(direction.getOpposite());
+                yield context.getLevel().getBlockState(checkPos).is(block);
+            }
         };
-        return context.getLevel().getBlockState(checkPos).is(block);
     }
 
     @Override
     public void appendDescription(List<Component> list) {
         var text = switch (relativePosition) {
-        case BELOW -> MIText.RequiresBlockBelow;
-        case BEHIND -> MIText.RequiresBlockBehind;
+            case BELOW -> MIText.RequiresBlockBelow;
+            case BEHIND -> MIText.RequiresBlockBehind;
         };
         list.add(text.text(block.getName()));
     }

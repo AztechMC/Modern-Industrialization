@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MICapabilities;
@@ -30,7 +31,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.DropableComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.PlacedByComponent;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
@@ -62,7 +63,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The base block entity for the machine system. Contains components, and an
@@ -82,6 +83,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      * Caches the current redstone status. Invalidated by {@link MachineBlock}.
      * {@code null} if the current status is not known.
      */
+    @Nullable
     private Boolean hasRedstoneHighSignal = null;
 
     public final OrientationComponent orientation;
@@ -96,11 +98,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         registerComponents(orientation, placedBy);
     }
 
-    protected final void registerGuiComponent(GuiComponent.Server... components) {
+    protected final void registerGuiComponent(GuiComponentServer... components) {
         guiComponents.register(components);
     }
 
-    protected final void registerComponents(IComponent... components) {
+    protected final void registerComponents(MachineComponent... components) {
         this.components.register(components);
     }
 
@@ -131,12 +133,18 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         inv.fluidPositions.write(buf);
         buf.writeInt(guiComponents.size());
         // Write components
-        for (GuiComponent.Server component : guiComponents) {
-            buf.writeResourceLocation(component.getId());
-            component.writeInitialData(buf);
+        for (GuiComponentServer<?, ?> component : guiComponents) {
+            writeInitialGuiComponent(buf, component);
         }
         // Write GUI params
         guiParams.write(buf);
+    }
+
+    private static <P, D> void writeInitialGuiComponent(RegistryFriendlyByteBuf buf, GuiComponentServer<P, D> component) {
+        var type = component.getType();
+        buf.writeResourceLocation(type.id());
+        type.paramsCodec().encode(buf, component.getParams());
+        type.dataCodec().encode(buf, component.extractData());
     }
 
     /**
@@ -150,7 +158,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         player.openMenu(this, this::writeScreenOpeningData);
     }
 
-    protected abstract MachineModelClientData getMachineModelData();
+    public abstract MachineModelClientData getMachineModelData();
 
     @MustBeInvokedByOverriders
     public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
@@ -193,7 +201,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("remesh", syncCausesRemesh);
         syncCausesRemesh = false;
-        for (IComponent component : components) {
+        for (MachineComponent component : components) {
             component.writeClientNbt(tag, registries);
         }
         return tag;
@@ -201,7 +209,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        for (IComponent component : components) {
+        for (MachineComponent component : components) {
             component.writeNbt(tag, registries);
         }
     }
@@ -213,12 +221,12 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public final void load(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         if (!tag.contains("remesh")) {
-            for (IComponent component : components) {
+            for (MachineComponent component : components) {
                 component.readNbt(tag, registries, isUpgradingMachine);
             }
         } else {
             boolean forceChunkRemesh = tag.getBoolean("remesh");
-            for (IComponent component : components) {
+            for (MachineComponent component : components) {
                 component.readClientNbt(tag, registries);
             }
             if (forceChunkRemesh) {

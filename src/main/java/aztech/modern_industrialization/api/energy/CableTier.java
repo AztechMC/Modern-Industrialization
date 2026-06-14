@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MI;
@@ -40,8 +41,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A single tier of cable that can have a varying amount of energy pushed through it per tick.
@@ -121,7 +121,7 @@ public final class CableTier implements Comparable<CableTier> {
     }
 
     @Override
-    public int compareTo(@NotNull CableTier other) {
+    public int compareTo(CableTier other) {
         return Long.compare(eu, other.eu);
     }
 

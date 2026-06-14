@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.helper;
 
 import aztech.modern_industrialization.api.energy.CableTier;
@@ -32,7 +33,6 @@ import dev.technici4n.grandpower.api.EnergyStorageUtil;
 import net.minecraft.core.Direction;
 
 public class EnergyHelper {
-
     public static void autoOutput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, MIEnergyStorage energySource) {
         autoOutput(machine, orientation.outputDirection, output, energySource);
     }

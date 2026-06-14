@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.property.MaterialProperty.MEAN_RGB;
@@ -29,7 +30,6 @@ import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.pipes.MIPipes;
 
 public class CablePart implements PartKeyProvider {
-
     public PartTemplate of(CableTier tier) {
         return new PartTemplate("Cable", key()).withoutTextureRegister()
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> MIPipes.INSTANCE

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIFluids;
@@ -43,7 +44,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluids;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
-
     private final ShapeTemplate shapeTemplate;
     private final IsActiveComponent isActiveComponent;
     private final RedstoneControlComponent redstoneControl;
@@ -71,13 +71,12 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
         this.registerComponents(isActiveComponent, steamHeater, fuelBurning, redstoneControl);
 
-        ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(82, 30, "furnace", true);
-        TemperatureBar.Parameters TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 55, 2500);
+        ProgressBar.Params PROGRESS_BAR = new ProgressBar.Params(82, 30, "furnace", 14, 14, true);
+        TemperatureBar.Params TEMPERATURE_BAR = new TemperatureBar.Params(42, 55, 2500);
 
-        registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
-        registerGuiComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
-        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
-
+        registerGuiComponent(new ProgressBar(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
+        registerGuiComponent(new TemperatureBar(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
+        registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
     }
 
     @Override
@@ -98,7 +97,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection).active(isActiveComponent.isActive);
     }
 

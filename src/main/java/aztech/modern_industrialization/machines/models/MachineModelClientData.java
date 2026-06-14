@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.models;
 
 import java.util.Objects;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MachineModelClientData {
     public static final ModelProperty<MachineModelClientData> KEY = new ModelProperty<>();
@@ -36,11 +37,13 @@ public class MachineModelClientData {
      */
     @Nullable
     public final MachineCasing casing;
+    @Nullable
     public Direction frontDirection;
     public boolean isActive = false;
     /**
      * May be null for no output.
      */
+    @Nullable
     public Direction outputDirection = null;
     public boolean itemAutoExtract = false;
     public boolean fluidAutoExtract = false;

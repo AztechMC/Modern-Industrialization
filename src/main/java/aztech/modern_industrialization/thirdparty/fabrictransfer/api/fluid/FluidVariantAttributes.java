@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid;
 
 import net.minecraft.network.chat.Component;
@@ -29,8 +30,7 @@ import net.minecraft.network.chat.Component;
  * Common fluid variant attributes, accessible both client-side and server-side.
  */
 public final class FluidVariantAttributes {
-    private FluidVariantAttributes() {
-    }
+    private FluidVariantAttributes() {}
 
     /**
      * Return the name that should be used for the passed fluid variant.

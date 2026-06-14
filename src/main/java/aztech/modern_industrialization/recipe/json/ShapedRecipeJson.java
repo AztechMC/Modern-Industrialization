@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.MI;
@@ -40,7 +41,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class ShapedRecipeJson implements IMIRecipeBuilder {
+public class ShapedRecipeJson implements MIRecipeBuilder {
     public final String type = "minecraft:crafting_shaped";
     public final String[] pattern;
     public final Map<Character, Ingredient> key = new HashMap<>();

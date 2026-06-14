@@ -21,23 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkExtensionTank;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleVariantStorage;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-public class FluidStorageComponent implements IComponent, FluidAccess {
-
+public class FluidStorageComponent implements MachineComponent, FluidAccess {
+    private final Runnable changeCallback;
     private long capacity;
 
-    SingleVariantStorage<FluidVariant> singleStorageVariant = new SingleVariantStorage<FluidVariant>() {
+    SingleVariantStorage<FluidVariant> singleStorageVariant = new SingleVariantStorage<>() {
         @Override
         protected FluidVariant getBlankVariant() {
             return FluidVariant.blank();
@@ -47,8 +49,19 @@ public class FluidStorageComponent implements IComponent, FluidAccess {
         protected long getCapacity(FluidVariant variant) {
             return capacity;
         }
+
+        @Override
+        protected void onRootCommit(ResourceAmount<FluidVariant> originalState) {
+            if (!originalState.resource().equals(variant) || originalState.amount() != amount) {
+                changeCallback.run();
+            }
+        }
     };
     private final IFluidHandler fluidHandler = new FluidNetworkExtensionTank(singleStorageVariant);
+
+    public FluidStorageComponent(Runnable changeCallback) {
+        this.changeCallback = changeCallback;
+    }
 
     public SingleVariantStorage<FluidVariant> getFluidStorage() {
         return singleStorageVariant;

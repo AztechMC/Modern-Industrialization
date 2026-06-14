@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.*;
@@ -29,10 +30,9 @@ import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBu
 import java.util.*;
 import java.util.function.Consumer;
 import net.minecraft.data.recipes.RecipeOutput;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class MaterialBuilder {
-
     private final Map<PartKey, MaterialItemPart> partsMap = new TreeMap<>();
     private final Map<MaterialProperty<?>, Object> properties = new IdentityHashMap<>();
 
@@ -144,7 +144,6 @@ public final class MaterialBuilder {
     }
 
     public class PartContext {
-
         public String getMaterialName() {
             return materialName;
         }
@@ -153,10 +152,12 @@ public final class MaterialBuilder {
             return englishName;
         }
 
+        @Nullable
         public MaterialItemPart getMaterialPart(PartKeyProvider part) {
             return partsMap.get(part.key());
         }
 
+        @Nullable
         public <T> T get(MaterialProperty<T> prop) {
             return (T) properties.get(prop);
         }
@@ -201,20 +202,18 @@ public final class MaterialBuilder {
             return materialName;
         }
 
+        @Nullable
         public <T> T get(MaterialProperty<T> prop) {
             return (T) properties.get(prop);
         }
     }
 
     public abstract class RecipeAction {
-
         abstract void apply(RecipeContext context);
-
     }
 
     @FunctionalInterface
     public interface RegisteringEvent {
-
         void onRegister(PartContext context);
     }
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.loot;
 
 import aztech.modern_industrialization.MI;
@@ -29,8 +30,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 public final class MILootTables {
-    private MILootTables() {
-    }
+    private MILootTables() {}
 
     public static final ResourceKey<LootTable> INDUSTRIALIST_GIFT = ResourceKey.create(Registries.LOOT_TABLE,
             MI.id("gameplay/hero_of_the_village/industrialist_gift"));

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.model;
 
 import aztech.modern_industrialization.MI;
@@ -34,7 +35,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 // TODO: PR to neoforge
 public abstract class BaseModelProvider extends BlockStateProvider {
-
     public BaseModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, MI.ID, exFileHelper);
     }

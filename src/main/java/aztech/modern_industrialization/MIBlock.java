@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization;
 
 import static net.minecraft.world.level.material.MapColor.STONE;
@@ -64,7 +65,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("unused")
 public class MIBlock {
@@ -139,7 +140,6 @@ public class MIBlock {
 
     public static <T extends Block> BlockDefinition<T> block(
             String englishName, String id, BlockDefinitionParams<T> params) {
-
         var holder = BLOCKS.registerBlock(id, params.ctor, params.props);
         var def = new BlockDefinition<>(
                 englishName,
@@ -174,11 +174,9 @@ public class MIBlock {
     }
 
     public static class BlockDefinitionParams<T extends Block> {
-
         public final BlockBehaviour.Properties props;
         public BiConsumer<Block, BaseModelProvider> modelGenerator;
-        public BiConsumer<Item, ItemModelProvider> itemModelGenerator = (item, gen) -> {
-        };
+        public BiConsumer<Item, ItemModelProvider> itemModelGenerator = (item, gen) -> {};
         @Nullable
         public MIBlockLoot blockLoot;
         public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
@@ -347,5 +345,4 @@ public class MIBlock {
             return this;
         }
     }
-
 }

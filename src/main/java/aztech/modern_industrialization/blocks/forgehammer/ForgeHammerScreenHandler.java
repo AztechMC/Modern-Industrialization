@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.MIBlock;
@@ -49,7 +50,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 public class ForgeHammerScreenHandler extends AbstractContainerMenu {
-
     private final DataSlot selectedRecipe;
     private final List<RecipeHolder<ForgeHammerRecipe>> availableRecipes;
 
@@ -87,6 +87,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         }
 
         this.input = new Slot(new SimpleContainer(1) {
+            @Override
             public void setChanged() {
                 super.setChanged();
                 ForgeHammerScreenHandler.this.slotsChanged(this);
@@ -94,12 +95,13 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         }, 0, 34, 33);
 
         this.tool = new Slot(new SimpleContainer(1) {
+            @Override
             public void setChanged() {
                 super.setChanged();
                 ForgeHammerScreenHandler.this.slotsChanged(this);
             }
         }, 0, 8, 33) {
-
+            @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(ForgeTool.TAG);
             }
@@ -108,12 +110,13 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         // Note: don't use new SimpleInventory(1), as ResultContainer always returns the full stack in removeItem !
         // This ensures that the whole item is always removed from the slot, even if someone right-clicks the output slot.
         // (Instead of leaving half the result behind, which gets overridden by the next recipe).
-        this.output = new Slot(new ResultContainer(), 0, 143, 32) {
+        this.output = new Slot(new ResultContainer(), 0, 143, 33) {
             // The stack passed to `onTake` is not meaningful.
             // Hence, we need this crappy hack to track the real amount of removed items for stats.
             // Similar to the handling in `ResultSlot`.
             private int removeCount = 0;
 
+            @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
             }
@@ -185,17 +188,16 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         return id >= 0 && id < this.availableRecipes.size();
     }
 
+    @Override
     public void slotsChanged(Container inventory) {
         if (!ItemStack.matches(this.inputStackCache, input.getItem()) || !ItemStack.matches(this.toolStackCache, tool.getItem())) {
             updateStatus();
         }
 
         super.slotsChanged(inventory);
-
     }
 
     public void updateStatus() {
-
         this.inputStackCache = input.getItem().copy();
         this.toolStackCache = tool.getItem().copy();
 
@@ -255,6 +257,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.broadcastChanges();
     }
 
+    @Override
     public boolean clickMenuButton(Player player, int id) {
         if (this.isInBounds(id)) {
             this.selectedRecipe.set(id);
@@ -287,11 +290,16 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
+        // Treat double-clicks on the output as two normal clicks instead of trying to "pick all"
+        return slot.container != this.output.container && super.canTakeItemForPickAll(stack, slot);
+    }
 
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack itemStack2 = slot.getItem();
             Item item = itemStack2.getItem();
             itemStack = itemStack2.copy();
@@ -341,6 +349,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         }, true);
     }
 
+    @Override
     public void removed(Player player) {
         super.removed(player);
         this.context.execute((world, blockPos) -> {
@@ -451,8 +460,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             // Process fill action
             ItemStack oldOutput = output.getItem().copy();
             switch (fillAction) {
-            case 1 -> clicked(output.index, 0, ClickType.PICKUP, player);
-            case 2 -> clicked(output.index, 0, ClickType.QUICK_MOVE, player);
+                case 1 -> clicked(output.index, 0, ClickType.PICKUP, player);
+                case 2 -> clicked(output.index, 0, ClickType.QUICK_MOVE, player);
             }
             if (!ItemStack.matches(oldOutput, output.getItem())) {
                 didSomething = true;

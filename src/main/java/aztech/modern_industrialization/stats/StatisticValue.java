@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.stats;
 
 import aztech.modern_industrialization.util.TickHelper;
@@ -33,8 +34,7 @@ public class StatisticValue {
     private final int[] remainingTicks = new int[StatisticsRate.COUNT];
     private long lastTick = 0;
 
-    public StatisticValue() {
-    }
+    public StatisticValue() {}
 
     public StatisticValue(CompoundTag nbt) {
         allTime = nbt.getLong("at");

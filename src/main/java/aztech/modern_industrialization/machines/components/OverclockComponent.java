@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import java.util.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,8 +40,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class OverclockComponent implements IComponent {
-
+public class OverclockComponent implements MachineComponent {
     private final List<Catalyst> catalysts;
 
     private final NavigableMap<Double, MutableTickCount> tickMap = new TreeMap<>();
@@ -151,8 +151,7 @@ public class OverclockComponent implements IComponent {
         return List.of(new OverclockComponent.Catalyst(2D, ResourceLocation.parse("minecraft:gunpowder"), 120 * 20));
     }
 
-    public record Catalyst(double multiplier, ResourceLocation resourceLocation, int ticks) {
-    }
+    public record Catalyst(double multiplier, ResourceLocation resourceLocation, int ticks) {}
 
     private static class MutableTickCount {
         public int value;
@@ -161,5 +160,4 @@ public class OverclockComponent implements IComponent {
             this.value = value;
         }
     }
-
 }

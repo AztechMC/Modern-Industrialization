@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIItem;
@@ -34,8 +35,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 public class MIArmorEffects {
-    private MIArmorEffects() {
-    }
+    private MIArmorEffects() {}
 
     public static boolean quantumArmorPreventsDamage(LivingEntity entity) {
         double parts = entity.getAttributeValue(MIRegistries.QUANTUM_ARMOR);

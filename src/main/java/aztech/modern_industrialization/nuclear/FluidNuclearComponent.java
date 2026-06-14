@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIFluids;
@@ -30,16 +31,15 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record FluidNuclearComponent(
         FluidVariant variant,
         double heatConduction,
-        INeutronBehaviour neutronBehaviour,
+        NeutronBehaviour neutronBehaviour,
         FluidVariant neutronProduct,
         long neutronProductAmount,
-        double neutronProductProbability) implements INuclearComponent<FluidVariant> {
-
+        double neutronProductProbability) implements NuclearComponent<FluidVariant> {
     public FluidNuclearComponent(
             Fluid fluid,
             double heatConduction,
@@ -52,7 +52,7 @@ public record FluidNuclearComponent(
         this(
                 FluidVariant.of(fluid),
                 heatConduction * density,
-                INeutronBehaviour.of(type, params, density),
+                NeutronBehaviour.of(type, params, density),
                 neutronProduct,
                 neutronProductAmount,
                 neutronProductProbability);
@@ -69,7 +69,7 @@ public record FluidNuclearComponent(
     }
 
     @Override
-    public INeutronBehaviour getNeutronBehaviour() {
+    public NeutronBehaviour getNeutronBehaviour() {
         return neutronBehaviour;
     }
 

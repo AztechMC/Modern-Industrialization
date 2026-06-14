@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -29,7 +30,6 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import com.google.common.primitives.Ints;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class SlotFluidHandler implements IFluidHandler {
     protected final SingleSlotStorage<FluidVariant> storage;
@@ -44,7 +44,7 @@ public class SlotFluidHandler implements IFluidHandler {
     }
 
     @Override
-    public @NotNull FluidStack getFluidInTank(int slot) {
+    public FluidStack getFluidInTank(int slot) {
         return storage.getResource().toStack(Ints.saturatedCast(storage.getAmount()));
     }
 
@@ -75,16 +75,6 @@ public class SlotFluidHandler implements IFluidHandler {
         if (disallowIo() || amount <= 0) {
             return FluidStack.EMPTY;
         }
-        if (action.simulate() && Transaction.getLifecycle() == Transaction.Lifecycle.OUTER_CLOSING) {
-            // Ugly workaround for crash with Supplementaries Faucet
-            // https://github.com/AztechMC/Modern-Industrialization/issues/1110
-            // If we are about to crash just do a guesstimate of how much could potentially be drained
-            var resource = storage.getResource();
-            if (resource.isBlank()) {
-                return FluidStack.EMPTY;
-            }
-            return resource.toStack((int) Math.min(storage.getAmount(), amount));
-        }
         try (var tx = Transaction.hackyOpen()) {
             var resource = storage.getResource();
             if (resource.isBlank()) {
@@ -104,7 +94,7 @@ public class SlotFluidHandler implements IFluidHandler {
     }
 
     @Override
-    public boolean isFluidValid(int slot, @NotNull FluidStack stack) {
+    public boolean isFluidValid(int slot, FluidStack stack) {
         return true;
     }
 

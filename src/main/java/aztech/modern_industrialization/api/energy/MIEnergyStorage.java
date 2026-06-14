@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.api.energy;
 
 import dev.technici4n.grandpower.api.ILongEnergyStorage;
@@ -35,12 +36,12 @@ public interface MIEnergyStorage extends ILongEnergyStorage {
     @ApiStatus.NonExtendable
     default boolean canConnect(String cableTier) {
         return switch (cableTier) {
-        case "lv" -> canConnect(CableTier.LV);
-        case "mv" -> canConnect(CableTier.MV);
-        case "hv" -> canConnect(CableTier.HV);
-        case "ev" -> canConnect(CableTier.EV);
-        case "superconductor" -> canConnect(CableTier.SUPERCONDUCTOR);
-        default -> false;
+            case "lv" -> canConnect(CableTier.LV);
+            case "mv" -> canConnect(CableTier.MV);
+            case "hv" -> canConnect(CableTier.HV);
+            case "ev" -> canConnect(CableTier.EV);
+            case "superconductor" -> canConnect(CableTier.SUPERCONDUCTOR);
+            default -> false;
         };
     }
 

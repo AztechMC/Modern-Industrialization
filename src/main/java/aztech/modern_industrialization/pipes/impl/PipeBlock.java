@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -70,7 +71,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -177,7 +178,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         var world = pipe.getLevel();
         Vec3 hitPos = hit.getLocation();
 
-        if (player != null && player.isShiftKeyDown()) {
+        if (player.isShiftKeyDown()) {
             boolean removeBlock = pipe.connections.size() == 1;
             if (!world.isClientSide) {
                 pipe.removePipeAndDropContainedItems(partShape.type);

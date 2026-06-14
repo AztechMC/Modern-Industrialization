@@ -21,10 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.init;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.datagen.model.MachineModelProperties;
+import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.*;
 import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
@@ -35,7 +39,6 @@ import java.util.List;
 import java.util.Set;
 
 public class SingleBlockSpecialMachines {
-
     public static void init() {
         MachineRegistrationHelper.registerMachine("Bronze Boiler", "bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
@@ -59,18 +62,20 @@ public class SingleBlockSpecialMachines {
         registerSteamTurbine(CableTier.HV, 512, 64000);
 
         MachineRegistrationHelper.registerMachine("LV Diesel Generator", "lv_diesel_generator",
-                bet -> new GeneratorMachineBlockEntity(bet, "lv_diesel_generator",
+                bet -> new GeneratorMachineBlockEntity(bet, "lv_diesel_generator", false,
                         CableTier.LV, 4000, 16000,
                         FluidItemConsumerComponent.ofFluidFuels(64)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("MV Diesel Generator", "mv_diesel_generator",
-                bet -> new GeneratorMachineBlockEntity(bet, "mv_diesel_generator", CableTier.MV, 12000, 32000,
+                bet -> new GeneratorMachineBlockEntity(bet, "mv_diesel_generator", false,
+                        CableTier.MV, 12000, 32000,
                         FluidItemConsumerComponent.ofFluidFuels(256)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("HV Diesel Generator", "hv_diesel_generator",
-                bet -> new GeneratorMachineBlockEntity(bet, "hv_diesel_generator", CableTier.HV, 60000, 64000,
+                bet -> new GeneratorMachineBlockEntity(bet, "hv_diesel_generator", false,
+                        CableTier.HV, 60000, 64000,
                         FluidItemConsumerComponent.ofFluidFuels(1024)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
@@ -86,12 +91,22 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.addModelsForTiers("water_pump", true, true, true, "bronze", "steel", "electric");
         MachineRegistrationHelper.addMachineModel("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
         MachineRegistrationHelper.addMachineModel("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
-        MachineRegistrationHelper.addMachineModel("lv_diesel_generator", "diesel_generator", CableTier.LV.casing, true, true, true);
-        MachineRegistrationHelper.addMachineModel("mv_diesel_generator", "diesel_generator", CableTier.MV.casing, true, true, true);
-        MachineRegistrationHelper.addMachineModel("hv_diesel_generator", "diesel_generator", CableTier.HV.casing, true, true, true);
+        addDieselGeneratorModel("lv_diesel_generator", CableTier.LV.casing);
+        addDieselGeneratorModel("mv_diesel_generator", CableTier.MV.casing);
+        addDieselGeneratorModel("hv_diesel_generator", CableTier.HV.casing);
         MachineRegistrationHelper.addMachineModel("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
         MachineRegistrationHelper.addMachineModel("configurable_tank", "", MachineCasings.CONFIGURABLE_TANK, false, false, false, false);
         MachineRegistrationHelper.addMachineModel("replicator", "replicator", CableTier.SUPERCONDUCTOR.casing, true, false, true, true);
+    }
+
+    private static void addDieselGeneratorModel(String id, MachineCasing casing) {
+        MachineModelsToGenerate.register(id, new MachineModelProperties.Builder(casing)
+                .addOverlay("top", MI.id("block/machines/diesel_generator/overlay_top"))
+                .addOverlay("top_active", MI.id("block/machines/diesel_generator/overlay_top_active"))
+                .addOverlay("front", MI.id("block/machines/diesel_generator/overlay_front"))
+                .addOverlay("front_active", MI.id("block/machines/diesel_generator/overlay_front_active"))
+                .addOverlay("output", MI.id("block/overlays/output_energy"))
+                .build());
     }
 
     private static void registerTransformer(CableTier low, CableTier up) {
@@ -105,13 +120,22 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.registerMachine(upToLowName, upToLow, bet -> new TransformerMachineBlockEntity(bet, up, low),
                 AbstractStorageMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.addMachineModel(lowToUp, "transformer", getTransformerCasingFromTier(low, up), true, true, true, false);
-        MachineRegistrationHelper.addMachineModel(upToLow, "transformer", getTransformerCasingFromTier(up, low), true, true, true, false);
+        MachineModelsToGenerate.register(lowToUp, new MachineModelProperties.Builder(up.casing)
+                .addOverlay("top", MI.id("block/machines/transformer/overlay_top"))
+                .addOverlay("side", MI.id("block/machines/transformer/overlay_side"))
+                .addOverlay("output", MI.id("block/overlays/output_energy"))
+                .build());
+
+        MachineModelsToGenerate.register(upToLow, new MachineModelProperties.Builder(up.casing)
+                .addOverlay("top", MI.id("block/machines/transformer/overlay_top"))
+                .addOverlay("side", MI.id("block/overlays/output_energy"))
+                .addOverlay("output", MI.id("block/machines/transformer/overlay_side"))
+                .noOverlayOnOutputSide()
+                .build());
     }
 
     private static void registerTransformers() {
-        record TierPair(CableTier low, CableTier high) {
-        }
+        record TierPair(CableTier low, CableTier high) {}
 
         Set<TierPair> registeredPairs = new HashSet<>();
 
@@ -134,23 +158,20 @@ public class SingleBlockSpecialMachines {
         }
     }
 
-    public static MachineCasing getTransformerCasingFromTier(CableTier from, CableTier to) {
-        if (from.eu > to.eu) {
-            return from.casing;
-        } else {
-            return to.casing;
-        }
-    }
-
     private static void registerSteamTurbine(CableTier tier, int eu, int fluidCapacity) {
         String id = tier.name + "_steam_turbine";
         String englishName = tier.shortEnglishName + " Steam Turbine";
         MachineRegistrationHelper.registerMachine(englishName, id,
-                bet -> new GeneratorMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu,
+                bet -> new GeneratorMachineBlockEntity(bet, id, true,
+                        tier, eu * 100L, fluidCapacity, eu,
                         MIFluids.STEAM, 1),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.addMachineModel(id, "steam_turbine", tier.casing, true, false, false);
+        MachineModelsToGenerate.register(id, new MachineModelProperties.Builder(tier.casing)
+                .addOverlay("front", MI.id("block/machines/steam_turbine/overlay_front"))
+                .addOverlay("front_active", MI.id("block/machines/steam_turbine/overlay_front_active"))
+                .addOverlay("output", MI.id("block/overlays/output_energy"))
+                .build());
     }
 
     private static void registerEUStorage() {
@@ -160,8 +181,10 @@ public class SingleBlockSpecialMachines {
             MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 100000 * tier.eu),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
-            MachineRegistrationHelper.addMachineModel(id, "electric_storage", tier.casing, true, false, true, false);
+            MachineModelsToGenerate.register(id, new MachineModelProperties.Builder(tier.casing)
+                    .addOverlay("side", MI.id("block/machines/electric_storage/overlay_side"))
+                    .addOverlay("output", MI.id("block/overlays/output_energy"))
+                    .build());
         }
     }
-
 }

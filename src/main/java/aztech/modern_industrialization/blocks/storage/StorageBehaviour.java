@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage;
 
 public abstract class StorageBehaviour<T> {
-
     public boolean isLockable() {
         return false;
     }
@@ -80,5 +80,4 @@ public abstract class StorageBehaviour<T> {
     public boolean canExtract(T resource) {
         return true;
     }
-
 }

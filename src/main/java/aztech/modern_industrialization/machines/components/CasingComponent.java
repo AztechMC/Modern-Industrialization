@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -40,10 +41,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public class CasingComponent implements IComponent, DropableComponent {
-
+public class CasingComponent implements MachineComponent, DropableComponent {
     @FunctionalInterface
     public interface UpdatedCallback {
         void onUpdated(CableTier from, CableTier to);
@@ -144,7 +144,6 @@ public class CasingComponent implements IComponent, DropableComponent {
             var sound = group.getBreakSound();
             be.getLevel().playSound(null, be.getBlockPos(), sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
         });
-
     }
 
     @Nullable

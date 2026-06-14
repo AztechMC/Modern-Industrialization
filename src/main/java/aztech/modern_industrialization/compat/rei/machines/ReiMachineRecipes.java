@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MI;
@@ -28,7 +29,7 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper to register stuff for use with the REI plugin. This class will be
@@ -108,6 +109,5 @@ public class ReiMachineRecipes {
         MULTIBLOCK,
     }
 
-    public record MultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {
-    }
+    public record MultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {}
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.ae2.pipe;
 
 import appeng.api.networking.*;
@@ -39,7 +40,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MENetworkNode extends PipeNetworkNode {
     @Nullable
@@ -50,8 +51,7 @@ public class MENetworkNode extends PipeNetworkNode {
 
     void updateNode() {
         if (this.mainNode == null && this.connections.size() > 0) {
-            this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {
-            }).setFlags(GridFlags.PREFERRED).setIdlePowerUsage(0.0);
+            this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {}).setFlags(GridFlags.PREFERRED).setIdlePowerUsage(0.0);
         }
         if (this.mainNode != null && this.connections.size() == 0) {
             // Destroying the node might cause a block update,
@@ -66,8 +66,7 @@ public class MENetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void buildInitialConnections(Level world, BlockPos pos) {
-    }
+    public void buildInitialConnections(Level world, BlockPos pos) {}
 
     @Override
     public void updateConnections(Level world, BlockPos pos) {
@@ -89,7 +88,7 @@ public class MENetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeEndpointType[] getConnections(BlockPos pos) {
+    public @Nullable PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
             connections[direction.get3DDataValue()] = PipeEndpointType.PIPE;

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.util.FluidHelper;
@@ -32,7 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class MIBucketItem extends BucketItem {
-
     public final int color;
 
     public MIBucketItem(MIFluid fluid, int color, Properties settings) {

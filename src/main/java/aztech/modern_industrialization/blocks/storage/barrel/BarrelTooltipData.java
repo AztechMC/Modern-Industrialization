@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
-public record BarrelTooltipData(ItemVariant variant, long amount, long capacity, boolean creative) implements TooltipComponent {
-}
+public record BarrelTooltipData(ItemVariant variant, long amount, long capacity, boolean creative) implements TooltipComponent {}

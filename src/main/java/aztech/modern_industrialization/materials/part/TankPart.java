@@ -21,12 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.property.MaterialProperty.MEAN_RGB;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MICapabilities;
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
@@ -36,7 +38,6 @@ import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.BiConsumer;
 import net.minecraft.world.level.block.Block;
@@ -45,10 +46,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TankPart implements PartKeyProvider {
-
     public static final BiConsumer<Block, BaseModelProvider> MODEL_GENERATOR = (block, gen) -> {
         gen.simpleBlock(block, gen.models()
                 .getBuilder(gen.blockTexture(block).getPath())
@@ -108,7 +108,7 @@ public class TankPart implements PartKeyProvider {
                         event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);
                     });
 
-                    CommonProxy.INSTANCE.registerPartTankClient(bet::getValue, partContext.get(MEAN_RGB));
+                    MICommonProxy.INSTANCE.registerPartTankClient(bet::getValue, partContext.get(MEAN_RGB));
                 });
 
         if (maybePathOverridden != null) {
@@ -117,5 +117,4 @@ public class TankPart implements PartKeyProvider {
 
         return tank;
     }
-
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.ftbquests;
 
 import aztech.modern_industrialization.config.MIStartupConfig;
@@ -41,8 +42,7 @@ public interface FTBQuestsFacade {
             }
         }
 
-        return (uuid, item, amount) -> {
-        };
+        return (uuid, item, amount) -> {};
     }
 
     void addCompleted(UUID uuid, Item item, long amount);

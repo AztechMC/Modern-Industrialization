@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MI;
@@ -37,7 +38,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 public class ForgeTool extends TieredItem {
-
     public static final TagKey<Item> TAG = TagKey.create(BuiltInRegistries.ITEM.key(), MI.id("forge_hammer_tools"));
 
     public ForgeTool(Tier material, Properties p) {
@@ -86,7 +86,6 @@ public class ForgeTool extends TieredItem {
                 return normalTier.toString().toLowerCase(Locale.ROOT) + "_forge_tool";
             }
         };
-
     }
 
     public static Tier STEEL = new Tier() {

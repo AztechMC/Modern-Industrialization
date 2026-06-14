@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MICapabilities;
@@ -50,7 +51,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
-
     protected final EnergyComponent energy;
     private final RedstoneControlComponent redstoneControl;
 
@@ -64,12 +64,11 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long euCapacity) {
         this(bep, from, to, name, euCapacity, true);
-
     }
 
     public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long euCapacity,
             boolean extractableOnOutputDirection) {
-        super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(true, false, false));
+        super(bep, new MachineGuiParameters.Builder(name, false).build(), OrientationComponent.Params.noFacing(false, false));
 
         this.from = from;
         this.to = to;
@@ -83,12 +82,11 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
         this.registerComponents(energy, redstoneControl);
 
-        EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity),
-                new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
+        EnergyBar.Params energyBarParams = new EnergyBar.Params(76, 39);
+        registerGuiComponent(new EnergyBar(energyBarParams, energy::getEu, energy::getCapacity),
+                new SlotPanel(this).withRedstoneControl(redstoneControl));
 
         this.extractableOnOutputDirection = extractableOnOutputDirection;
-
     }
 
     @Override
@@ -105,7 +103,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         orientation.writeModelData(data);
         return data;
@@ -142,7 +140,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
                 boolean insertedSomething = false;
 
                 for (int i = 0; i < 10000; ++i) { // Try up to 10000 times to bypass I/O limits
-                    try (Transaction transaction = Transaction.openOuter()) {
+                    try (Transaction transaction = Transaction.openRoot()) {
                         long inserted = energyItem.receive(energy.getEu() / stackSize, false);
 
                         if (inserted == 0) {
@@ -158,7 +156,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
                 if (!insertedSomething) {
                     for (int i = 0; i < 10000; ++i) { // Try up to 10000 times to bypass I/O limits
-                        try (Transaction transaction = Transaction.openOuter()) {
+                        try (Transaction transaction = Transaction.openRoot()) {
                             long extracted = energyItem.extract(energy.getRemainingCapacity() / stackSize, false);
 
                             if (extracted == 0) {

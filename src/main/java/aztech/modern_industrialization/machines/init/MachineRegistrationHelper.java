@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIBlock;
@@ -38,7 +39,6 @@ import aztech.modern_industrialization.util.MobSpawning;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -48,17 +48,17 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MachineRegistrationHelper {
     /**
      * Register a machine's block, block entity type and wrenchable tag.
-     * 
+     *
      * @param id                Machine block id, for example "electric_macerator"
      * @param factory           The block entity constructor, with a BET parameter.
      * @param extraRegistrators A list of BET consumer used for API registration.
      */
     @SafeVarargs
-    public static Supplier<BlockEntityType<?>> registerMachine(String englishName, String id,
-            Function<BEP, MachineBlockEntity> factory,
-            Consumer<BlockEntityType<?>>... extraRegistrators) {
-        BlockEntityType<?>[] bet = new BlockEntityType[1];
-        BiFunction<BlockPos, BlockState, MachineBlockEntity> ctor = (pos, state) -> factory.apply(new BEP(bet[0], pos, state));
+    public static <T extends MachineBlockEntity> MachineDefinition<T> registerMachine(String englishName, String id,
+            Function<BEP, ? extends T> factory,
+            Consumer<? super BlockEntityType<T>>... extraRegistrators) {
+        BlockEntityType<T>[] bet = new BlockEntityType[1];
+        BiFunction<BlockPos, BlockState, T> ctor = (pos, state) -> factory.apply(new BEP(bet[0], pos, state));
 
         BlockDefinition<MachineBlock> blockDefinition = MIBlock.block(
                 englishName,
@@ -72,17 +72,19 @@ public class MachineRegistrationHelper {
                         .isValidSpawn(MobSpawning.NO_SPAWN)
                         .isRedstoneConductor(Blocks::never));
 
-        return MIRegistries.BLOCK_ENTITIES.register(id, () -> {
+        var blockEntityType = MIRegistries.BLOCK_ENTITIES.register(id, () -> {
             Block block = blockDefinition.asBlock();
 
             bet[0] = BlockEntityType.Builder.of(ctor::apply, block).build(null);
 
-            for (Consumer<BlockEntityType<?>> extraRegistrator : extraRegistrators) {
+            for (Consumer<? super BlockEntityType<T>> extraRegistrator : extraRegistrators) {
                 extraRegistrator.accept(bet[0]);
             }
 
             return bet[0];
         });
+
+        return new MachineDefinition<>(blockEntityType, blockDefinition);
     }
 
     @SuppressWarnings("IfCanBeSwitch")

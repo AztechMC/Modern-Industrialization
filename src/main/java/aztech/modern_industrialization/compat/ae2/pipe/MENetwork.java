@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.ae2.pipe;
 
 import appeng.api.networking.GridHelper;
@@ -35,13 +36,12 @@ import java.util.HashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MENetwork extends PipeNetwork {
-
     final AEColor color;
 
-    public MENetwork(int id, PipeNetworkData data, AEColor color) {
+    public MENetwork(int id, @Nullable PipeNetworkData data, AEColor color) {
         super(id, data == null ? new MENetworkData() : data);
 
         this.color = color;
@@ -55,7 +55,7 @@ public class MENetwork extends PipeNetwork {
                 // Disconnect node from previous network
                 for (var connection : aeManagedNode.getNode().getConnections()) {
                     var otherSide = connection.getOtherSide(aeManagedNode.getNode());
-                    if (otherSide.getService(INetworkInternalNode.class) != null) {
+                    if (otherSide.getService(NetworkInternalNode.class) != null) {
                         // Internal connection to old network, destroy it!
                         connection.destroy();
                         break; // max 1 connection to break
@@ -112,7 +112,7 @@ public class MENetwork extends PipeNetwork {
 
             if (node.mainNode.isReady()) {
                 for (var conn : node.mainNode.getNode().getConnections()) {
-                    if (conn.getOtherSide(node.mainNode.getNode()).getService(INetworkInternalNode.class) != null) {
+                    if (conn.getOtherSide(node.mainNode.getNode()).getService(NetworkInternalNode.class) != null) {
                         hasInternalConnection = true;
                         break;
                     }

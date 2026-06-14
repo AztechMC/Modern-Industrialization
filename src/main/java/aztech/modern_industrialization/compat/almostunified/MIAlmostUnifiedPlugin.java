@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.almostunified;
 
 import aztech.modern_industrialization.MI;
@@ -31,7 +32,6 @@ import net.minecraft.resources.ResourceLocation;
 
 @AlmostUnifiedNeoPlugin
 public class MIAlmostUnifiedPlugin implements AlmostUnifiedPlugin {
-
     @Override
     public ResourceLocation getPluginId() {
         return MI.id("almost_unified");

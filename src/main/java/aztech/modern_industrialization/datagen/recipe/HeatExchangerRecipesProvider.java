@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIFluids;
@@ -33,7 +34,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.material.Fluids;
 
 public class HeatExchangerRecipesProvider extends MIRecipesProvider {
-
     public HeatExchangerRecipesProvider(PackOutput packOutput) {
         super(packOutput);
     }
@@ -77,6 +77,5 @@ public class HeatExchangerRecipesProvider extends MIRecipesProvider {
 
             }
         }
-
     }
 }

@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
-public class TemperatureComponent implements IComponent {
-
+public class TemperatureComponent implements MachineComponent {
     private double temperature;
     public final double temperatureMax;
 
@@ -56,7 +56,6 @@ public class TemperatureComponent implements IComponent {
     @Override
     public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putDouble("temperature", temperature);
-
     }
 
     @Override

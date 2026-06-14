@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.BEP;
@@ -31,7 +32,7 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     @Nullable
@@ -53,8 +54,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         return new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
     }
 
-    protected void onRematch(ShapeMatcher shapeMatcher) {
-    }
+    protected void onRematch(ShapeMatcher shapeMatcher) {}
 
     protected final void link() {
         if (shapeMatcher == null) {

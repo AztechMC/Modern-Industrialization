@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIFluids;
@@ -60,7 +61,7 @@ public class DyeRecipesProvider extends MIRecipesProvider {
             // 16 fluid pipes with stained glass
             var fluidPipesStainedGlass = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_fluid_pipe", 16, "CCC",
                     "rPr", "CCC").addInput('C', "modern_industrialization:bronze_curved_plate").addInput('r', "modern_industrialization:copper_rotor")
-                    .addInput('P', color.getName() + "_stained_glass_pane");
+                            .addInput('P', color.getName() + "_stained_glass_pane");
             fluidPipesStainedGlass.offerTo(consumer, pathPrefix + "craft/fluid_pipe_stained_glass");
             fluidPipesStainedGlass.exportToAssembler().offerTo(consumer, pathPrefix + "assembler/fluid_pipe_stained_glass");
             // 8 fluid pipes

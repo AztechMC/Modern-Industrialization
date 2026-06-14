@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import aztech.modern_industrialization.MICapabilities;
@@ -43,7 +44,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComponentHolder {
     private final MIInventory inventory = new MIInventory(List.of(), List.of(), SlotPositions.empty(), SlotPositions.empty());
@@ -52,7 +53,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
     private LargeTankMultiblockBlockEntity controller = null;
 
     public LargeTankHatch(BEP bep) {
-        super(bep, new MachineGuiParameters.Builder("large_tank_hatch", false).build(), new OrientationComponent.Params(false, false, false));
+        super(bep, new MachineGuiParameters.Builder("large_tank_hatch", false).build(), OrientationComponent.Params.noFacingNoOutput());
     }
 
     @Override
@@ -83,6 +84,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
     public void unlink() {
         super.unlink();
         controller = null;
+        setChanged();
         invalidateCapabilities();
     }
 
@@ -93,6 +95,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
 
     public void setController(LargeTankMultiblockBlockEntity controller) {
         this.controller = controller;
+        setChanged();
         invalidateCapabilities();
     }
 
@@ -104,5 +107,19 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
         MICapabilities.onEvent(event -> {
             event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> ((LargeTankHatch) be).getStorage());
         });
+    }
+
+    @Override
+    protected boolean hasComparatorOutput() {
+        return true;
+    }
+
+    @Override
+    protected int getComparatorOutput() {
+        if (controller != null) {
+            return controller.getComparatorOutput();
+        } else {
+            return 0;
+        }
     }
 }

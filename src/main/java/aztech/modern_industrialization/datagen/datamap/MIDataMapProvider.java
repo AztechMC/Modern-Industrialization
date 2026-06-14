@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.datamap;
 
 import aztech.modern_industrialization.MI;
@@ -56,7 +57,7 @@ public class MIDataMapProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.Provider registries) {
         gatherFurnaceFuels();
 
         gatherFluidFuels();

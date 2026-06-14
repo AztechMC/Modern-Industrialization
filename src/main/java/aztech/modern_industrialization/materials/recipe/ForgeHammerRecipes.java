@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
@@ -35,7 +36,6 @@ import net.minecraft.world.item.ItemStack;
  */
 public class ForgeHammerRecipes {
     public static void apply(MaterialBuilder.RecipeContext ctx) {
-
         addRecipe(ctx, INGOT, 1, DUST, 1);
         addRecipe(ctx, NUGGET, 1, TINY_DUST, 1);
 
@@ -81,7 +81,6 @@ public class ForgeHammerRecipes {
 
     private static void addRecipe(MaterialBuilder.RecipeContext ctx, PartKeyProvider inputPart, int inputCount, PartKeyProvider outputPart,
             int outputCount, int cost) {
-
         String recipeName = inputPart.key() + "_to_" + outputPart.key() + ((cost == 0) ? "" : "_with_tool");
         var input = ctx.getPart(inputPart);
         var output = ctx.getPart(outputPart);
@@ -96,5 +95,4 @@ public class ForgeHammerRecipes {
             int outputCount) {
         addRecipe(ctx, inputPart, inputCount, outputPart, outputCount, 0);
     }
-
 }

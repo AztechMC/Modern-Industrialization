@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
@@ -42,7 +43,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class TankBlock extends AbstractStorageBlock<FluidVariant> implements EntityBlock {
-
     public TankBlock(EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
         super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory,

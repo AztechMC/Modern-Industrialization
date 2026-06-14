@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 
 public class BlockPart implements PartKeyProvider {
-
     public PartTemplate of(MaterialBlockSet set) {
         return new PartTemplate("Block of %s", key())
                 .withCustomPath("%s_block", "storage_blocks/%s")

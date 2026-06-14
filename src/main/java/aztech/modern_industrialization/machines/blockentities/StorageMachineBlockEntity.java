@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
@@ -29,7 +30,6 @@ import aztech.modern_industrialization.machines.BEP;
 import net.minecraft.util.Mth;
 
 public class StorageMachineBlockEntity extends AbstractStorageMachineBlockEntity implements CableTierHolder {
-
     public StorageMachineBlockEntity(BEP bep, CableTier tier, String name, long eu_capacity) {
         super(bep, tier, tier, name, eu_capacity);
     }

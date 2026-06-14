@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.definition;
 
 import aztech.modern_industrialization.MI;
@@ -30,7 +31,6 @@ import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class Definition {
-
     public static List<Definition> TRANSLATABLE_DEFINITION = new ArrayList<>();
 
     private final ResourceLocation id;
@@ -75,5 +75,4 @@ public abstract class Definition {
     public String id() {
         return getResourceAsString(true);
     }
-
 }

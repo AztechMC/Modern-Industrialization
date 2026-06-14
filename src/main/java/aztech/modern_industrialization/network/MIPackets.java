@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network;
 
 import aztech.modern_industrialization.MI;
@@ -57,8 +58,7 @@ public class MIPackets {
     private static final List<Registration<?>> registrations = new ArrayList<>();
 
     private record Registration<P extends BasePacket>(CustomPacketPayload.Type<P> packetType, Class<P> clazz,
-            StreamCodec<? super RegistryFriendlyByteBuf, P> packetCodec) {
-    }
+            StreamCodec<? super RegistryFriendlyByteBuf, P> packetCodec) {}
 
     private static <P extends BasePacket> void register(String path, Class<P> clazz,
             StreamCodec<? super RegistryFriendlyByteBuf, P> packetConstructor) {

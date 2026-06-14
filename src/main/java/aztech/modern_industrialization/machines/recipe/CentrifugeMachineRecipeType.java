@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.recipe;
 
 import java.util.List;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ComposterBlock;
 
 public class CentrifugeMachineRecipeType extends ProxyableMachineRecipeType {
-
     public CentrifugeMachineRecipeType(ResourceLocation id) {
         super(id);
     }
@@ -45,6 +45,5 @@ public class CentrifugeMachineRecipeType extends ProxyableMachineRecipeType {
                 recipeList.add(recipe);
             }
         }
-
     }
 }

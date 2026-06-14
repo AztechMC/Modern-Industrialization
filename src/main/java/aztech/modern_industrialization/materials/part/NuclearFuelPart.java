@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
+import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
@@ -35,7 +36,6 @@ import aztech.modern_industrialization.nuclear.NuclearOrder;
 import java.util.List;
 
 public class NuclearFuelPart implements PartKeyProvider {
-
     public enum Type {
         SIMPLE(1, "fuel_rod"),
         DOUBLE(2, "fuel_rod_double"),
@@ -66,10 +66,10 @@ public class NuclearFuelPart implements PartKeyProvider {
 
     private PartTemplate of() {
         String englishNameFormatter = switch (type) {
-        case SIMPLE -> "Fuel Rod";
-        case DOUBLE -> "Double Fuel Rod";
-        case QUAD -> "Quad Fuel Rod";
-        case DEPLETED -> "Depleted %s Fuel Rod";
+            case SIMPLE -> "Fuel Rod";
+            case DOUBLE -> "Double Fuel Rod";
+            case QUAD -> "Quad Fuel Rod";
+            case DEPLETED -> "Depleted %s Fuel Rod";
         };
 
         var out = new PartTemplate(englishNameFormatter, key)
@@ -87,7 +87,7 @@ public class NuclearFuelPart implements PartKeyProvider {
                                 params.tempLimitLow,
                                 params.tempLimitHigh, params.neutronsMultiplication, params.directEnergyFactor, type.size);
 
-                        INeutronBehaviour neutronBehaviour = INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
+                        NeutronBehaviour neutronBehaviour = NeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
 
                         NuclearFuel.of(englishName, itemPath, fuelParams,
                                 neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted", sortOrder);

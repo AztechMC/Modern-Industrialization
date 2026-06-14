@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.blocks.storage.barrel;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import aztech.modern_industrialization.util.MobSpawning;
@@ -46,7 +47,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
-
     public BarrelBlock(EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
         super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory, behaviour);
@@ -74,7 +74,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 //                }
                 var handItem = player.getItemInHand(hand);
                 if (!handItem.isEmpty()) {
-                    try (var tx = Transaction.openOuter()) {
+                    try (var tx = Transaction.openRoot()) {
                         long inserted = barrel.insert(ItemVariant.of(handItem), handItem.getCount(), tx, true);
                         if (inserted > 0) {
                             tx.commit();
@@ -86,7 +86,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
             } else {
                 ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
                 if (!currentInHand.isBlank()) {
-                    try (var tx = Transaction.openOuter()) {
+                    try (var tx = Transaction.openRoot()) {
                         long inserted = 0;
                         for (int i = 0; i < Inventory.INVENTORY_SIZE; ++i) {
                             ItemStack stack = player.getInventory().getItem(i);
@@ -122,7 +122,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 //                    }
 //                }
 
-                try (Transaction transaction = Transaction.openOuter()) {
+                try (Transaction transaction = Transaction.openRoot()) {
                     ItemVariant extractedResource = barrel.getResource();
 
                     long extracted = barrel.extract(extractedResource,
@@ -157,7 +157,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
             if (attackBlock(event.getPos(), event.getFace(), event.getHand(), event.getEntity(), event.getLevel())) {
                 // NeoForge injects in such a way that the attack will be delayed in creative already,
                 // but we want to delay the attack in survival too to prevent the player from ending up with 5 stacks after 0.25s.
-                CommonProxy.INSTANCE.delayNextBlockAttack(event.getEntity());
+                MICommonProxy.INSTANCE.delayNextBlockAttack(event.getEntity());
                 event.setCanceled(true);
             }
         });
@@ -168,7 +168,6 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
     }
 
     public static class BarrelStorage extends StorageBehaviour<ItemVariant> {
-
         public final long stackCapacity;
 
         public BarrelStorage(long stackCapacity) {
@@ -194,5 +193,4 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
             return resource.getItem().canFitInsideContainerItems();
         }
     }
-
 }

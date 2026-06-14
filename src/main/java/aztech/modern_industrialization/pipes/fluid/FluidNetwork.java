@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.PipeStatsCollector;
@@ -36,6 +37,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class FluidNetwork extends PipeNetwork {
@@ -45,7 +47,7 @@ public class FluidNetwork extends PipeNetwork {
     final PipeStatsCollector stats = new PipeStatsCollector();
     final PipeStatsCollector capacityStats = new PipeStatsCollector();
 
-    public FluidNetwork(int id, PipeNetworkData data, int nodeCapacity) {
+    public FluidNetwork(int id, @Nullable PipeNetworkData data, int nodeCapacity) {
         super(id, data == null ? new FluidNetworkData(FluidVariant.blank()) : data);
         this.nodeCapacity = nodeCapacity;
     }
@@ -111,7 +113,7 @@ public class FluidNetwork extends PipeNetwork {
             }
         }
 
-        stats.addValue(Math.max(extracted, inserted));
+        stats.addValues(extracted, inserted);
         capacityStats.addValue(networkCapacity);
 
         for (var entry : iterateTickingNodes()) {
@@ -143,7 +145,7 @@ public class FluidNetwork extends PipeNetwork {
     /**
      * Perform a transfer operation for a priority bucket, so {@code bucket} is a
      * sublist of targets with the same priority each.
-     * 
+     *
      * @return The amount that was successfully transferred.
      */
     private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, FluidVariant fluid, long maxAmount) {
@@ -206,6 +208,7 @@ public class FluidNetwork extends PipeNetwork {
     }
 
     @Override
+    @Nullable
     public PipeNetworkData merge(PipeNetwork other) {
         FluidNetworkData thisData = (FluidNetworkData) data;
         FluidNetworkData otherData = (FluidNetworkData) other.data;

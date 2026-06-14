@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.set;
 
-public enum MaterialOreSet {
+import org.jspecify.annotations.Nullable;
 
+public enum MaterialOreSet {
     IRON("iron"),
     GOLD("gold"),
     DIAMOND("diamond"),
@@ -43,6 +45,7 @@ public enum MaterialOreSet {
 
     public final String name;
 
+    @Nullable
     public static MaterialOreSet getByName(String ore_set) {
         for (MaterialOreSet set : values()) {
             if (set.name.equals(ore_set)) {

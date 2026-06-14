@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.electricity;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
@@ -41,11 +42,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
-    private final List<BlockCapabilityCache<MIEnergyStorage, @NotNull Direction>> caches = new ArrayList<>();
+    private final List<BlockCapabilityCache<MIEnergyStorage, Direction>> caches = new ArrayList<>();
     long eu = 0;
 
     public void appendAttributes(ServerLevel world, BlockPos pos, CableTier cableTier, List<MIEnergyStorage> storages) {
@@ -88,7 +89,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeEndpointType[] getConnections(BlockPos pos) {
+    public @Nullable PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
             connections[direction.get3DDataValue()] = PIPE;
@@ -142,7 +143,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
         var storage = world.getCapability(EnergyApi.SIDED, pos.relative(direction), direction.getOpposite());
-        return storage != null && (storage.canReceive() || storage.canExtract());
+        return storage != null && (storage.canReceive() || storage.canExtract()) && storage.canConnect(((ElectricityNetwork) network).tier);
     }
 
     // Used in the Waila plugin
@@ -160,6 +161,5 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
         return new InGameInfo(stored, capacity, ((ElectricityNetwork) network).stats.getValue(), getMaxTransfer());
     }
 
-    public record InGameInfo(long stored, long capacity, long transfer, long maxTransfer) {
-    }
+    public record InGameInfo(long stored, long capacity, long transfer, long maxTransfer) {}
 }

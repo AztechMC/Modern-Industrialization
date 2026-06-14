@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.electricity;
 
 import aztech.modern_industrialization.api.energy.CableTier;
@@ -30,6 +31,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import org.jspecify.annotations.Nullable;
 
 public class ElectricityNetwork extends PipeNetwork {
     private static final List<MIEnergyStorage> STORAGES_CACHE = new ArrayList<>();
@@ -37,7 +39,7 @@ public class ElectricityNetwork extends PipeNetwork {
     final CableTier tier;
     final PipeStatsCollector stats = new PipeStatsCollector();
 
-    public ElectricityNetwork(int id, PipeNetworkData data, CableTier tier) {
+    public ElectricityNetwork(int id, @Nullable PipeNetworkData data, CableTier tier) {
         super(id, data == null ? new ElectricityNetworkData() : data);
         this.tier = tier;
     }
@@ -68,7 +70,7 @@ public class ElectricityNetwork extends PipeNetwork {
         long inserted = transferForTargets(MIEnergyStorage::receive, storages, insertMaxAmount);
         networkAmount -= inserted;
 
-        stats.addValue(Math.max(extracted, inserted));
+        stats.addValues(extracted, inserted);
 
         // Split energy evenly across the nodes
         for (var entry : iterateTickingNodes()) {

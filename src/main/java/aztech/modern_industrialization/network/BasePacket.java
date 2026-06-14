@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network;
 
-import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.MICommonProxy;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -64,7 +65,7 @@ public interface BasePacket extends CustomPacketPayload {
         }
 
         public Player getPlayer() {
-            return isOnClient() ? CommonProxy.INSTANCE.getClientPlayer() : inner.player();
+            return isOnClient() ? MICommonProxy.INSTANCE.getClientPlayer() : inner.player();
         }
     }
 }

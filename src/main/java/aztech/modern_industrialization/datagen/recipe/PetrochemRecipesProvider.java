@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.datagen.recipe;
 
 import static aztech.modern_industrialization.MIFluids.*;
@@ -158,8 +159,7 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
         return f(fluid.asFluid(), amount);
     }
 
-    private record FluidEntry(Fluid fluid, int amount) {
-    }
+    private record FluidEntry(Fluid fluid, int amount) {}
 
     private enum PolymerizationKind {
         LEAD("lead", 4, 300),

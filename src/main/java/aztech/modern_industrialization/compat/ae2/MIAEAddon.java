@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.ae2;
 
 import appeng.api.features.P2PTunnelAttunement;
@@ -60,8 +61,7 @@ public class MIAEAddon {
             "EU P2P Tunnel",
             "energy_p2p_tunnel",
             p -> new PartItem<>(new Item.Properties(), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new),
-            (item, gen) -> {
-            },
+            (item, gen) -> {},
             SortOrder.CABLES.and(CableTier.SUPERCONDUCTOR).and("extra"));
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
@@ -92,15 +92,15 @@ public class MIAEAddon {
 
     private static void registerMEPipeType(PipeColor color) {
         var aeColor = switch (color) {
-        case REGULAR -> AEColor.TRANSPARENT;
-        default -> {
-            for (var candidate : AEColor.values()) {
-                if (candidate.registryPrefix.equals(color.name)) {
-                    yield candidate;
+            case REGULAR -> AEColor.TRANSPARENT;
+            default -> {
+                for (var candidate : AEColor.values()) {
+                    if (candidate.registryPrefix.equals(color.name)) {
+                        yield candidate;
+                    }
                 }
+                throw new UnsupportedOperationException("No AE color for " + color.name);
             }
-            throw new UnsupportedOperationException("No AE color for " + color.name);
-        }
         };
 
         var pipeId = color.prefix + "me_wire";
@@ -116,7 +116,7 @@ public class MIAEAddon {
                 pipeId,
                 prop -> new PipeItem(prop, type, new MENetworkData()),
                 MIPipes.ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                SortOrder.PIPES.and(color));
         MIPipes.INSTANCE.register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.ME_WIRES, itemDef, "ME Wires");
     }

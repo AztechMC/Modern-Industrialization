@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.impl;
 
 import static net.minecraft.core.Direction.NORTH;
@@ -34,7 +35,7 @@ import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
-import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.TransferHelper;
 import aztech.modern_industrialization.util.WorldHelper;
@@ -66,12 +67,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The BlockEntity for a pipe.
  */
-public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandlerHelper, WrenchableBlockEntity {
+public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandlerHelper, WrenchableBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     private static final VoxelShape[] ME_WIRE_CONNECTOR_SHAPES;
@@ -88,7 +89,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
      * The rendered connections, both client-side for rendering and server-side for
      * bounds check.
      */
-    SortedMap<PipeNetworkType, PipeEndpointType[]> connections = new TreeMap<>();
+    SortedMap<PipeNetworkType, @Nullable PipeEndpointType[]> connections = new TreeMap<>();
     /**
      * Extra rendering data
      */
@@ -141,7 +142,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     /**
      * Check if it's possible to add a pipe.
-     * 
+     *
      * @param type The type to add.
      * @return True if the pipe can be added, false otherwise.
      */
@@ -162,7 +163,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     /**
      * Add a pipe type. Will not do anything if the pipe couldn't be added.
-     * 
+     *
      * @param type The type to add.
      */
     public void addPipe(PipeNetworkType type, PipeNetworkData data) {
@@ -182,7 +183,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     /**
      * Remove a pipe type.
-     * 
+     *
      * @param type The type to remove.
      */
     public void removePipeAndDropContainedItems(PipeNetworkType type) {
@@ -372,7 +373,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         return false;
     }
 
-    public IPipeMenuProvider getGui(PipeNetworkType type, Direction direction) {
+    public PipeMenuProvider getGui(PipeNetworkType type, Direction direction) {
         for (PipeNetworkNode pipe : pipes) {
             if (pipe.getType() == type) {
                 return pipe.getConnectionGui(direction, this);
@@ -457,7 +458,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     public void onConnectionsChanged() {
         // Update connections on the server side, we need them for the bounding box.
-        Map<PipeNetworkType, PipeEndpointType[]> oldRendererConnections = connections;
+        Map<PipeNetworkType, @Nullable PipeEndpointType[]> oldRendererConnections = connections;
         connections = new TreeMap<>();
         for (PipeNetworkNode pipe : pipes) {
             connections.put(pipe.getType(), pipe.getConnections(worldPosition));
@@ -540,7 +541,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         return PipeBlock.useWrench(this, player, hand, hitResult);
     }
 
-    record RenderAttachment(
+    public record RenderAttachment(
             @Nullable BlockState camouflage,
             PipeNetworkType[] types,
             PipeEndpointType[][] renderedConnections,

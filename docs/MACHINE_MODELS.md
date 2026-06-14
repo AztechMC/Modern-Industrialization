@@ -27,7 +27,7 @@ You must also define a single `block` key, telling MI which block to use for the
   "loader": "modern_industrialization:use_block_model"
 }
 ```
-**Connected textures applied to the target block (for example with Athena) will be applied to the casing.** 
+**Connected textures applied to the target block (for example with Athena) will be applied to the casing.**
 
 ## Machine models
 A machine model JSON file defines which overlays are applied on which sides of the machine.
@@ -75,5 +75,7 @@ Example JSON:
       // By default values from default_overlays above will be used, unless overridden here specifically.
     }
   }
+  // Optionally, hide the overlays on the output side (default to false)
+  // "no_overlay_on_output_side": true
 }
 ```

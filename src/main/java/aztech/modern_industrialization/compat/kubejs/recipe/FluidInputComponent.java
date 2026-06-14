@@ -21,43 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.kubejs.recipe;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
 import dev.latvian.mods.kubejs.fluid.FluidWrapper;
-import dev.latvian.mods.kubejs.recipe.KubeRecipe;
+import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
 import dev.latvian.mods.kubejs.recipe.component.SimpleRecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.UniqueIdBuilder;
+import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
 import dev.latvian.mods.kubejs.recipe.match.FluidMatch;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
-import dev.latvian.mods.rhino.Context;
 
 public class FluidInputComponent extends SimpleRecipeComponent<MachineRecipe.FluidInput> {
-    public static final FluidInputComponent FLUID_INPUT = new FluidInputComponent();
+    public static final RecipeComponentType<MachineRecipe.FluidInput> TYPE = RecipeComponentType.unit(MI.id("fluid_input"), FluidInputComponent::new);
 
-    public FluidInputComponent() {
-        super(MI.ID + ":fluid_input", MachineRecipe.FluidInput.CODEC, FluidWrapper.SIZED_INGREDIENT_TYPE_INFO);
+    public FluidInputComponent(RecipeComponentType<?> type) {
+        super(type, MachineRecipe.FluidInput.CODEC, FluidWrapper.SIZED_INGREDIENT_TYPE_INFO);
     }
 
     @Override
-    public MachineRecipe.FluidInput wrap(Context cx, KubeRecipe recipe, Object from) {
-        var fs = FluidWrapper.wrapSizedIngredient(RegistryAccessContainer.of(cx), from);
+    public MachineRecipe.FluidInput wrap(RecipeScriptContext cx, Object from) {
+        var fs = FluidWrapper.wrapSizedIngredient(cx.cx(), from);
         return new MachineRecipe.FluidInput(fs.ingredient(), fs.amount(), 1);
     }
 
     @Override
-    public boolean matches(Context cx, KubeRecipe recipe, MachineRecipe.FluidInput value, ReplacementMatchInfo match) {
+    public boolean matches(RecipeMatchContext cx, MachineRecipe.FluidInput value, ReplacementMatchInfo match) {
         return match.match() instanceof FluidMatch m && m.matches(cx, value.fluid(), match.exact());
     }
 
     @Override
-    public MachineRecipe.FluidInput replace(Context cx, KubeRecipe recipe, MachineRecipe.FluidInput original, ReplacementMatchInfo match,
+    public MachineRecipe.FluidInput replace(RecipeScriptContext cx, MachineRecipe.FluidInput original, ReplacementMatchInfo match,
             Object with) {
-        if (matches(cx, recipe, original, match)) {
-            var fi = FluidWrapper.wrapIngredient(RegistryAccessContainer.of(cx), with);
+        if (matches(cx, original, match)) {
+            var fi = FluidWrapper.wrapIngredient(cx.cx(), with);
             return new MachineRecipe.FluidInput(fi, original.amount(), original.probability());
         } else {
             return original;

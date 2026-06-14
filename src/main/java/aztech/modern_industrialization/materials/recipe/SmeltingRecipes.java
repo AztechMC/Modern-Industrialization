@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
@@ -55,7 +56,6 @@ public final class SmeltingRecipes {
             new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "tiny_dust", eu, duration / 10).addTaggedPartInput(TINY_DUST, 1)
                     .addPartOutput(NUGGET, 1);
         }
-
     }
 
     public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, boolean hotIngot, int eu) {
@@ -70,6 +70,5 @@ public final class SmeltingRecipes {
         applyBlastFurnace(ctx, 32);
     }
 
-    private SmeltingRecipes() {
-    }
+    private SmeltingRecipes() {}
 }

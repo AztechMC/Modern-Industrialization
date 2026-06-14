@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIComponents;
@@ -140,6 +141,5 @@ public class ConfigCardItem extends Item {
         return Optional.empty();
     }
 
-    public record TooltipData(List<ItemStack> filter) implements TooltipComponent {
-    }
+    public record TooltipData(List<ItemStack> filter) implements TooltipComponent {}
 }

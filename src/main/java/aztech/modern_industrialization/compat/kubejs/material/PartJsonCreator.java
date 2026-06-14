@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.kubejs.material;
 
 import aztech.modern_industrialization.api.energy.CableTier;
@@ -33,10 +34,14 @@ import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.biome.Biome;
 
 public class PartJsonCreator {
-
     public PartTemplate regularPart(String name) {
         try {
             return (PartTemplate) MIParts.class.getField(name.toUpperCase()).get(null);
@@ -71,10 +76,6 @@ public class PartJsonCreator {
 
     public PartTemplate cablePart(String tier) {
         CableTier cableTier = CableTier.getTier(tier);
-        // TODO: remove this if CableTier#getTier should be non-null
-        if (cableTier == null) {
-            throw new IllegalArgumentException("No such Cable Tier: " + tier);
-        }
         return MIParts.CABLE.of(cableTier);
     }
 
@@ -110,32 +111,32 @@ public class PartJsonCreator {
         return MIParts.MACHINE_CASING_SPECIAL.of(englishName, path, resistance);
     }
 
-    public PartTemplate orePart(JsonObject json, boolean deepslate) {
-        OrePart act;
-        if (deepslate) {
-            act = MIParts.ORE_DEEPSLATE;
-        } else {
-            act = MIParts.ORE;
-        }
+    public PartTemplate orePart(JsonObject json, ResourceLocation stoneType) {
+        OrePart act = new OrePart(stoneType);
 
         int minXp = json.has("min_xp") ? json.get("min_xp").getAsInt() : 0;
         int maxXp = json.has("max_xp") ? json.get("max_xp").getAsInt() : 0;
-        boolean generate = !json.has("generate") || json.get("generate").getAsBoolean();
         MaterialOreSet oreSet = MaterialOreSet.getByName(json.get("ore_set").getAsString());
 
         if (oreSet == null) {
             throw new IllegalArgumentException("No such Material Ore Set: " + json.get("ore_set").getAsString());
         }
 
+        boolean generate = !json.has("generate") || json.get("generate").getAsBoolean();
         if (generate) {
+            TagKey<Biome> biomeTag;
+            if (json.has("biome_tag")) {
+                biomeTag = TagKey.create(Registries.BIOME, ResourceLocation.parse(json.get("biome_tag").getAsString()));
+            } else {
+                biomeTag = BiomeTags.IS_OVERWORLD;
+            }
             int veinSize = json.get("vein_size").getAsInt();
             int veinPerChunk = json.get("veins_per_chunk").getAsInt();
             int maxY = json.get("max_y").getAsInt();
-            return act.of(UniformInt.of(minXp, maxXp), veinSize, veinPerChunk, maxY, oreSet);
+            return act.of(UniformInt.of(minXp, maxXp), veinSize, veinPerChunk, maxY, oreSet, biomeTag);
         } else {
             return act.of(UniformInt.of(minXp, maxXp), oreSet);
         }
-
     }
 
     public PartTemplate rawMetalPart(String materialSet, boolean block) {
@@ -160,6 +161,5 @@ public class PartJsonCreator {
             double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
         return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
                 fastScatteringProba, scatteringType, size);
-
     }
 }

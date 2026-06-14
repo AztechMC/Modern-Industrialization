@@ -21,11 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A voxel shape and the part of the pipe it represents.
@@ -43,6 +45,7 @@ public class PipeVoxelShape {
      * If null, the center of the pipe. Otherwise, the connector in the given
      * direction.
      */
+    @Nullable
     public final Direction direction;
 
     /**
@@ -50,7 +53,7 @@ public class PipeVoxelShape {
      */
     final boolean opensGui;
 
-    PipeVoxelShape(VoxelShape shape, PipeNetworkType type, Direction direction, boolean opensGui) {
+    PipeVoxelShape(VoxelShape shape, PipeNetworkType type, @Nullable Direction direction, boolean opensGui) {
         this.shape = shape;
         this.type = type;
         this.direction = direction;

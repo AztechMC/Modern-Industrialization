@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.almostunified;
 
 import com.almostreliable.unified.api.unification.bundled.GenericRecipeUnifier;
@@ -29,7 +30,6 @@ import com.almostreliable.unified.api.unification.recipe.RecipeUnifier;
 import com.almostreliable.unified.api.unification.recipe.UnificationHelper;
 
 public class MIRecipeUnifier implements RecipeUnifier {
-
     private static final String ITEM_INPUTS = "item_inputs";
     private static final String ITEM_OUTPUTS = "item_outputs";
 

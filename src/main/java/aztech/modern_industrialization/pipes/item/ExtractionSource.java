@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.item;
 
 import net.minecraft.core.BlockPos;
@@ -31,5 +32,4 @@ record ExtractionSource(
         ItemNetworkNode.ItemConnection connection,
         IItemHandler storage,
         BlockPos queryPos,
-        Direction querySide) {
-}
+        Direction querySide) {}

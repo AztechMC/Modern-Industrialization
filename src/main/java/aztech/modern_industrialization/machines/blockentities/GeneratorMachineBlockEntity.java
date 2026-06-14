@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities;
 
 import static aztech.modern_industrialization.machines.components.FluidItemConsumerComponent.NumberOfFuel.*;
@@ -52,7 +53,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class GeneratorMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder, CableTierHolder {
-
     private final CableTier outputTier;
     private final MIEnergyStorage extractable;
     private final RedstoneControlComponent redstoneControl;
@@ -65,13 +65,13 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
 
     public GeneratorMachineBlockEntity(BEP bep,
             String name,
+            boolean hasFacing,
             CableTier outputTier,
             long energyCapacity,
             long fluidCapacity,
             FluidItemConsumerComponent fluidItemConsumer) {
-
         super(bep, new MachineGuiParameters.Builder(name, fluidItemConsumer.doAllowMoreThanOne()).build(),
-                new OrientationComponent.Params(true, false, false));
+                hasFacing ? new OrientationComponent.Params(true, false, false) : OrientationComponent.Params.noFacing(false, false));
 
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(this, energyCapacity);
@@ -80,8 +80,8 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
         this.fluidItemConsumer = fluidItemConsumer;
         this.redstoneControl = new RedstoneControlComponent();
 
-        EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        EnergyBar.Params energyBarParams = new EnergyBar.Params(76, 39);
+        registerGuiComponent(new EnergyBar(energyBarParams, energy::getEu, energy::getCapacity));
 
         List<ConfigurableItemStack> itemStacks;
         List<ConfigurableFluidStack> fluidStacks;
@@ -139,20 +139,19 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
         this.registerComponents(energy, isActiveComponent, inventory, fluidItemConsumer, redstoneControl);
-        this.registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
-
+        this.registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
     }
 
     public GeneratorMachineBlockEntity(BEP bep,
             String name,
+            boolean hasFacing,
             CableTier outputTier,
             long energyCapacity,
             long fluidCapacity,
             long maxEnergyOutput,
             FluidDefinition acceptedFluid,
             long fluidEUperMb) {
-
-        this(bep, name, outputTier, energyCapacity, fluidCapacity,
+        this(bep, name, hasFacing, outputTier, energyCapacity, fluidCapacity,
                 FluidItemConsumerComponent.ofSingleFluid(
                         maxEnergyOutput,
                         acceptedFluid,
@@ -165,7 +164,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);

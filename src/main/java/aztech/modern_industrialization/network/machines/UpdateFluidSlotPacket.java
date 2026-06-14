@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -32,7 +33,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record UpdateFluidSlotPacket(int syncId, int stackId, ConfigurableFluidStack newStack) implements BasePacket {
-
     public static final StreamCodec<RegistryFriendlyByteBuf, UpdateFluidSlotPacket> STREAM_CODEC = StreamCodec.ofMember(
             UpdateFluidSlotPacket::write, UpdateFluidSlotPacket::new);
 

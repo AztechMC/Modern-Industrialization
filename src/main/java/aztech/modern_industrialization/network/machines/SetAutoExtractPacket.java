@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.network.machines;
 
-import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
@@ -34,7 +34,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record SetAutoExtractPacket(int syncId, boolean isItem, boolean isExtract) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, SetAutoExtractPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             SetAutoExtractPacket::syncId,
@@ -50,7 +49,7 @@ public record SetAutoExtractPacket(int syncId, boolean isItem, boolean isExtract
 
         if (ctx.getPlayer().containerMenu.containerId == syncId) {
             var screenHandler = (MachineMenuServer) ctx.getPlayer().containerMenu;
-            AutoExtract.Server autoExtract = screenHandler.blockEntity.guiComponents.get(GuiComponents.AUTO_EXTRACT);
+            var autoExtract = screenHandler.blockEntity.guiComponents.getOrThrow(AutoExtract.class);
             OrientationComponent orientation = autoExtract.getOrientation();
             if (isItem) {
                 orientation.extractItems = isExtract;

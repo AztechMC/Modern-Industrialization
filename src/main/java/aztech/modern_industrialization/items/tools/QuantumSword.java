@@ -46,9 +46,10 @@ public class QuantumSword extends Item {
         super(settings.attributes(ItemAttributeModifiers.builder()
                 /*
                  * Minecraft checks the attack damage attribute value for an attack before the LivingDamageEvent is
-                 * handled, which is where the infinite damage attribute is applied. Because of this, if the attack
-                 * damage attribute is left default (1), when a weakness potion is applied to the attacking entity, the
-                 * damage value becomes 0 and thus the LivingDamageEvent is never called.
+                 * handled, which is where the infinite damage attribute is applied. There is no event that can override
+                 * the value at that point. Because of this, if the attack damage attribute is left default (1), when a
+                 * weakness potion is applied to the attacking entity, the damage value becomes 0 and thus the damage is
+                 * ignored and LivingDamageEvent is never called.
                  */
                 .add(
                         Attributes.ATTACK_DAMAGE,

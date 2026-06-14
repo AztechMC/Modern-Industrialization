@@ -59,8 +59,8 @@ public class GunpowderOverclockGuiClient extends GuiComponentClient<GunpowderOve
             if (data > 0) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), 20, 20, cursorX - x, cursorY - y)) {
                     guiGraphics.renderTooltip(font, formatOverclock(data), cursorX, cursorY);
-                	return true;
-				}
+                    return true;
+                }
             }
             return false;
         }

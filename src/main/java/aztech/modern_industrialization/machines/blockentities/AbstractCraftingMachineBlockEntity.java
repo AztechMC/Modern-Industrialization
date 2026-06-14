@@ -56,7 +56,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
         this.isActiveComponent = new IsActiveComponent();
         registerGuiComponent(new AutoExtract(orientation));
         registerGuiComponent(new ProgressBar(progressBarParams, crafter::getProgress));
-		registerGuiComponent(new MachineProblemsDisplay(crafter::matchesMultipleRecipes));
+        registerGuiComponent(new MachineProblemsDisplay(crafter::matchesMultipleRecipes));
         registerGuiComponent(new ReiSlotLocking(crafter::lockRecipe, () -> true));
         this.registerComponents(crafter, this.inventory, isActiveComponent);
     }

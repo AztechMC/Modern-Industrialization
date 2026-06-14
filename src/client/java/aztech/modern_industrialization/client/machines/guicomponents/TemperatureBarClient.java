@@ -65,8 +65,8 @@ public class TemperatureBarClient extends GuiComponentClient<TemperatureBar.Para
             if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x,
                     cursorY - y)) {
                 guiGraphics.renderTooltip(font, MIText.Temperature.text(data), cursorX, cursorY);
-            	return true;
-			}
+                return true;
+            }
             return false;
         }
     }

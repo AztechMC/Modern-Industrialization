@@ -21,42 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.guicomponents;
+package aztech.modern_industrialization.client.machines.guicomponents;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.client.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.client.machines.gui.GuiComponentClient;
+import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
-import aztech.modern_industrialization.machines.gui.GuiComponentClient;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.machines.guicomponents.MachineProblemsDisplay;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
+import org.jspecify.annotations.Nullable;
 
-public class MachineProblemsDisplayClient implements GuiComponentClient {
+public class MachineProblemsDisplayClient extends GuiComponentClient<Unit, MachineProblemsDisplay.Data> {
     private static final ResourceLocation SLOT_PROBLEM = MI.id("textures/gui/container/slot_problem.png");
 
-    public boolean hasProblems;
-
+    @Nullable
     private MIInventory inventory;
 
-    public MachineProblemsDisplayClient(RegistryFriendlyByteBuf buf) {
-        readCurrentData(buf);
+    public MachineProblemsDisplayClient(Unit params, MachineProblemsDisplay.Data data) {
+        super(params, data);
     }
 
     @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        hasProblems = buf.readBoolean();
-    }
-
-    @Override
-    public void setupMenu(GuiComponent.MenuFacade menu) {
+    public void setupMenu(MenuFacade menu) {
         this.inventory = menu.getMachineInventory();
     }
 
@@ -101,7 +96,7 @@ public class MachineProblemsDisplayClient implements GuiComponentClient {
 
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-            if (hasProblems) {
+            if (inventory != null && data.hasProblems()) {
                 renderSlotProblems(guiGraphics, x, y, inventory.getItemStacks(), inventory.itemPositions);
                 renderSlotProblems(guiGraphics, x, y, inventory.getFluidStacks(), inventory.fluidPositions);
             }
@@ -109,7 +104,7 @@ public class MachineProblemsDisplayClient implements GuiComponentClient {
 
         @Override
         public boolean renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int leftPos, int topPos, int cursorX, int cursorY) {
-            if (hasProblems) {
+            if (inventory != null && data.hasProblems()) {
                 return renderSlotProblemTooltip(font, guiGraphics, leftPos, topPos, inventory.getItemStacks(), inventory.itemPositions, cursorX,
                         cursorY) ||
                         renderSlotProblemTooltip(font, guiGraphics, leftPos, topPos, inventory.getFluidStacks(), inventory.fluidPositions, cursorX,

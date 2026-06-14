@@ -23,13 +23,17 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
+import io.netty.buffer.ByteBuf;
 import java.util.function.Supplier;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Unit;
 
-public class MachineProblemsDisplay implements GuiComponent.Server<Boolean> {
+public class MachineProblemsDisplay implements GuiComponentServer<Unit, MachineProblemsDisplay.Data> {
+    public static final Type<Unit, MachineProblemsDisplay.Data> TYPE = new Type<>(MI.id("machine_problems_display"), StreamCodec.unit(Unit.INSTANCE), MachineProblemsDisplay.Data.STREAM_CODEC);
+
     private final Supplier<Boolean> hasProblemsSupplier;
 
     public MachineProblemsDisplay(Supplier<Boolean> hasProblemsSupplier) {
@@ -37,27 +41,21 @@ public class MachineProblemsDisplay implements GuiComponent.Server<Boolean> {
     }
 
     @Override
-    public Boolean copyData() {
-        return hasProblemsSupplier.get();
+    public Unit getParams() {
+        return Unit.INSTANCE;
     }
 
     @Override
-    public boolean needsSync(Boolean cachedData) {
-        return !cachedData.equals(hasProblemsSupplier.get());
+    public Data extractData() {
+        return new Data(hasProblemsSupplier.get());
     }
 
     @Override
-    public void writeInitialData(RegistryFriendlyByteBuf buf) {
-        writeCurrentData(buf);
+    public Type<Unit, Data> getType() {
+        return TYPE;
     }
 
-    @Override
-    public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-        buf.writeBoolean(hasProblemsSupplier.get());
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return GuiComponents.MACHINE_PROBLEMS_DISPLAY;
+    public record Data(boolean hasProblems) {
+        public static final StreamCodec<ByteBuf, Data> STREAM_CODEC = ByteBufCodecs.BOOL.map(Data::new, Data::hasProblems);
     }
 }

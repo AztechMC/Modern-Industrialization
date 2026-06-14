@@ -39,13 +39,13 @@ public interface ClientComponentRenderer {
     default void addButtons(ButtonContainer container) {}
 
     void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos);
-	
-	/**
-	 * @return true if a tooltip was rendered, false otherwise
-	 */
+
+    /**
+     * @return true if a tooltip was rendered, false otherwise
+     */
     default boolean renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int leftPos, int topPos, int cursorX, int cursorY) {
-		return false;
-	}
+        return false;
+    }
 
     default void addExtraBoxes(List<Rectangle> rectangles, int leftPos, int topPos) {}
 

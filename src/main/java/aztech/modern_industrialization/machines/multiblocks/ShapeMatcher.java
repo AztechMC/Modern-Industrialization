@@ -44,7 +44,7 @@ import org.jspecify.annotations.Nullable;
  * Status of a multiblock shape bound to some position and direction.
  */
 public class ShapeMatcher implements ChunkEventListener {
-    public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template, @Nullable ShapeValidComponent shapeValid) {
+    public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template, ShapeValidComponent shapeValid) {
         this.controllerPos = controllerPos;
         this.controllerDirection = controllerDirection;
         this.template = template;
@@ -56,7 +56,7 @@ public class ShapeMatcher implements ChunkEventListener {
     protected final BlockPos controllerPos;
     public final Direction controllerDirection;
     protected final ShapeTemplate template;
-    protected final @Nullable ShapeValidComponent shapeValid;
+    protected final ShapeValidComponent shapeValid;
     protected final Map<BlockPos, SimpleMember> simpleMembers;
     protected final Map<BlockPos, HatchFlags> hatchFlags;
 
@@ -146,9 +146,7 @@ public class ShapeMatcher implements ChunkEventListener {
         }
 
         matchedHatches.clear();
-        if (shapeValid != null) {
-            shapeValid.clearMismatchingBlockEntities();
-        }
+        shapeValid.clearMismatchingBlockEntities();
         matchSuccessful = false;
         needsRematch = true;
     }
@@ -173,7 +171,7 @@ public class ShapeMatcher implements ChunkEventListener {
 
         BlockState state = toTemplateState(world, pos, world.getBlockState(pos), controllerDirection);
         boolean matches = simpleMember.matchesState(state, be);
-        if (be != null && shapeValid != null) {
+        if (be != null) {
             if (world.isClientSide()) {
                 return shapeValid.isBlockEntityMatchingAt(pos);
             } else if (!matches) {

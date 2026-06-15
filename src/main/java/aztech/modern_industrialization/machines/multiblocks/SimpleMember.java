@@ -28,8 +28,10 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -46,9 +48,13 @@ public interface SimpleMember {
     boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity);
 
     @Nullable
-    BlockEntity newBlockEntity(Level level, BlockPos pos, BlockState state);
+    BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state);
 
     BlockState getPreviewState();
+
+    default ItemStack getItemPreviewState(RegistryAccess registries) {
+        return this.getPreviewState().getBlock().asItem().getDefaultInstance();
+    }
 
     static SimpleMember forBlock(Supplier<? extends Block> block) {
         Objects.requireNonNull(block);
@@ -60,7 +66,7 @@ public interface SimpleMember {
             }
 
             @Override
-            public @Nullable BlockEntity newBlockEntity(Level level, BlockPos pos, BlockState state) {
+            public @Nullable BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
                 return null;
             }
 
@@ -85,7 +91,7 @@ public interface SimpleMember {
             }
 
             @Override
-            public @Nullable BlockEntity newBlockEntity(Level level, BlockPos pos, BlockState state) {
+            public @Nullable BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
                 return null;
             }
 
@@ -104,7 +110,7 @@ public interface SimpleMember {
             }
 
             @Override
-            public @Nullable BlockEntity newBlockEntity(Level level, BlockPos pos, BlockState state) {
+            public @Nullable BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
                 return null;
             }
 

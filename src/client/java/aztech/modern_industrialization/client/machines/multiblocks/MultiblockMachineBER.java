@@ -90,7 +90,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                             // Enqueue state preview
                             var member = matcher.getSimpleMember(pos);
                             var state = ShapeMatcher.toWorldState(be.getLevel(), pos, member.getPreviewState(), matcher.controllerDirection);
-                            var blockEntity = member.newBlockEntity(be.getLevel(), pos, state);
+                            var blockEntity = member.newBlockEntity(be.getLevel().registryAccess(), be.getLevel(), pos, state);
                             MultiblockErrorHighlight.enqueueHighlight(pos, state, blockEntity);
                         } else {
                             // Enqueue red cube

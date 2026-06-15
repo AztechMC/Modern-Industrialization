@@ -249,7 +249,7 @@ public class ShapeMatcher implements ChunkEventListener {
             var currentBlockEntity = level.getBlockEntity(entry.getKey());
             if (!member.matchesState(currentState, currentBlockEntity)) {
                 var placeState = toWorldState(level, pos, member.getPreviewState(), controllerDirection);
-                var placeBlockEntity = member.newBlockEntity(level, pos, placeState);
+                var placeBlockEntity = member.newBlockEntity(level.registryAccess(), level, pos, placeState);
                 level.setBlockAndUpdate(pos, placeState);
                 if (placeBlockEntity != null) {
                     level.setBlockEntity(placeBlockEntity);

@@ -33,17 +33,12 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe> {
@@ -61,7 +56,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
     @Override
     public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
         for (ReiMachineRecipes.MultiblockShape entry : ReiMachineRecipes.multiblockShapes) {
-            consumer.accept(new Recipe(entry.machine(), entry.shapeTemplate(), entry.alternative()));
+            consumer.accept(new Recipe(entry.machine(), entry.shapeTemplate(), entry.alternative(), registryAccess));
         }
     }
 
@@ -88,21 +83,26 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
         public final List<ItemStack> materials = new ArrayList<>();
         public final ResourceLocation id;
 
-        public Recipe(ResourceLocation controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
+        public Recipe(ResourceLocation controller, ShapeTemplate shapeTemplate, @Nullable String alternative, RegistryAccess registries) {
             this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
-            SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
+            List<ItemStack> materials = new ArrayList<>();
 
+            outer:
             for (var entry : shapeTemplate.simpleMembers.entrySet()) {
-                BlockState state = entry.getValue().getPreviewState();
-                Item item = state.getBlock().asItem();
-                if (item != Items.AIR) {
-                    materials.put(item, 1 + materials.getOrDefault(item, 0));
+                var previewStack = entry.getValue().getItemPreviewState(registries).copy();
+                if (!previewStack.isEmpty()) {
+                    for (var materialStack : materials) {
+                        if (ItemStack.isSameItemSameComponents(materialStack, previewStack)) {
+                            materialStack.setCount(materialStack.getCount() + previewStack.getCount());
+                            continue outer;
+                        }
+                    }
+                    materials.add(previewStack);
                 }
             }
 
-            for (var entry : materials.entrySet()) {
-                this.materials.add(new ItemStack(entry.getKey(), entry.getValue()));
-            }
+            materials.sort(Comparator.comparing(ItemStack::getCount).reversed());
+            this.materials.addAll(materials);
             this.id = ResourceLocation.fromNamespaceAndPath(controller.getNamespace(),
                     "/" + controller.getPath() + "/" + materials.size() + (alternative == null ? "" : "/" + alternative));
         }

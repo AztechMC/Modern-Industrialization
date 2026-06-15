@@ -88,10 +88,13 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                         var existingState = be.getLevel().getBlockState(pos);
                         if (existingState.isAir() || /* approximate check for e.g. grass and snow */ existingState.canBeReplaced()) {
                             // Enqueue state preview
-                            MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getSimpleMember(pos).getPreviewState());
+                            var member = matcher.getSimpleMember(pos);
+                            var state = ShapeMatcher.toWorldState(be.getLevel(), pos, member.getPreviewState(), matcher.controllerDirection);
+                            var blockEntity = member.newBlockEntity(be.getLevel(), pos, state);
+                            MultiblockErrorHighlight.enqueueHighlight(pos, state, blockEntity);
                         } else {
                             // Enqueue red cube
-                            MultiblockErrorHighlight.enqueueHighlight(pos, null);
+                            MultiblockErrorHighlight.enqueueHighlight(pos, null, null);
                         }
                     }
                 }

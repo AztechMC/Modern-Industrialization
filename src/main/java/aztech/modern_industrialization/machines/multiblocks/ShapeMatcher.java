@@ -26,6 +26,8 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import static net.minecraft.core.Direction.*;
 
+import aztech.modern_industrialization.blocks.FastBlockEntity;
+import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import java.util.*;
@@ -33,6 +35,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
@@ -41,15 +44,19 @@ import org.jspecify.annotations.Nullable;
  * Status of a multiblock shape bound to some position and direction.
  */
 public class ShapeMatcher implements ChunkEventListener {
-    public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template) {
+    public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template, @Nullable ShapeValidComponent shapeValid) {
         this.controllerPos = controllerPos;
+        this.controllerDirection = controllerDirection;
         this.template = template;
+        this.shapeValid = shapeValid;
         this.simpleMembers = toWorldPos(controllerPos, controllerDirection, template.simpleMembers);
         this.hatchFlags = toWorldPos(controllerPos, controllerDirection, template.hatchFlags);
     }
 
     protected final BlockPos controllerPos;
+    public final Direction controllerDirection;
     protected final ShapeTemplate template;
+    protected final @Nullable ShapeValidComponent shapeValid;
     protected final Map<BlockPos, SimpleMember> simpleMembers;
     protected final Map<BlockPos, HatchFlags> hatchFlags;
 
@@ -82,6 +89,40 @@ public class ShapeMatcher implements ChunkEventListener {
         return result;
     }
 
+    private static Rotation templateRotation(Direction controllerDirection) {
+        return switch (controllerDirection) {
+            case SOUTH -> Rotation.NONE;
+            case NORTH -> Rotation.CLOCKWISE_180;
+            case EAST -> Rotation.CLOCKWISE_90;
+            case WEST -> Rotation.COUNTERCLOCKWISE_90;
+            default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
+        };
+    }
+
+    private static Rotation worldRotation(Direction controllerDirection) {
+        return switch (controllerDirection) {
+            case SOUTH -> Rotation.NONE;
+            case NORTH -> Rotation.CLOCKWISE_180;
+            case EAST -> Rotation.COUNTERCLOCKWISE_90;
+            case WEST -> Rotation.CLOCKWISE_90;
+            default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
+        };
+    }
+
+    /**
+     * Convert a in-world block state to a rotated block state as it should be saved for a shape template.
+     */
+    public static BlockState toTemplateState(Level level, BlockPos pos, BlockState state, Direction controllerDirection) {
+        return state.rotate(level, pos, templateRotation(controllerDirection));
+    }
+
+    /**
+     * Convert a template block state to a rotated block state as it should be placed in world.
+     */
+    public static BlockState toWorldState(Level level, BlockPos pos, BlockState state, Direction controllerDirection) {
+        return state.rotate(level, pos, worldRotation(controllerDirection));
+    }
+
     public Set<BlockPos> getPositions() {
         return new HashSet<>(simpleMembers.keySet());
     }
@@ -105,6 +146,9 @@ public class ShapeMatcher implements ChunkEventListener {
         }
 
         matchedHatches.clear();
+        if (shapeValid != null) {
+            shapeValid.clearMismatchingBlockEntities();
+        }
         matchSuccessful = false;
         needsRematch = true;
     }
@@ -118,10 +162,6 @@ public class ShapeMatcher implements ChunkEventListener {
         if (simpleMember == null)
             return false;
 
-        BlockState state = world.getBlockState(pos);
-        if (simpleMember.matchesState(state))
-            return true;
-
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof HatchBlockEntity hatch) {
             HatchFlags flags = hatchFlags.get(pos);
@@ -131,7 +171,16 @@ public class ShapeMatcher implements ChunkEventListener {
             }
         }
 
-        return false;
+        BlockState state = toTemplateState(world, pos, world.getBlockState(pos), controllerDirection);
+        boolean matches = simpleMember.matchesState(state, be);
+        if (be != null && shapeValid != null) {
+            if (world.isClientSide()) {
+                return shapeValid.isBlockEntityMatchingAt(pos);
+            } else if (!matches) {
+                shapeValid.addMismatchingBlockEntity(pos);
+            }
+        }
+        return matches;
     }
 
     public boolean needsRematch() {
@@ -196,9 +245,21 @@ public class ShapeMatcher implements ChunkEventListener {
         int setBlocks = 0;
 
         for (var entry : simpleMembers.entrySet()) {
-            var current = level.getBlockState(entry.getKey());
-            if (!entry.getValue().matchesState(current)) {
-                level.setBlockAndUpdate(entry.getKey(), entry.getValue().getPreviewState());
+            var pos = entry.getKey();
+            var member = entry.getValue();
+            var currentState = level.getBlockState(entry.getKey());
+            var currentBlockEntity = level.getBlockEntity(entry.getKey());
+            if (!member.matchesState(currentState, currentBlockEntity)) {
+                var placeState = toWorldState(level, pos, member.getPreviewState(), controllerDirection);
+                var placeBlockEntity = member.newBlockEntity(level, pos, placeState);
+                level.setBlockAndUpdate(pos, placeState);
+                if (placeBlockEntity != null) {
+                    level.setBlockEntity(placeBlockEntity);
+                    placeBlockEntity.setChanged();
+                    if (placeBlockEntity instanceof FastBlockEntity fbe) {
+                        fbe.sync();
+                    }
+                }
                 ++setBlocks;
             }
         }

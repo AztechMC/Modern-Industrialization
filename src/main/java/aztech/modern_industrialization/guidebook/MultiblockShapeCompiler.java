@@ -40,7 +40,6 @@ import guideme.scene.element.SceneElementTagCompiler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 

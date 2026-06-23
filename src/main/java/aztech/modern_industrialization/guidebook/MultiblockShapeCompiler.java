@@ -77,7 +77,6 @@ public class MultiblockShapeCompiler implements SceneElementTagCompiler {
         // Annotations for allowed hatches
         for (var entry : shape.hatchFlags.entrySet()) {
             var pos = ShapeMatcher.toWorldPos(controllerPos, Direction.NORTH, entry.getKey());
-
             var minCorner = Vec3.atLowerCornerOf(pos);
             var annotation = new InWorldBoxAnnotation(minCorner.toVector3f(), minCorner.add(1, 1, 1).toVector3f(), SymbolicColor.GREEN);
 

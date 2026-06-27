@@ -26,7 +26,6 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
-import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.world.item.Item;
@@ -49,7 +48,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
 
         @Override
         public ItemStack getStackInSlot(int slot) {
-            return stacks.get(slot).getVariant().toStack(Ints.saturatedCast(stacks.get(slot).getAmount()));
+            return stacks.get(slot).toStack();
         }
 
         @Override

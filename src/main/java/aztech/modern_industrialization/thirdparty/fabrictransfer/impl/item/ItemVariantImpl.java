@@ -52,7 +52,7 @@ public class ItemVariantImpl implements ItemVariant {
         if (stack.isComponentsPatchEmpty() || stack.isEmpty()) {
             return of(stack.getItem());
         } else {
-            return new ItemVariantImpl(stack);
+            return new ItemVariantImpl(stack.copyWithCount(1)); // defensive copy
         }
     }
 
@@ -63,7 +63,7 @@ public class ItemVariantImpl implements ItemVariant {
     private final int hashCode;
 
     private ItemVariantImpl(ItemStack stack) {
-        this.stack = stack.copyWithCount(1); // defensive copy
+        this.stack = stack;
         hashCode = ItemStack.hashItemAndComponents(stack);
     }
 

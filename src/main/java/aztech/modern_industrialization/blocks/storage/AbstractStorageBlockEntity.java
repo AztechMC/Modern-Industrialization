@@ -41,6 +41,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +52,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
-        implements SingleSlotStorage<T>, WrenchableBlockEntity {
+        implements SingleSlotStorage<T>, WrenchableBlockEntity, Clearable {
     @Override
     public long getVersion() {
         return version;
@@ -235,6 +236,11 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             }
             setChanged();
         }
+    }
+
+    @Override
+    public void clearContent() {
+        amount = 0;
     }
 
     @Override

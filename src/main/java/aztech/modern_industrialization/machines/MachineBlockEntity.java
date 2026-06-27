@@ -27,6 +27,7 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
+import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.DropableComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -49,6 +50,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -71,7 +73,7 @@ import org.jspecify.annotations.Nullable;
  */
 @SuppressWarnings("rawtypes")
 public abstract class MachineBlockEntity extends FastBlockEntity
-        implements MenuProvider, WrenchableBlockEntity {
+        implements MenuProvider, WrenchableBlockEntity, Clearable {
     public final ComponentStorage.GuiServer guiComponents = new ComponentStorage.GuiServer();
     public final ComponentStorage.Server components = new ComponentStorage.Server();
     public final MachineGuiParameters guiParams;
@@ -194,6 +196,12 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public void sync(boolean forceRemesh) {
         syncCausesRemesh = syncCausesRemesh || forceRemesh;
         super.sync();
+    }
+
+    @Override
+    public void clearContent() {
+        this.getInventory().getItemStacks().forEach(AbstractConfigurableStack::empty);
+        this.getInventory().getFluidStacks().forEach(AbstractConfigurableStack::empty);
     }
 
     @Override

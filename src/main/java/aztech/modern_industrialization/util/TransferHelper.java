@@ -36,7 +36,8 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 public class TransferHelper {
-    public static void moveAll(IItemHandler src, IItemHandler target, boolean stackInTarget) {
+    public static boolean moveAll(IItemHandler src, IItemHandler target, boolean stackInTarget) {
+        boolean moved = false;
         int srcSlots = src.getSlots();
 
         for (int i = 0; i < srcSlots; ++i) {
@@ -59,6 +60,7 @@ public class TransferHelper {
             if (extracted.isEmpty()) {
                 continue;
             }
+            moved = true;
 
             leftover = stackInTarget ? ItemHandlerHelper.insertItemStacked(target, extracted, false)
                     : ItemHandlerHelper.insertItem(target, extracted, false);
@@ -71,6 +73,8 @@ public class TransferHelper {
                 }
             }
         }
+
+        return moved;
     }
 
     public static ItemStack extractMatching(Inventory inventory, Predicate<ItemStack> predicate, int maxAmount, boolean containers) {

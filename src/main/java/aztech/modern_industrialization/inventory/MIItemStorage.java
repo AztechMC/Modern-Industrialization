@@ -26,7 +26,6 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
-import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.world.item.Item;
@@ -41,7 +40,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
         super(stacks, false);
     }
 
-    public class ItemHandler implements IItemHandler, WhitelistedItemStorage {
+    public class ItemHandler implements IItemHandler, WhitelistedItemStorage, FilledItemStorage {
         @Override
         public int getSlots() {
             return stacks.size();
@@ -49,7 +48,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
 
         @Override
         public ItemStack getStackInSlot(int slot) {
-            return stacks.get(slot).getVariant().toStack(Ints.saturatedCast(stacks.get(slot).getAmount()));
+            return stacks.get(slot).toStack();
         }
 
         @Override
@@ -136,6 +135,16 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
                     whitelist.add(stack.getLockedInstance());
                 }
             }
+        }
+
+        @Override
+        public boolean isFull() {
+            for (var stack : stacks) {
+                if (!stack.isLockedTo(Items.AIR) && stack.getAmount() < stack.getCapacity()) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

@@ -33,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jspecify.annotations.Nullable;
 
-public final class SlotItemHandler implements IItemHandler {
+public final class SlotItemHandler implements IItemHandler, FilledItemStorage {
     private final SingleSlotStorage<ItemVariant> storage;
 
     private @Nullable ItemStack cachedItemStack;

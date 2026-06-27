@@ -42,6 +42,7 @@ public class ShapeValidComponent implements MachineComponent.ClientOnly {
     private boolean lastShapeValid = false;
     public boolean shapeValid = false;
 
+    // Used to communicate what block entities are mismatching to the client, since it does not have full block entity awareness like the server does
     private Set<BlockPos> lastMismatchingBlockEntities = new HashSet<>();
     private Set<BlockPos> mismatchingBlockEntities = new HashSet<>();
 

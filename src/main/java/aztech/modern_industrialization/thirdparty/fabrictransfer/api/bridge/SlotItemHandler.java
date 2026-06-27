@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge;
 
+import aztech.modern_industrialization.inventory.FilledItemStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
@@ -32,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jspecify.annotations.Nullable;
 
-public final class SlotItemHandler implements IItemHandler {
+public final class SlotItemHandler implements IItemHandler, FilledItemStorage {
     private final SingleSlotStorage<ItemVariant> storage;
 
     private @Nullable ItemStack cachedItemStack;
@@ -104,5 +105,10 @@ public final class SlotItemHandler implements IItemHandler {
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public boolean isFull() {
+        return storage.getAmount() >= storage.getCapacity();
     }
 }

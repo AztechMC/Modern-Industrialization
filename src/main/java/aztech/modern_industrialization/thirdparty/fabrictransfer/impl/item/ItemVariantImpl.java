@@ -32,6 +32,7 @@ import java.util.function.Predicate;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +59,7 @@ public class ItemVariantImpl implements ItemVariant {
     private static final Logger LOGGER = LoggerFactory.getLogger("fabric-transfer-api-v1/item");
 
     private final ItemStack stack;
+    private @Nullable Integer maxStackSize;
     private final int hashCode;
 
     private ItemVariantImpl(ItemStack stack) {
@@ -92,7 +94,10 @@ public class ItemVariantImpl implements ItemVariant {
 
     @Override
     public int getMaxStackSize() {
-        return this.stack.getMaxStackSize();
+        if (maxStackSize == null) {
+            maxStackSize = stack.getMaxStackSize();
+        }
+        return maxStackSize;
     }
 
     @Override

@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.pipes.item;
 
+import aztech.modern_industrialization.inventory.FilledItemStorage;
 import aztech.modern_industrialization.inventory.WhitelistedItemStorage;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
@@ -112,6 +113,10 @@ public class ItemNetwork extends PipeNetwork {
 
     private static int moveAll(ServerLevel world, ExtractionSource target, List<? extends ItemSink> sinks, Predicate<ItemStack> filter,
             int maxToMove) {
+        if (sinks.isEmpty()) {
+            return 0;
+        }
+
         IItemHandler source = target.storage();
         int moved = 0;
 
@@ -147,7 +152,7 @@ public class ItemNetwork extends PipeNetwork {
                                 entry.getPos().relative(connection.direction), connection.direction.getOpposite());
                     }
                     var target = connection.cache.getCapability();
-                    if (target != null && target.getSlots() > 0) {
+                    if (target != null && target.getSlots() > 0 && !FilledItemStorage.isFull(target)) {
                         PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.insertPriority, PriorityBucket::new);
                         InsertTarget it = new InsertTarget(connection, new ItemSink.HandlerWrapper(target, entry.getPos(), connection.direction));
 

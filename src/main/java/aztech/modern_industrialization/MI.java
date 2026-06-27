@@ -72,9 +72,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -83,6 +85,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.event.GatherSkippedAttributeTooltipsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
@@ -198,6 +201,18 @@ public class MI {
             if (event.getSource().getDirectEntity() instanceof LivingEntity damager
                     && damager.getAttributeValue(MIRegistries.INFINITE_DAMAGE) > Mth.EPSILON) {
                 event.setAmount((float) Integer.MAX_VALUE);
+            }
+        });
+        NeoForge.EVENT_BUS.addListener(GatherSkippedAttributeTooltipsEvent.class, event -> {
+            // Hides the attack damage attribute on items when the infinite damage attribute is present
+            boolean hasInfiniteDamageAttribute = event.getStack().getAttributeModifiers().modifiers().stream()
+                    .anyMatch((modifier) -> modifier.attribute().is(MIRegistries.INFINITE_DAMAGE.getKey()));
+            if (hasInfiniteDamageAttribute) {
+                for (ItemAttributeModifiers.Entry modifier : event.getStack().getAttributeModifiers().modifiers()) {
+                    if (modifier.attribute().is(Attributes.ATTACK_DAMAGE.getKey())) {
+                        event.skipId(modifier.modifier().id());
+                    }
+                }
             }
         });
 

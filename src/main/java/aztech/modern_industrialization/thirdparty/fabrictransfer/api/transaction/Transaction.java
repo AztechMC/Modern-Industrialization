@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction;
 
+import aztech.modern_industrialization.config.MIStartupConfig;
 import java.util.ArrayList;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
@@ -98,7 +99,7 @@ public final class Transaction implements AutoCloseable, TransactionContext {
      */
     public static Transaction openRoot() {
         // Don't delegate to other method due to getCallerClass()
-        return TransactionManager.getManagerForThread().open(null, STACK_WALKER.getCallerClass());
+        return TransactionManager.getManagerForThread().open(null, MIStartupConfig.INSTANCE.transactionCallerName.getAsBoolean() ? STACK_WALKER.getCallerClass() : null);
     }
 
     /**
@@ -119,7 +120,7 @@ public final class Transaction implements AutoCloseable, TransactionContext {
      */
     public static Transaction open(@Nullable TransactionContext parent) {
         // Don't delegate to other method due to getCallerClass()
-        return TransactionManager.getManagerForThread().open(parent, STACK_WALKER.getCallerClass());
+        return TransactionManager.getManagerForThread().open(parent, MIStartupConfig.INSTANCE.transactionCallerName.getAsBoolean() ? STACK_WALKER.getCallerClass() : null);
     }
 
     public static Transaction hackyOpen() {
@@ -228,7 +229,7 @@ public final class Transaction implements AutoCloseable, TransactionContext {
      * Gets what should be printed during exceptions to represent the caller class. This should include the package name as well.
      */
     String getDebugName() {
-        return callerClass.toString();
+        return callerClass != null ? callerClass.toString() : "N/A";
     }
 
     /**

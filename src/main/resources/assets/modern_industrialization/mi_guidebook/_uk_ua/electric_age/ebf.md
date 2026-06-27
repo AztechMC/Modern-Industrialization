@@ -13,6 +13,10 @@ item_ids:
 
 # Електрична доменна піч
 
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="electric_blast_furnace" />
+</GameScene>
+
 Електрична доменна піч — це електрична версія парової доменної печі. Вона розблоковує нові рецепти, і, як і інші багатоблокові електричні машини, її розгін обмежено 128 EU/т усталено.
 
 <Recipe id="modern_industrialization:electric_age/machine/electric_blast_furnace_asbl" />
@@ -21,7 +25,7 @@ item_ids:
 
 <Recipe id="modern_industrialization:materials/cupronickel/craft/coil" />
 
-Не забудьте додати вхідні шлюзи енергії, інакше електрична доменна піч не матиме енергії! НН роз'єм входу енергії підключатиметься лише до кабелів низької напруги.
+Не забудьте додати вхідні шлюзи енергії, інакше електрична доменна піч не матиме енергії! НН роз'єм входу енергії приєднуватиметься лише до кабелів низької напруги.
 
 <Recipe id="modern_industrialization:hatches/basic/energy_input_hatch" />
 

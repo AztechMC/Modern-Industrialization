@@ -60,7 +60,7 @@ final class TransactionManager {
         } else if (currentDepth >= 0) {
             String currentRoot = getOpenTransaction(0).getDebugName();
             throw new IllegalStateException("A root transaction of `" + currentRoot + "` is already active on this thread " + thread + " when `"
-                    + callerClass + "` tried to open.");
+                    + (callerClass == null ? "N/A" : callerClass) + "` tried to open.");
         }
 
         Transaction current;

@@ -31,12 +31,13 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
-    public FurnaceRecipeProxy(ResourceLocation id) {
+public class FurnaceMachineRecipeType extends ProxyableMachineRecipeType {
+    public FurnaceMachineRecipeType(ResourceLocation id) {
         super(id);
     }
 
     protected void fillRecipeList(Level world, List<RecipeHolder<MachineRecipe>> recipeList) {
+        recipeList.addAll(getManagerRecipes(world));
         for (var smeltingRecipe : world.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
             var recipe = RecipeConversions.ofSmelting(smeltingRecipe, this, world.registryAccess());
             recipeList.add(recipe);

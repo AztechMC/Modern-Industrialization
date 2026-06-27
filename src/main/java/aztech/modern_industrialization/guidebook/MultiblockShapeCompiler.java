@@ -27,6 +27,7 @@ package aztech.modern_industrialization.guidebook;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import guideme.color.SymbolicColor;
 import guideme.compiler.PageCompiler;
 import guideme.compiler.tags.MdxAttrs;
@@ -69,11 +70,13 @@ public class MultiblockShapeCompiler implements SceneElementTagCompiler {
         scene.getLevel().setBlockAndUpdate(controllerPos, controller.getRight().defaultBlockState());
         // Shape blocks
         for (var entry : shape.simpleMembers.entrySet()) {
-            scene.getLevel().setBlockAndUpdate(entry.getKey().offset(controllerPos), entry.getValue().getPreviewState());
+            var pos = ShapeMatcher.toWorldPos(controllerPos, multi.orientation.facingDirection, entry.getKey());
+            scene.getLevel().setBlockAndUpdate(pos, entry.getValue().getPreviewState());
         }
         // Annotations for allowed hatches
         for (var entry : shape.hatchFlags.entrySet()) {
-            var minCorner = Vec3.atLowerCornerOf(entry.getKey().offset(controllerPos));
+            var pos = ShapeMatcher.toWorldPos(controllerPos, multi.orientation.facingDirection, entry.getKey());
+            var minCorner = Vec3.atLowerCornerOf(pos);
             var annotation = new InWorldBoxAnnotation(minCorner.toVector3f(), minCorner.add(1, 1, 1).toVector3f(), SymbolicColor.GREEN);
 
             List<Component> tooltipLines = new ArrayList<>();

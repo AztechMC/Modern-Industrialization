@@ -84,9 +84,11 @@ public class MachineBlock extends Block implements TickableBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        BlockEntity be = level.getBlockEntity(pos);
-        if (be instanceof MachineBlockEntity machine) {
-            machine.openMenu((ServerPlayer) player);
+        if (!level.isClientSide) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof MachineBlockEntity machine) {
+                machine.openMenu((ServerPlayer) player);
+            }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

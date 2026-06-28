@@ -71,7 +71,8 @@ public class MultiblockShapeCompiler implements SceneElementTagCompiler {
         // Shape blocks
         for (var entry : shape.simpleMembers.entrySet()) {
             var pos = ShapeMatcher.toWorldPos(controllerPos, multi.orientation.facingDirection, entry.getKey());
-            scene.getLevel().setBlockAndUpdate(pos, entry.getValue().getPreviewState());
+            var state = ShapeMatcher.toWorldState(scene.getLevel(), pos, entry.getValue().getPreviewState(), multi.orientation.facingDirection);
+            scene.getLevel().setBlockAndUpdate(pos, state);
         }
         // Annotations for allowed hatches
         for (var entry : shape.hatchFlags.entrySet()) {

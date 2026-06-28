@@ -49,7 +49,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -359,7 +358,25 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 areAllSlotsLocked(inventory.getFluidOutputs());
     }
 
+    private boolean shouldUpdateActiveRecipe() {
+        int currentHash = inventory.hash();
+        if (currentHash == lastInvHash) {
+            if (lastForcedTick == 0) {
+                lastForcedTick = 100;
+            } else {
+                --lastForcedTick;
+                return false;
+            }
+        } else {
+            lastInvHash = currentHash;
+        }
+        return true;
+    }
+
     private boolean updateActiveRecipe() {
+        if (!shouldUpdateActiveRecipe()) {
+            return false;
+        }
         // Only then can we run the iteration over the recipes
         var outputsLocked = areAllOutputSlotsLocked();
         var recipes = getRecipes();
@@ -378,41 +395,27 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 }
             }
         }
-        if (!recipes.isEmpty()) {
-            matchesMultipleRecipes = false;
-            if (newActiveRecipe != null && tryStartRecipe(newActiveRecipe.value())) {
-                // Make sure we recalculate the max efficiency ticks if the recipe changes or if
-                // the efficiency has reached 0 (the latter is to recalculate the efficiency for
-                // 0.3.6 worlds without having to break and replace the machines)
-                if (activeRecipe != newActiveRecipe || efficiencyTicks == 0) {
-                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(newActiveRecipe.value());
-                }
-                activeRecipe = newActiveRecipe;
-                usedEnergy = 0;
-                recipeEnergy = newActiveRecipe.value().getTotalEu();
-                recipeMaxEu = getRecipeMaxEu(newActiveRecipe.value().eu, recipeEnergy, efficiencyTicks);
-                return true;
+        matchesMultipleRecipes = false;
+        if (newActiveRecipe != null && tryStartRecipe(newActiveRecipe.value())) {
+            // Make sure we recalculate the max efficiency ticks if the recipe changes or if
+            // the efficiency has reached 0 (the latter is to recalculate the efficiency for
+            // 0.3.6 worlds without having to break and replace the machines)
+            if (activeRecipe != newActiveRecipe || efficiencyTicks == 0) {
+                maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(newActiveRecipe.value());
             }
+            activeRecipe = newActiveRecipe;
+            usedEnergy = 0;
+            recipeEnergy = newActiveRecipe.value().getTotalEu();
+            recipeMaxEu = getRecipeMaxEu(newActiveRecipe.value().eu, recipeEnergy, efficiencyTicks);
+            return true;
         }
         return false;
     }
 
-    private Collection<RecipeHolder<MachineRecipe>> getRecipes() {
+    private Iterable<RecipeHolder<MachineRecipe>> getRecipes() {
         if (efficiencyTicks > 0) {
             return Collections.singletonList(activeRecipe);
         } else {
-            int currentHash = inventory.hash();
-            if (currentHash == lastInvHash) {
-                if (lastForcedTick == 0) {
-                    lastForcedTick = 100;
-                } else {
-                    --lastForcedTick;
-                    return Collections.emptyList();
-                }
-            } else {
-                lastInvHash = currentHash;
-            }
-
             return getRecipes(behavior.getCrafterWorld(), behavior.recipeType(), inventory.getItemInputs());
         }
     }

@@ -342,15 +342,33 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
     }
 
+    private static boolean areAllSlotsLocked(List<? extends AbstractConfigurableStack> slots) {
+        for (var output : slots) {
+            if (!output.canPlayerLock()) {
+                return true;
+            }
+            if (!output.isPlayerLocked()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean areAllOutputSlotsLocked() {
+        return areAllSlotsLocked(inventory.getItemOutputs()) &&
+                areAllSlotsLocked(inventory.getFluidOutputs());
+    }
+
     private boolean updateActiveRecipe() {
         // Only then can we run the iteration over the recipes
+        var outputsLocked = areAllOutputSlotsLocked();
         var recipes = getRecipes();
         RecipeHolder<MachineRecipe> newActiveRecipe = null;
         for (RecipeHolder<MachineRecipe> recipe : recipes) {
             if (behavior.banRecipe(recipe.value()))
                 continue;
             if (canStartRecipe(recipe.value(), true)) {
-                if (newActiveRecipe != null) {
+                if (newActiveRecipe != null && !outputsLocked) {
                     matchesMultipleRecipes = true;
                     return false;
                 }

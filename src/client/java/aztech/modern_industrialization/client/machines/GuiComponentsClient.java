@@ -31,6 +31,7 @@ import aztech.modern_industrialization.client.machines.guicomponents.EnergyBarCl
 import aztech.modern_industrialization.client.machines.guicomponents.GeneratorMultiblockGuiClient;
 import aztech.modern_industrialization.client.machines.guicomponents.GunpowderOverclockGuiClient;
 import aztech.modern_industrialization.client.machines.guicomponents.LargeTankFluidDisplayClient;
+import aztech.modern_industrialization.client.machines.guicomponents.MachineProblemsDisplayClient;
 import aztech.modern_industrialization.client.machines.guicomponents.NuclearReactorGuiClient;
 import aztech.modern_industrialization.client.machines.guicomponents.ProgressBarClient;
 import aztech.modern_industrialization.client.machines.guicomponents.RecipeEfficiencyBarClient;
@@ -45,6 +46,7 @@ import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.GeneratorMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGui;
 import aztech.modern_industrialization.machines.guicomponents.LargeTankFluidDisplay;
+import aztech.modern_industrialization.machines.guicomponents.MachineProblemsDisplay;
 import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGui;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBar;
@@ -80,6 +82,7 @@ public final class GuiComponentsClient {
         register(CraftingMultiblockGui.TYPE, CraftingMultiblockGuiClient::new);
         register(EnergyBar.TYPE, EnergyBarClient::new);
         register(LargeTankFluidDisplay.TYPE, LargeTankFluidDisplayClient::new);
+        register(MachineProblemsDisplay.TYPE, MachineProblemsDisplayClient::new);
         register(GeneratorMultiblockGui.TYPE, GeneratorMultiblockGuiClient::new);
         register(GunpowderOverclockGui.TYPE, GunpowderOverclockGuiClient::new);
         register(NuclearReactorGui.TYPE, NuclearReactorGuiClient::new);

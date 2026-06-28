@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.machines.gui;
 
+import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotGroup;
 import net.minecraft.world.inventory.Slot;
 
@@ -37,5 +38,10 @@ public interface GuiComponent {
         void addSlotToMenu(Slot slot, SlotGroup slotGroup);
 
         MachineGuiParameters getGuiParams();
+
+        /**
+         * <b>WARNING!</b> Do not modify the inventory on the client. This must be treated as read only.
+         */
+        MIInventory getMachineInventory();
     }
 }

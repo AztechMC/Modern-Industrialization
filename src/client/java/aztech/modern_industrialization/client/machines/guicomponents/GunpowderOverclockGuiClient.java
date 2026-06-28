@@ -55,12 +55,14 @@ public class GunpowderOverclockGuiClient extends GuiComponentClient<GunpowderOve
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+        public boolean renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (data > 0) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), 20, 20, cursorX - x, cursorY - y)) {
                     guiGraphics.renderTooltip(font, formatOverclock(data), cursorX, cursorY);
+                    return true;
                 }
             }
+            return false;
         }
 
         public static Component formatOverclock(int remTick) {

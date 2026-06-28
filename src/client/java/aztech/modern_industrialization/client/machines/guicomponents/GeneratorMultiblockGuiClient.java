@@ -28,6 +28,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.client.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
+import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.GeneratorMultiblockGui;
 import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
@@ -54,18 +55,15 @@ public class GeneratorMultiblockGuiClient extends GuiComponentClient<Unit, Gener
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
             Font font = Minecraft.getInstance().font;
 
-            int deltaY = renderScreenAndStatus(data.isShapeValid(), font, guiGraphics, x, y);
+            int lineWidth = CraftingMultiblockGui.W - 10;
+            int deltaY = renderScreenAndStatus(data.isShapeValid(), false, font, guiGraphics, x, y);
 
             if (data.isShapeValid()) {
                 deltaY += 11;
 
-                guiGraphics.drawString(font, MIText.GeneratorCurrentEu.text(TextHelper.getEuTextTick(data.currentEuGeneration())), x + 10, y + deltaY, 0xFFFFFF,
-                        false);
-                deltaY += 11;
+                deltaY += drawWordWrap(guiGraphics, font, MIText.GeneratorCurrentEu.text(TextHelper.getEuTextTick(data.currentEuGeneration())), x + 10, y + deltaY, 11, 0xFFFFFF, false);
 
-                guiGraphics.drawString(font, MIText.GeneratorMaxEu.text(TextHelper.getEuTextTick(data.maxEuGeneration())), x + 10, y + deltaY, 0xFFFFFF,
-                        false);
-                deltaY += 11;
+                drawWordWrap(guiGraphics, font, MIText.GeneratorMaxEu.text(TextHelper.getEuTextTick(data.maxEuGeneration())), x + 10, y + deltaY, 11, 0xFFFFFF, false);
             }
         }
     }

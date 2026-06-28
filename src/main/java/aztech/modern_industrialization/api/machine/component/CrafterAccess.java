@@ -29,6 +29,8 @@ public interface CrafterAccess {
 
     boolean hasActiveRecipe();
 
+    boolean matchesMultipleRecipes();
+
     float getProgress();
 
     int getEfficiencyTicks();

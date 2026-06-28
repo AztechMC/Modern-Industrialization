@@ -63,11 +63,13 @@ public interface FluidVariant extends TransferVariant<Fluid> {
             .xmap(o -> o.orElse(FluidVariant.blank()), fv -> fv.isBlank() ? Optional.empty() : Optional.of(fv));
     StreamCodec<RegistryFriendlyByteBuf, FluidVariant> STREAM_CODEC = FluidStack.OPTIONAL_STREAM_CODEC.map(FluidVariant::of, fv -> fv.toStack(1));
 
+    FluidVariant BLANK = of(Fluids.EMPTY);
+
     /**
      * Retrieve a blank FluidVariant.
      */
     static FluidVariant blank() {
-        return of(Fluids.EMPTY);
+        return BLANK;
     }
 
     /**

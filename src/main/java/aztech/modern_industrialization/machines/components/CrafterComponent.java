@@ -751,15 +751,15 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                                 return targetItem;
                             }
                         }
-                        // Find the first match that is an item from MI (useful for ingots for example)
+                        // Find the first match that is an item from MI or vanilla (useful for ingots for example)
                         for (Item item : inputItems) {
                             ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-                            if (id.getNamespace().equals(MI.ID)) {
+                            if (id.getNamespace().equals(MI.ID) || id.getNamespace().equals("minecraft")) {
                                 return item;
                             }
                         }
-                        // If there is only one value in the tag, pick that one
-                        if (inputItems.size() == 1) {
+                        // If there are items in the tag, pick the first one
+                        if (!inputItems.isEmpty()) {
                             return inputItems.get(0);
                         }
                         return null;
@@ -789,15 +789,15 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                             }
                         }
                         List<Fluid> inputFluids = input.getInputFluids();
-                        // Find the first match that is an item from MI
+                        // Find the first match that is an item from MI or vanilla
                         for (Fluid fluid : inputFluids) {
                             ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
-                            if (id.getNamespace().equals(MI.ID)) {
+                            if (id.getNamespace().equals(MI.ID) || id.getNamespace().equals("minecraft")) {
                                 return fluid;
                             }
                         }
-                        // If there is only one value in the tag, pick that one
-                        if (inputFluids.size() == 1) {
+                        // If there are fluids in the tag, pick the first one
+                        if (!inputFluids.isEmpty()) {
                             return inputFluids.get(0);
                         }
                         return null;

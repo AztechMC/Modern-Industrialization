@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.machine.component.ItemAccess;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,8 @@ import org.jspecify.annotations.Nullable;
  */
 public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> implements ItemAccess {
     private int adjustedCapacity = 64;
+
+    private @Nullable ItemStack cachedItemStack;
 
     public ConfigurableItemStack() {}
 
@@ -191,6 +194,32 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         return getResource();
     }
 
+    @Override
+    public ItemStack toStack() {
+        if (cachedItemStack == null) {
+            cachedItemStack = ItemAccess.super.toStack();
+        }
+        return cachedItemStack;
+    }
+
+    @Override
+    public void setAmount(long amount) {
+        cachedItemStack = null;
+        super.setAmount(amount);
+    }
+
+    @Override
+    public void setKey(ItemVariant key) {
+        cachedItemStack = null;
+        super.setKey(key);
+    }
+
+    @Override
+    public void revertToSnapshot(ResourceAmount<ItemVariant> ra) {
+        cachedItemStack = null;
+        super.revertToSnapshot(ra);
+    }
+
     public class ConfigurableItemSlot extends HackySlot implements ReiDraggable, BackgroundRenderedSlot {
         private final Predicate<ItemStack> insertPredicate;
         private final Runnable markDirty;
@@ -231,6 +260,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         protected void setRealStack(ItemStack stack) {
             key = ItemVariant.of(stack);
             amount = stack.getCount();
+            cachedItemStack = null;
             notifyListeners();
             markDirty.run();
         }

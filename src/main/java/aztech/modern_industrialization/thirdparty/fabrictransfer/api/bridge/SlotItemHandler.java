@@ -24,14 +24,28 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge;
 
+import aztech.modern_industrialization.inventory.FilledItemStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import com.google.common.primitives.Ints;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jspecify.annotations.Nullable;
 
-public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements IItemHandler {
+public final class SlotItemHandler implements IItemHandler, FilledItemStorage {
+    private final SingleSlotStorage<ItemVariant> storage;
+
+    private @Nullable ItemStack cachedItemStack;
+
+    public SlotItemHandler(SingleSlotStorage<ItemVariant> storage) {
+        this.storage = storage;
+    }
+
+    public SingleSlotStorage<ItemVariant> storage() {
+        return storage;
+    }
+
     @Override
     public int getSlots() {
         return 1;
@@ -39,7 +53,10 @@ public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return storage.getResource().toStack(Ints.saturatedCast(storage.getAmount()));
+        if (cachedItemStack == null) {
+            cachedItemStack = storage.getResource().toStack(Ints.saturatedCast(storage.getAmount()));
+        }
+        return cachedItemStack;
     }
 
     @Override
@@ -51,6 +68,9 @@ public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements
             var inserted = storage.insert(ItemVariant.of(stack), stack.getCount(), tx);
             if (!simulate) {
                 tx.commit();
+                if (inserted > 0) {
+                    cachedItemStack = null;
+                }
             }
             return inserted == 0 ? stack : stack.copyWithCount(stack.getCount() - (int) inserted);
         }
@@ -69,6 +89,9 @@ public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements
             var extracted = storage.extract(resource, amount, tx);
             if (!simulate) {
                 tx.commit();
+                if (extracted > 0) {
+                    cachedItemStack = null;
+                }
             }
             return extracted == 0 ? ItemStack.EMPTY : resource.toStack((int) extracted);
         }
@@ -82,5 +105,10 @@ public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public boolean isFull() {
+        return storage.getAmount() >= storage.getCapacity();
     }
 }

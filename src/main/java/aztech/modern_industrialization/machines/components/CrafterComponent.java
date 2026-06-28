@@ -373,6 +373,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                     return false;
                 }
                 newActiveRecipe = recipe;
+                if (outputsLocked) {
+                    break;
+                }
             }
         }
         if (!recipes.isEmpty()) {

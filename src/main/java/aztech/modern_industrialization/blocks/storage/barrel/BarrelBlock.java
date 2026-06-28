@@ -30,6 +30,7 @@ import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import aztech.modern_industrialization.util.MobSpawning;
+import aztech.modern_industrialization.util.TransferHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -43,6 +44,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
@@ -50,6 +52,21 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
     public BarrelBlock(EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
         super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory, behaviour);
+    }
+
+    private static boolean transferWithItem(ItemStack stack, BarrelBlockEntity barrelBlockEntity, Direction direction, boolean fromItemToBarrel) {
+        if (stack.getItem() instanceof BarrelItem barrelItem) {
+            var itemItemHandler = Capabilities.ItemHandler.ITEM.getCapability(stack, null);
+            var blockItemHandler = Capabilities.ItemHandler.BLOCK.getCapability(
+                    barrelBlockEntity.getLevel(), barrelBlockEntity.getBlockPos(), barrelBlockEntity.getBlockState(),
+                    barrelBlockEntity, direction);
+            var source = fromItemToBarrel ? itemItemHandler : blockItemHandler;
+            var target = fromItemToBarrel ? blockItemHandler : itemItemHandler;
+            if (source != null && target != null) {
+                return TransferHelper.moveAll(source, target, true);
+            }
+        }
+        return false;
     }
 
     private static boolean useBlock(BlockHitResult hitResult, InteractionHand hand, Player player, Level world) {
@@ -65,15 +82,11 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
             }
 
             if (!player.isShiftKeyDown()) {
-                // TODO NEO implement item-item storage API support
-//                if (stack.getItem() instanceof BarrelItem barrelItem) {
-//                    var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
-//                    if (StorageUtil.move(storage, barrelInserter, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
-//                        return true;
-//                    }
-//                }
                 var handItem = player.getItemInHand(hand);
                 if (!handItem.isEmpty()) {
+                    if (transferWithItem(handItem, barrel, hitResult.getDirection(), true)) {
+                        return true;
+                    }
                     try (var tx = Transaction.openRoot()) {
                         long inserted = barrel.insert(ItemVariant.of(handItem), handItem.getCount(), tx, true);
                         if (inserted > 0) {
@@ -114,13 +127,9 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
             if (!barrel.isEmpty()) {
                 ItemStack stack = player.getItemInHand(hand);
 
-                // TODO NEO implement item-item storage API support
-//                if (stack.getItem() instanceof BarrelItem barrelItem) {
-//                    var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
-//                    if (StorageUtil.move(barrel, storage, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
-//                        return InteractionResult.sidedSuccess(world.isClientSide);
-//                    }
-//                }
+                if (transferWithItem(stack, barrel, direction, false)) {
+                    return true;
+                }
 
                 try (Transaction transaction = Transaction.openRoot()) {
                     ItemVariant extractedResource = barrel.getResource();

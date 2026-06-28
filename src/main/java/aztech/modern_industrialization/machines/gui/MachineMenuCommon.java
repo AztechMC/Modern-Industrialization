@@ -77,6 +77,11 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
     }
 
     @Override
+    public MIInventory getMachineInventory() {
+        return inventory;
+    }
+
+    @Override
     public MachineGuiParameters getGuiParams() {
         return guiParams;
     }

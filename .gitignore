@@ -32,3 +32,6 @@ runs/
 
 # nix os
 shell.nix
+
+# environment variables
+.env

@@ -64,7 +64,7 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+        public boolean renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                 List<Component> tooltip = new ArrayList<>();
                 if (data.hasActiveRecipe()) {
@@ -81,7 +81,9 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
                 tooltip.add(MIText.EfficiencyMaxOverclock.text(data.maxRecipeEu()));
 
                 guiGraphics.renderTooltip(font, tooltip, Optional.empty(), cursorX, cursorY);
+                return true;
             }
+            return false;
         }
     }
 }

@@ -34,6 +34,7 @@ import aztech.modern_industrialization.machines.components.MachineInventoryCompo
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
+import aztech.modern_industrialization.machines.guicomponents.MachineProblemsDisplay;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.machines.init.MachineTier;
@@ -55,6 +56,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
         this.isActiveComponent = new IsActiveComponent();
         registerGuiComponent(new AutoExtract(orientation));
         registerGuiComponent(new ProgressBar(progressBarParams, crafter::getProgress));
+        registerGuiComponent(new MachineProblemsDisplay(crafter::matchesMultipleRecipes));
         registerGuiComponent(new ReiSlotLocking(crafter::lockRecipe, () -> true));
         this.registerComponents(crafter, this.inventory, isActiveComponent);
     }

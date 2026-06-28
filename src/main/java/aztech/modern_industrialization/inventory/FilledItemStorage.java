@@ -22,22 +22,14 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.api.machine.component;
+package aztech.modern_industrialization.inventory;
 
-public interface CrafterAccess {
-    InventoryAccess getInventory();
+import net.neoforged.neoforge.items.IItemHandler;
 
-    boolean hasActiveRecipe();
+public interface FilledItemStorage {
+    static boolean isFull(IItemHandler handler) {
+        return handler instanceof FilledItemStorage filled && filled.isFull();
+    }
 
-    boolean matchesMultipleRecipes();
-
-    float getProgress();
-
-    int getEfficiencyTicks();
-
-    int getMaxEfficiencyTicks();
-
-    long getBaseRecipeEu();
-
-    long getCurrentRecipeEu();
+    boolean isFull();
 }

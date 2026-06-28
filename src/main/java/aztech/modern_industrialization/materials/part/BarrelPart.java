@@ -37,6 +37,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotItemHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -96,6 +97,9 @@ public class BarrelPart implements PartKeyProvider {
 
                     MICapabilities.onEvent(event -> {
                         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet.getValue(), (be, side) -> new SlotItemHandler(be));
+
+                        var item = (BarrelItem) blockDefinition.asItem();
+                        event.registerItem(Capabilities.ItemHandler.ITEM, (stack, ignored) -> new ContainerItem.ItemHandler(stack, item), item);
                     });
 
                     MICommonProxy.INSTANCE.registerPartBarrelClient(bet::getValue, partContext.get(MEAN_RGB));

@@ -29,7 +29,7 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.CentrifugeMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
-import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
+import aztech.modern_industrialization.machines.recipe.FurnaceMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +48,7 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType CUTTING_MACHINE = create("cutting_machine", CuttingMachineRecipeType::new).withItemInputs().withFluidInputs().withItemOutputs();
     public static final MachineRecipeType DISTILLERY = create("distillery").withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType ELECTROLYZER = create("electrolyzer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
-    public static final MachineRecipeType FURNACE = create("furnace", FurnaceRecipeProxy::new);
+    public static final MachineRecipeType FURNACE = create("furnace", FurnaceMachineRecipeType::new).withItemInputs().withItemOutputs();
     public static final MachineRecipeType MACERATOR = create("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType MIXER = create("mixer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType PACKER = create("packer").withItemInputs().withItemOutputs();

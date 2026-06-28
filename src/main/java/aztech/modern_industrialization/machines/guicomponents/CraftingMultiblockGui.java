@@ -66,7 +66,7 @@ public class CraftingMultiblockGui implements GuiComponentServer<Unit, CraftingM
         } else {
             activeRecipe = Optional.empty();
         }
-        return new Data(shapeValid, activeRecipe, remainingOverclockTicks.getAsInt());
+        return new Data(shapeValid, crafter.matchesMultipleRecipes(), activeRecipe, remainingOverclockTicks.getAsInt());
     }
 
     @Override
@@ -74,10 +74,12 @@ public class CraftingMultiblockGui implements GuiComponentServer<Unit, CraftingM
         return TYPE;
     }
 
-    public record Data(boolean isShapeValid, Optional<RecipeData> activeRecipe, int remainingOverclockTicks) {
+    public record Data(boolean isShapeValid, boolean matchesMultipleRecipes, Optional<RecipeData> activeRecipe, int remainingOverclockTicks) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.BOOL,
                 Data::isShapeValid,
+                ByteBufCodecs.BOOL,
+                Data::matchesMultipleRecipes,
                 ByteBufCodecs.optional(RecipeData.STREAM_CODEC),
                 Data::activeRecipe,
                 ByteBufCodecs.VAR_INT,
@@ -103,5 +105,5 @@ public class CraftingMultiblockGui implements GuiComponentServer<Unit, CraftingM
     public static final int X = 5;
     public static final int Y = 16;
     public static final int W = 166;
-    public static final int H = 80;
+    public static final int H = 83;
 }

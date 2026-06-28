@@ -163,6 +163,8 @@ public enum MIText {
     LockingModeOn("Lock editing enabled"),
     LubricantTooltip("%s on Electric Machine: consume %s mb for 1 efficiency tick"),
     MachineCasingVoltage("Allows machines to accept %s power"),
+    MachineMultipleRecipes1("The inputs match more than one possible recipe."),
+    MachineMultipleRecipes2("Lock all output slots with at least one locked to the desired output."),
     MachineUpgrade("Electric Machine Upgrade: Max Overclock +%s"),
     MachineUpgradeStack("Total Stack Upgrade +%s"),
     MaxEuProduction("Can produce up to %s"),

@@ -191,10 +191,12 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         // Normal render - handles background and slots
         super.render(guiGraphics, mouseX, mouseY, delta);
         // Tooltips
-        renderConfigurableSlotTooltips(guiGraphics, mouseX, mouseY);
         for (ClientComponentRenderer renderer : renderers) {
-            renderer.renderTooltip(this, font, guiGraphics, leftPos, topPos, mouseX, mouseY);
+            if (renderer.renderTooltip(this, font, guiGraphics, leftPos, topPos, mouseX, mouseY)) {
+                return;
+            }
         }
+        renderConfigurableSlotTooltips(guiGraphics, mouseX, mouseY);
     }
 
     private FormattedCharSequence titleToRender() {

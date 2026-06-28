@@ -96,7 +96,7 @@ public final class MIInventory implements MachineComponent {
         }
 
         var target = outputCache.getCapability();
-        if (target != null) {
+        if (target != null && !FilledItemStorage.isFull(target)) {
             TransferHelper.moveAll(itemStorage.itemHandler, target, true);
         }
     }
@@ -112,7 +112,7 @@ public final class MIInventory implements MachineComponent {
     public void autoInsertItems(Level world, BlockPos pos, Direction direction) {
         IItemHandler target = world.getCapability(Capabilities.ItemHandler.BLOCK, pos.relative(direction), direction.getOpposite());
 
-        if (target != null) {
+        if (target != null && !FilledItemStorage.isFull(itemStorage.itemHandler)) {
             TransferHelper.moveAll(target, itemStorage.itemHandler, false);
         }
     }

@@ -1150,6 +1150,8 @@
   "modern_industrialization.configuration.stonecutterToCuttingMachine": "Stonecutter cutting machine recipes",
   "modern_industrialization.configuration.stonecutterToCuttingMachine.tooltip": "Generate cutting machine recipes for all stonecutter recipes.",
   "modern_industrialization.configuration.tooltips": "Tooltips",
+  "modern_industrialization.configuration.transactionCallerName": "Include Transaction Caller Name",
+  "modern_industrialization.configuration.transactionCallerName.tooltip": "Enable to have transfer transactions include the name of the class that called it. Note that this comes at the cost of performance. It is recommended to not use this outside of debugging.",
   "rei_categories.modern_industrialization.assembler": "Assembler",
   "rei_categories.modern_industrialization.bronze_compressor": "Compressor",
   "rei_categories.modern_industrialization.bronze_cutting_machine": "Cutting Machine",

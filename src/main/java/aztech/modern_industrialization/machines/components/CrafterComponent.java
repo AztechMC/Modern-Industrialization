@@ -379,12 +379,11 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
         // Only then can we run the iteration over the recipes
         var outputsLocked = areAllOutputSlotsLocked();
-        var recipes = getRecipes();
         RecipeHolder<MachineRecipe> newActiveRecipe = null;
-        for (RecipeHolder<MachineRecipe> recipe : recipes) {
+        for (RecipeHolder<MachineRecipe> recipe : getRecipes()) {
             if (behavior.banRecipe(recipe.value()))
                 continue;
-            if (canStartRecipe(recipe.value(), true)) {
+            if (canStartRecipe(recipe.value())) {
                 if (newActiveRecipe != null) {
                     matchesMultipleRecipes = true;
                     return false;
@@ -430,9 +429,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         return recipes;
     }
 
-    private boolean canStartRecipe(MachineRecipe recipe, boolean ignoreConditions) {
+    private boolean canStartRecipe(MachineRecipe recipe) {
         return takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false)
-                && putFluidOutputs(recipe, true, false) && (ignoreConditions || recipe.conditionsMatch(conditionContext));
+                && putFluidOutputs(recipe, true, false) && recipe.conditionsMatch(conditionContext);
     }
 
     /**
@@ -440,7 +439,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
      * nothing was changed.
      */
     private boolean tryStartRecipe(MachineRecipe recipe) {
-        if (canStartRecipe(recipe, false)) {
+        if (canStartRecipe(recipe)) {
             takeItemInputs(recipe, false);
             takeFluidInputs(recipe, false);
             putItemOutputs(recipe, true, true);

@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge;
 
+import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
 import aztech.modern_industrialization.inventory.FilledItemStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
@@ -31,14 +32,11 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import com.google.common.primitives.Ints;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jspecify.annotations.Nullable;
 
 public final class SlotItemHandler implements IItemHandler, FilledItemStorage {
-    private final SingleSlotStorage<ItemVariant> storage;
+    private final AbstractStorageBlockEntity<ItemVariant> storage;
 
-    private @Nullable ItemStack cachedItemStack;
-
-    public SlotItemHandler(SingleSlotStorage<ItemVariant> storage) {
+    public SlotItemHandler(AbstractStorageBlockEntity<ItemVariant> storage) {
         this.storage = storage;
     }
 
@@ -53,10 +51,7 @@ public final class SlotItemHandler implements IItemHandler, FilledItemStorage {
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        if (cachedItemStack == null) {
-            cachedItemStack = storage.getResource().toStack(Ints.saturatedCast(storage.getAmount()));
-        }
-        return cachedItemStack;
+        return storage.getItemStack();
     }
 
     @Override
@@ -68,9 +63,6 @@ public final class SlotItemHandler implements IItemHandler, FilledItemStorage {
             var inserted = storage.insert(ItemVariant.of(stack), stack.getCount(), tx);
             if (!simulate) {
                 tx.commit();
-                if (inserted > 0) {
-                    cachedItemStack = null;
-                }
             }
             return inserted == 0 ? stack : stack.copyWithCount(stack.getCount() - (int) inserted);
         }
@@ -89,9 +81,6 @@ public final class SlotItemHandler implements IItemHandler, FilledItemStorage {
             var extracted = storage.extract(resource, amount, tx);
             if (!simulate) {
                 tx.commit();
-                if (extracted > 0) {
-                    cachedItemStack = null;
-                }
             }
             return extracted == 0 ? ItemStack.EMPTY : resource.toStack((int) extracted);
         }

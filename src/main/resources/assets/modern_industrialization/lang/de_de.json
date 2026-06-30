@@ -127,7 +127,7 @@
   "advancements.modern_industrialization.steel_packer": "Packen oder nicht Packen",
   "advancements.modern_industrialization.steel_packer.description": "Stelle einen Stahlverpacker",
   "advancements.modern_industrialization.steel_wiremill": "Weder Draht noch Mühle",
-  "advancements.modern_industrialization.steel_wiremill.description": "Stelle eine Stahldrahtmühle",
+  "advancements.modern_industrialization.steel_wiremill.description": "Stelle eine Stahldrahtmühle her",
   "advancements.modern_industrialization.superconductor_cable": "Unendlich Strom (-übertragung)",
   "advancements.modern_industrialization.superconductor_cable.description": "Stelle einen Superleiter her, um eine unbegrenzte Menge Strom zu übertragen",
   "advancements.modern_industrialization.titanium_ingot": "Stahl, aber Pink",
@@ -243,5 +243,6 @@
   "block.modern_industrialization.fire_clay_bricks": "Schamottesteine",
   "block.modern_industrialization.forge_hammer": "Schmiedehammer",
   "block.modern_industrialization.frostproof_machine_casing": "Frostfestes Maschinengehäuse",
-  "block.modern_industrialization.fusion_chamber": "Fusionskammer"
+  "block.modern_industrialization.fusion_chamber": "Fusionskammer",
+  "block.modern_industrialization.fusion_reactor": "Fusionsreaktor"
 }

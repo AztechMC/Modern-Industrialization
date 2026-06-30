@@ -49,9 +49,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.core.HolderLookup;
@@ -419,8 +422,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
     }
 
-    public static List<RecipeHolder<MachineRecipe>> getRecipes(ServerLevel level, MachineRecipeType recipeType, List<ConfigurableItemStack> itemInputs) {
-        List<RecipeHolder<MachineRecipe>> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(level));
+    public static Collection<RecipeHolder<MachineRecipe>> getRecipes(ServerLevel level, MachineRecipeType recipeType, List<ConfigurableItemStack> itemInputs) {
+        Set<RecipeHolder<MachineRecipe>> recipes = new HashSet<>(recipeType.getFluidOnlyRecipes(level));
         for (ConfigurableItemStack stack : itemInputs) {
             if (!stack.isEmpty()) {
                 recipes.addAll(recipeType.getMatchingRecipes(level, stack.getResource().getItem()));

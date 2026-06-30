@@ -1,4 +1,4 @@
-// 1.21.1	2025-11-18T00:08:48.8815209	Tags for minecraft:block mod id modern_industrialization
+// 1.21.1	2026-06-30T18:58:33.679616329	Tags for minecraft:block mod id modern_industrialization
 ef72297aa0ecfbc2672c0b74167d4bf1fa4b262e data/c/tags/block/ores.json
 b74bc7a6e8507c54ded11660bf60f4e7e06910a0 data/c/tags/block/ores/antimony.json
 692748c1f1e0425903fdf4da21c318c4c4a739bb data/c/tags/block/ores/bauxite.json
@@ -34,9 +34,9 @@ a07bc99550a5f22ae8c034dfd76a218e06d6f281 data/c/tags/block/storage_blocks/cupron
 ef5a7542e9a39ab06ef301b8caf4f03dc43df274 data/c/tags/block/storage_blocks/invar.json
 d8d2e0fd7132941e97fe43e10dc069048097892b data/c/tags/block/storage_blocks/iridium.json
 1af9f73a30bdce081a2d9022cbd8fd919c91e62d data/c/tags/block/storage_blocks/kanthal.json
-da35dcdccad336e61f9675e9caafa9e4ccd46906 data/c/tags/block/storage_blocks/lead.json
 332ea4c53c2351e6dc3437abde6f8d020534455a data/c/tags/block/storage_blocks/le_mox.json
 b75854399554c0764681abfd26348019b7fe3cf8 data/c/tags/block/storage_blocks/le_uranium.json
+da35dcdccad336e61f9675e9caafa9e4ccd46906 data/c/tags/block/storage_blocks/lead.json
 6debab1bcdeebaf0d6889447db6d5fd8c6722fd0 data/c/tags/block/storage_blocks/lignite_coal.json
 dffa0c54b842ea1509aacb8d173178b31ea9354c data/c/tags/block/storage_blocks/monazite.json
 873e03d88fff2fc07ad71513381837dfcb529a3b data/c/tags/block/storage_blocks/neodymium.json
@@ -72,3 +72,4 @@ ba09e47df7025bb1c4d4a072a54ce0b2e307f003 data/c/tags/block/storage_blocks/yttriu
 0598637f8fa446913456c69504f5c6bc1a6b19f1 data/minecraft/tags/block/needs_stone_tool.json
 2f4942034efc4f0ca583b4947ecf67ae3ee08540 data/modern_industrialization/tags/block/barrels.json
 ed3e8137fcabedef6118d8d5980c348ad5ef1d22 data/modern_industrialization/tags/block/tanks.json
+04cebeb2d742fe55d77908d1bb3829e25f9a8549 data/modern_industrialization/tags/block/transparent_pipe_camouflage.json

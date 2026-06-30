@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.MobSpawning;
@@ -86,6 +87,13 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                 // We still implement an occlusion check in hidesNeighborFace.
                 .noOcclusion());
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(CAMOUFLAGED, false));
+    }
+
+    private static boolean isOpaqueCamouflage(BlockGetter level, BlockState state, BlockPos pos) {
+        return state.getValue(CAMOUFLAGED) &&
+                level.getBlockEntity(pos) instanceof PipeBlockEntity pipe &&
+                pipe.hasCamouflage() &&
+                !pipe.camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE);
     }
 
     @Override
@@ -268,7 +276,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     @SuppressWarnings("deprecation")
     @Override
     public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-        return state.getValue(CAMOUFLAGED) ? world.getMaxLightLevel() : 0;
+        return state.getValue(CAMOUFLAGED) && world.getBlockEntity(pos) instanceof PipeBlockEntity be && be.hasCamouflage() ? be.camouflage.getLightBlock(world, pos) : 0;
     }
 
     @Override
@@ -287,7 +295,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(CAMOUFLAGED) ? Shapes.block() : Shapes.empty();
+        return isOpaqueCamouflage(level, state, pos) ? Shapes.block() : Shapes.empty();
     }
 
     @Override
@@ -340,6 +348,6 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     @Override
     public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
         // If we are a full block, we should always be able to occlude...
-        return !MIPipes.transparentCamouflage && state.getValue(CAMOUFLAGED);
+        return !MIPipes.transparentCamouflage && isOpaqueCamouflage(level, state, pos);
     }
 }

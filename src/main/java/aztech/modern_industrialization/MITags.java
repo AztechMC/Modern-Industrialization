@@ -25,9 +25,11 @@
 package aztech.modern_industrialization;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 public class MITags {
     public static final TagKey<Item> WRENCHES = item("tools/wrench");
@@ -44,5 +46,11 @@ public class MITags {
 
     public static TagKey<Item> miItem(String path) {
         return TagKey.create(BuiltInRegistries.ITEM.key(), MI.id(path));
+    }
+
+    public static final TagKey<Block> TRANSPARENT_PIPE_CAMOUFLAGE = miBlock("transparent_pipe_camouflage");
+
+    public static TagKey<Block> miBlock(String path) {
+        return TagKey.create(Registries.BLOCK, MI.id(path));
     }
 }

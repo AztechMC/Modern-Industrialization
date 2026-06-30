@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.client.pipes.impl;
 
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.client.thirdparty.fabricrendering.ModelHelper;
 import aztech.modern_industrialization.client.thirdparty.fabricrendering.SpriteFinder;
@@ -90,7 +91,7 @@ public class PipeBakedModel implements IDynamicBakedModel {
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         var attachment = data.get(PipeBlockEntity.RenderAttachment.KEY);
 
-        if (attachment == null || attachment.camouflage() == null) {
+        if (attachment == null || attachment.camouflage() == null || attachment.camouflage().is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE)) {
             return RENDER_TYPES_NORMAL;
         } else {
             return ChunkRenderTypeSet.all();
@@ -114,7 +115,7 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
         var camouflage = attachment.camouflage();
 
-        if (camouflage == null || MIPipes.transparentCamouflage) {
+        if (camouflage == null || camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE) || MIPipes.transparentCamouflage) {
             var renderNormal = checkRenderType(RenderType.cutout(), renderType);
             var renderFluid = checkRenderType(RenderType.translucent(), renderType);
 

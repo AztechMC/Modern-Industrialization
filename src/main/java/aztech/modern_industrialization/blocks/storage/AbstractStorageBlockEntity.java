@@ -27,12 +27,14 @@ package aztech.modern_industrialization.blocks.storage;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.SnapshotJournal;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
+import com.google.common.primitives.Ints;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -45,6 +47,7 @@ import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,6 +65,9 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     protected long amount;
     private long version;
     private boolean isLocked;
+
+    // Only used when T extends ItemVariant
+    private @Nullable ItemStack cachedItemStack;
 
     public final StorageBehaviour<T> behaviour;
 
@@ -122,6 +128,16 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         return !behaviour.isCreative();
     }
 
+    public ItemStack getItemStack() {
+        if (cachedItemStack == null) {
+            if (!(resource instanceof ItemVariant itemResource)) {
+                throw new IllegalStateException("Cannot get ItemStack of non-item storage");
+            }
+            cachedItemStack = amount == 0 ? ItemStack.EMPTY : itemResource.toStack(Ints.saturatedCast(amount));
+        }
+        return cachedItemStack;
+    }
+
     public long insert(T resource, long maxAmount, TransactionContext transaction, boolean ignoreLock) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
@@ -135,6 +151,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
                 participant.updateSnapshots(transaction);
                 amount += inserted;
                 this.resource = resource;
+                cachedItemStack = null;
             }
             return inserted;
         }
@@ -161,6 +178,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
                     if (amount == 0 && !isLocked()) {
                         this.resource = getBlankResource();
                     }
+                    cachedItemStack = null;
                 }
                 return extracted;
             }
@@ -213,6 +231,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         protected void revertToSnapshot(ResourceAmount<T> snapshot) {
             resource = snapshot.resource();
             amount = snapshot.amount();
+            cachedItemStack = null;
         }
 
         @Override
@@ -256,6 +275,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             if (!behaviour.isCreative()) {
                 amount = storage.amount();
             }
+            cachedItemStack = null;
         }
     }
 
@@ -291,6 +311,8 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
                 amount = 0;
             }
         }
+
+        cachedItemStack = null;
     }
 
     @Override
@@ -307,6 +329,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
 
     public void setResource(T resource) {
         this.resource = resource;
+        cachedItemStack = null;
     }
 
     public abstract DataComponentType<ResourceStorage<T>> componentType();

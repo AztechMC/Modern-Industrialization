@@ -298,6 +298,11 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
             var newState = getBlockState().setValue(PipeBlock.CAMOUFLAGED, hasCamouflage());
             if (hasCamouflage()) {
                 newState = newState.setValue(PipeBlock.WATERLOGGED, false); // sorry not sorry
+                if (camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE)) {
+                    newState = newState.setValue(PipeBlock.TRANSPARENT, true);
+                }
+            } else {
+                newState = newState.setValue(PipeBlock.TRANSPARENT, false);
             }
             level.setBlockAndUpdate(worldPosition, newState);
         }
@@ -582,27 +587,23 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
     }
 
     private void rebuildCollisionShape() {
-        if (camouflage != null) {
-            currentCollisionShape = Shapes.block();
-        } else {
-            currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(Shapes.empty(), Shapes::or);
+        currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(Shapes.empty(), Shapes::or);
 
-            for (Direction direction : Direction.values()) {
-                boolean renderConnector = false;
-                for (var entry : connections.entrySet()) {
-                    var conn = entry.getValue()[direction.get3DDataValue()];
-                    if (conn == PipeEndpointType.BLOCK && entry.getKey().getIdentifier().getPath().endsWith("me_wire")) {
-                        renderConnector = true;
-                    }
-                }
-
-                if (renderConnector) {
-                    currentCollisionShape = Shapes.or(currentCollisionShape, ME_WIRE_CONNECTOR_SHAPES[direction.get3DDataValue()]);
+        for (Direction direction : Direction.values()) {
+            boolean renderConnector = false;
+            for (var entry : connections.entrySet()) {
+                var conn = entry.getValue()[direction.get3DDataValue()];
+                if (conn == PipeEndpointType.BLOCK && entry.getKey().getIdentifier().getPath().endsWith("me_wire")) {
+                    renderConnector = true;
                 }
             }
 
-            currentCollisionShape = currentCollisionShape.optimize();
+            if (renderConnector) {
+                currentCollisionShape = Shapes.or(currentCollisionShape, ME_WIRE_CONNECTOR_SHAPES[direction.get3DDataValue()]);
+            }
         }
+
+        currentCollisionShape = currentCollisionShape.optimize();
     }
 
     static {
@@ -610,7 +611,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
         SHAPE_CACHE = new VoxelShape[3][6][5];
         for (int slot = 0; slot < 3; slot++) {
             for (Direction direction : Direction.values()) {
-                int connectionTypes = slot == 0 ? 2 : slot == 1 ? 4 : 5;
+                int connectionTypes = slot == 0 ? 2 : (slot == 1 ? 4 : 5);
                 for (int connectionType = 0; connectionType < connectionTypes; connectionType++) {
                     PipeShapeBuilder psb = new PipeShapeBuilder(PipePartBuilder.getSlotPos(slot), direction);
                     if (connectionType == 0)

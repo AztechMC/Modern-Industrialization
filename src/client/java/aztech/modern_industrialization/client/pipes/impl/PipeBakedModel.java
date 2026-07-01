@@ -119,50 +119,44 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
         var camouflage = attachment.camouflage();
 
-        if (camouflage == null || camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE) || MIPipes.transparentCamouflage) {
-            var renderNormal = checkRenderType(RenderType.cutout(), renderType);
-            var renderFluid = checkRenderType(RenderType.translucent(), renderType);
+        if ((camouflage == null || camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE) || MIPipes.transparentCamouflage) &&
+                checkRenderType(RenderType.cutout(), renderType)) {
+            var renderContext = new PipeRenderContext(spriteFinder, true, true);
+            ret = renderContext.quads;
 
-            if (renderNormal || renderFluid) {
-                var renderContext = new PipeRenderContext(spriteFinder, renderNormal, renderFluid);
-                ret = renderContext.quads;
+            int centerSlots = attachment.types().length;
+            for (int slot = 0; slot < centerSlots; slot++) {
+                // Set color
+                int color = attachment.types()[slot].getColor();
+                renderContext.pushTransform(getColorTransform(color));
 
-                int centerSlots = attachment.types().length;
-                for (int slot = 0; slot < centerSlots; slot++) {
-                    // Set color
-                    int color = attachment.types()[slot].getColor();
-                    renderContext.pushTransform(getColorTransform(color));
+                renderers.get(PipeRenderer.get(attachment.types()[slot])).draw(extraData.level(), extraData.pos(), renderContext, slot,
+                        attachment.renderedConnections(), attachment.customData()[slot]);
 
-                    renderers.get(PipeRenderer.get(attachment.types()[slot])).draw(extraData.level(), extraData.pos(), renderContext, slot,
-                            attachment.renderedConnections(), attachment.customData()[slot]);
-
-                    renderContext.popTransform();
-                }
+                renderContext.popTransform();
             }
 
-            if (renderNormal) {
-                boolean hasMeWire = false;
-                if (meWireConnectors != null) {
-                    for (var type : attachment.types()) {
-                        if (type.getIdentifier().getPath().endsWith("me_wire")) {
-                            hasMeWire = true;
-                        }
+            boolean hasMeWire = false;
+            if (meWireConnectors != null) {
+                for (var type : attachment.types()) {
+                    if (type.getIdentifier().getPath().endsWith("me_wire")) {
+                        hasMeWire = true;
                     }
                 }
-                if (hasMeWire) {
-                    // Render connector if needed
-                    for (var direction : Direction.values()) {
-                        boolean renderConnector = false;
-                        for (int slot = 0; slot < attachment.types().length; ++slot) {
-                            var conn = attachment.renderedConnections()[slot][direction.get3DDataValue()];
-                            if (conn == PipeEndpointType.BLOCK && attachment.types()[slot].getIdentifier().getPath().endsWith("me_wire")) {
-                                renderConnector = true;
-                            }
+            }
+            if (hasMeWire) {
+                // Render connector if needed
+                for (var direction : Direction.values()) {
+                    boolean renderConnector = false;
+                    for (int slot = 0; slot < attachment.types().length; ++slot) {
+                        var conn = attachment.renderedConnections()[slot][direction.get3DDataValue()];
+                        if (conn == PipeEndpointType.BLOCK && attachment.types()[slot].getIdentifier().getPath().endsWith("me_wire")) {
+                            renderConnector = true;
                         }
+                    }
 
-                        if (renderConnector) {
-                            ret.addAll(meWireConnectors[direction.get3DDataValue()].getQuads(state, side, rand, data, renderType));
-                        }
+                    if (renderConnector) {
+                        ret.addAll(meWireConnectors[direction.get3DDataValue()].getQuads(state, side, rand, data, renderType));
                     }
                 }
             }

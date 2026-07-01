@@ -347,7 +347,26 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @Override
     public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
-        // If we are a full block, we should always be able to occlude...
-        return !MIPipes.transparentCamouflage && isOpaqueCamouflage(level, state, pos);
+        if (!(level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) ||
+                !pipe.hasCamouflage()) {
+            return false;
+        }
+        // Always hide neighbor faces when camo is opaque
+        if (!pipe.camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE)) {
+            return true;
+        }
+        var neighborPos = pos.relative(dir);
+        if (neighborState.is(state.getBlock()) && neighborState.getValue(CAMOUFLAGED)) {
+            // Hide all neighbor pipe camo faces when in transparent camouflage mode
+            if (MIPipes.transparentCamouflage) {
+                return true;
+            }
+            if (!(level.getBlockEntity(neighborPos) instanceof PipeBlockEntity neighborPipe)) {
+                return false;
+            }
+            return neighborPipe.hasCamouflage() &&
+                    neighborPipe.camouflage.skipRendering(pipe.camouflage, dir.getOpposite());
+        }
+        return neighborState.skipRendering(pipe.camouflage, dir.getOpposite());
     }
 }

@@ -90,11 +90,15 @@ public class PipeBakedModel implements IDynamicBakedModel {
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         var attachment = data.get(PipeBlockEntity.RenderAttachment.KEY);
+        var extraData = data.get(ExtraData.KEY);
 
-        if (attachment == null || attachment.camouflage() == null || attachment.camouflage().is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE)) {
+        if (attachment == null || attachment.camouflage() == null || extraData == null) {
             return RENDER_TYPES_NORMAL;
         } else {
-            return ChunkRenderTypeSet.all();
+            var camouflage = attachment.camouflage();
+            var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
+            var camouflageModelData = camouflageModel.getModelData(extraData.level(), extraData.pos(), camouflage, ModelData.EMPTY);
+            return ChunkRenderTypeSet.union(RENDER_TYPES_NORMAL, camouflageModel.getRenderTypes(camouflage, rand, camouflageModelData));
         }
     }
 
@@ -187,35 +191,38 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
             var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
             var camouflageModelData = camouflageModel.getModelData(extraData.level(), extraData.pos(), camouflage, ModelData.EMPTY);
+            var camouflageModelRenderTypes = camouflageModel.getRenderTypes(camouflage, rand, camouflageModelData);
 
-            for (var quad : camouflageModel.getQuads(camouflage, side, rand, camouflageModelData, renderType)) {
-                if (quad.isTinted() || MIPipes.transparentCamouflage) {
-                    // Copy quad to modify inner data
-                    int[] quadData = quad.getVertices().clone();
+            if (camouflageModelRenderTypes.contains(renderType)) {
+                for (var quad : camouflageModel.getQuads(camouflage, side, rand, camouflageModelData, renderType)) {
+                    if (quad.isTinted() || MIPipes.transparentCamouflage) {
+                        // Copy quad to modify inner data
+                        int[] quadData = quad.getVertices().clone();
 
-                    // Fix tinting
-                    if (quad.isTinted()) {
-                        var blockColorMap = Minecraft.getInstance().getBlockColors();
-                        int color = 0xFF000000 | blockColorMap.getColor(camouflage, extraData.level(), extraData.pos(), quad.getTintIndex());
+                        // Fix tinting
+                        if (quad.isTinted()) {
+                            var blockColorMap = Minecraft.getInstance().getBlockColors();
+                            int color = 0xFF000000 | blockColorMap.getColor(camouflage, extraData.level(), extraData.pos(), quad.getTintIndex());
 
-                        for (int vertex = 0; vertex < 4; vertex++) {
-                            setColor(quadData, vertex, multiplyColor(color, getColor(quadData, vertex)));
+                            for (int vertex = 0; vertex < 4; vertex++) {
+                                setColor(quadData, vertex, multiplyColor(color, getColor(quadData, vertex)));
+                            }
                         }
+
+                        if (MIPipes.transparentCamouflage) {
+                            for (int vertex = 0; vertex < 4; ++vertex) {
+                                setColor(quadData, vertex, multiplyColor(0x9FFFFFFF, getColor(quadData, vertex)));
+                            }
+                        }
+
+                        quad = new BakedQuad(quadData, -1, quad.getDirection(), quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
                     }
 
-                    if (MIPipes.transparentCamouflage) {
-                        for (int vertex = 0; vertex < 4; ++vertex) {
-                            setColor(quadData, vertex, multiplyColor(0x9FFFFFFF, getColor(quadData, vertex)));
-                        }
+                    if (ret == null) {
+                        ret = new ArrayList<>();
                     }
-
-                    quad = new BakedQuad(quadData, -1, quad.getDirection(), quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
+                    ret.add(quad);
                 }
-
-                if (ret == null) {
-                    ret = new ArrayList<>();
-                }
-                ret.add(quad);
             }
         }
 

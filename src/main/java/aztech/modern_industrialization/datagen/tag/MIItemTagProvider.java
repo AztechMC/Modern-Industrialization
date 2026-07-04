@@ -37,7 +37,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
@@ -64,9 +63,9 @@ public class MIItemTagProvider extends ItemTagsProvider {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
             for (var item : entry.getValue()) {
                 if (optional) {
-                    tag(entry.getKey()).addOptional(item);
+                    tag(entry.getKey()).addOptional(k(item));
                 } else {
-                    tag(entry.getKey()).add(item);
+                    tag(entry.getKey()).add(k(item));
                 }
             }
         }
@@ -80,37 +79,42 @@ public class MIItemTagProvider extends ItemTagsProvider {
         for (var goldenItem : MIMaterials.GOLD.getParts().values()) {
             String namespace = goldenItem.getItemId().split(":")[0];
             if (!Objects.equals(namespace, "minecraft")) {
-                tag(ItemTags.PIGLIN_LOVED).add(goldenItem.asItem());
+                tag(ItemTags.PIGLIN_LOVED).add(k(goldenItem.asItem()));
             }
         }
 
         tag(ReplicatorMachineBlockEntity.BLACKLISTED)
-                .add(Items.BUNDLE, MIItem.PORTABLE_STORAGE_UNIT.asItem())
+                .add(k(Items.BUNDLE), k(MIItem.PORTABLE_STORAGE_UNIT.asItem()))
                 .addTag(MITags.BARRELS);
 
-        tag(Tags.Items.TOOLS_SHEAR).add(MIItem.DIESEL_CHAINSAW.asItem());
-        tag(MITags.WRENCHES).add(MIItem.WRENCH.asItem());
-        tag(ItemTags.AXES).add(MIItem.DIESEL_CHAINSAW.asItem());
-        tag(ItemTags.HOES).add(MIItem.DIESEL_CHAINSAW.asItem());
-        tag(ItemTags.PICKAXES).add(MIItem.STEAM_MINING_DRILL.asItem(), MIItem.DIESEL_MINING_DRILL.asItem());
-        tag(ItemTags.SHOVELS).add(MIItem.STEAM_MINING_DRILL.asItem(), MIItem.DIESEL_MINING_DRILL.asItem());
-        tag(ItemTags.SWORDS).add(MIItem.DIESEL_CHAINSAW.asItem(), MIItem.QUANTUM_SWORD.asItem());
-        tag(Tags.Items.MELEE_WEAPON_TOOLS).add(MIItem.DIESEL_CHAINSAW.asItem(), MIItem.QUANTUM_SWORD.asItem());
-        tag(ItemTags.DURABILITY_ENCHANTABLE).add(MIItem.IRON_HAMMER.asItem(), MIItem.STEEL_HAMMER.asItem(), MIItem.DIAMOND_HAMMER.asItem(),
-                MIItem.NETHERITE_HAMMER.asItem());
+        tag(Tags.Items.TOOLS_SHEAR).add(k(MIItem.DIESEL_CHAINSAW.asItem()));
+        tag(MITags.WRENCHES).add(k(MIItem.WRENCH.asItem()));
+        tag(ItemTags.AXES).add(k(MIItem.DIESEL_CHAINSAW.asItem()));
+        tag(ItemTags.HOES).add(k(MIItem.DIESEL_CHAINSAW.asItem()));
+        tag(ItemTags.PICKAXES).add(k(MIItem.STEAM_MINING_DRILL.asItem()), k(MIItem.DIESEL_MINING_DRILL.asItem()));
+        tag(ItemTags.SHOVELS).add(k(MIItem.STEAM_MINING_DRILL.asItem()), k(MIItem.DIESEL_MINING_DRILL.asItem()));
+        tag(ItemTags.SWORDS).add(k(MIItem.DIESEL_CHAINSAW.asItem()), k(MIItem.QUANTUM_SWORD.asItem()));
+        tag(Tags.Items.MELEE_WEAPON_TOOLS).add(k(MIItem.DIESEL_CHAINSAW.asItem()), k(MIItem.QUANTUM_SWORD.asItem()));
+        tag(ItemTags.DURABILITY_ENCHANTABLE).add(k(MIItem.IRON_HAMMER.asItem()), k(MIItem.STEEL_HAMMER.asItem()),
+                k(MIItem.DIAMOND_HAMMER.asItem()), k(MIItem.NETHERITE_HAMMER.asItem()));
 
-        tag(ItemTags.HEAD_ARMOR).add(MIItem.RUBBER_HELMET.asItem(), MIItem.QUANTUM_HELMET.asItem());
-        tag(ItemTags.CHEST_ARMOR).add(MIItem.QUANTUM_CHESTPLATE.asItem());
-        tag(ItemTags.LEG_ARMOR).add(MIItem.QUANTUM_LEGGINGS.asItem());
-        tag(ItemTags.FOOT_ARMOR).add(MIItem.RUBBER_BOOTS.asItem(), MIItem.QUANTUM_BOOTS.asItem());
+        tag(ItemTags.HEAD_ARMOR).add(k(MIItem.RUBBER_HELMET.asItem()), k(MIItem.QUANTUM_HELMET.asItem()));
+        tag(ItemTags.CHEST_ARMOR).add(k(MIItem.QUANTUM_CHESTPLATE.asItem()));
+        tag(ItemTags.LEG_ARMOR).add(k(MIItem.QUANTUM_LEGGINGS.asItem()));
+        tag(ItemTags.FOOT_ARMOR).add(k(MIItem.RUBBER_BOOTS.asItem()), k(MIItem.QUANTUM_BOOTS.asItem()));
 
-        tag(ItemTags.COALS).add(BuiltInRegistries.ITEM.getValue(MI.id("lignite_coal")));
+        tag(ItemTags.COALS).add(k(BuiltInRegistries.ITEM.getValue(MI.id("lignite_coal"))));
 
         if (ModList.get().isLoaded("ae2") && !runtimeDatagen) {
             // TODO 26.1
 //            tag(P2PTunnelAttunement.getAttunementTag(MIAEAddon.ENERGY_P2P_TUNNEL))
 //                    .add(MIMaterials.SUPERCONDUCTOR.getPart(MIParts.CABLE).asItem());
         }
+    }
+
+    // MC 26.2: TagAppender.add now takes ResourceKey instead of the item/holder object.
+    private static ResourceKey<Item> k(net.minecraft.world.level.ItemLike item) {
+        return item.asItem().builtInRegistryHolder().key();
     }
 
     private static TagKey<Item> key(Identifier id) {

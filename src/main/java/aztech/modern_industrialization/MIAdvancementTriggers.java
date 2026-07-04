@@ -25,8 +25,8 @@
 package aztech.modern_industrialization;
 
 import java.util.function.Supplier;
-import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.criterion.PlayerTrigger;
+import net.minecraft.advancements.triggers.CriterionTrigger;
+import net.minecraft.advancements.triggers.PlayerTrigger;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;

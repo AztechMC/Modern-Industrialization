@@ -1,6 +1,13 @@
 name: Build master
 
-on: [push, pull_request]
+# Narrowed for the fork: the 26.2 port uses ci-26.2.yml (JDK 25) instead of this legacy JDK 17 job.
+on:
+  push:
+    branches:
+      - '1.21.x'
+  pull_request:
+    branches:
+      - '1.21.x'
 
 jobs:
   build:

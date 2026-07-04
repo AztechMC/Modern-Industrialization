@@ -1,0 +1,53 @@
+name: 'Probe MC 26.2 symbols'
+
+# One-off: decompile MC 26.2 and dump the real Items/Blocks field names + relocated
+# classes so the port fixes are based on ground truth, not guesses.
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '25'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Materialize MC artifacts
+        run: ./gradlew createMinecraftArtifacts --info || true
+
+      - name: Locate decompiled MC sources jar
+        id: find
+        run: |
+          SRC=$(find ~/.gradle /home/runner -name '*.jar' 2>/dev/null | while read j; do
+            if unzip -l "$j" 2>/dev/null | grep -q 'net/minecraft/world/item/Items.java'; then echo "$j"; break; fi
+          done)
+          echo "sources=$SRC"
+          echo "sources=$SRC" >> $GITHUB_OUTPUT
+
+      - name: Dump dye / concrete / copper fields from Items & Blocks
+        run: |
+          SRC='${{ steps.find.outputs.sources }}'
+          echo "### sources jar: $SRC"
+          for cls in world/item/Items world/level/block/Blocks; do
+            echo "===================== $cls ====================="
+            unzip -p "$SRC" "net/minecraft/$cls.java" 2>/dev/null \
+              | grep -oE '[A-Z][A-Z0-9_]*(DYE|CONCRETE|CONCRETE_POWDER|COPPER)[A-Z0-9_]*' \
+              | sort -u | head -200
+            echo "--- any field mentioning DYE/COPPER (declaration lines) ---"
+            unzip -p "$SRC" "net/minecraft/$cls.java" 2>/dev/null \
+              | grep -iE 'dye|copper|concrete' | grep -iE 'public static final' | head -40
+          done
+
+      - name: Locate relocated classes
+        run: |
+          SRC='${{ steps.find.outputs.sources }}'
+          for name in Tuple TagAppender KeyTagProvider IntrinsicHolderTagsProvider PlayerTrigger CriterionTrigger Criterion InventoryChangeTrigger; do
+            echo "===== $name ====="
+            unzip -l "$SRC" 2>/dev/null | grep -iE "/${name}\.java$" | awk '{print $4}'
+          done

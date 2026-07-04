@@ -22,9 +22,12 @@ versionRange="${neo_version_range}"
 ordering="NONE"
 side="BOTH"
 
+# TEMPORARY (26.2 port): GuideME has no 26.2 build yet (its 3D scene renderer needs the Vulkan
+# render rework). Downgraded to optional so MI boots on 26.2 without it; the in-game guidebook is
+# disabled until a 26.2 GuideME is available. Revert to "required" once that ships.
 [[dependencies.modern_industrialization]]
 modId="guideme"
-type="required"
+type="optional"
 versionRange="${guideme_version_range}"
 ordering="NONE"
 side="BOTH"

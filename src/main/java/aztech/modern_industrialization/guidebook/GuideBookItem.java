@@ -27,6 +27,7 @@ package aztech.modern_industrialization.guidebook;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import guideme.GuidesCommon;
+import net.neoforged.fml.ModList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -47,7 +48,9 @@ public class GuideBookItem extends Item {
 
     @Override
     public InteractionResult use(Level world, Player user, InteractionHand hand) {
-        if (world.isClientSide()) {
+        // TEMPORARY (26.2 port): GuideME is optional until a 26.2 build exists. Guard the call so
+        // right-clicking the guidebook without GuideME installed does nothing instead of crashing.
+        if (world.isClientSide() && ModList.get().isLoaded("guideme")) {
             GuidesCommon.openGuide(user, MIGuide.ID);
         }
         return InteractionResult.CONSUME;

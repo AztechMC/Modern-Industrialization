@@ -4,6 +4,11 @@ name: 'Probe MC 26.2 symbols'
 # classes so the port fixes are based on ground truth, not guesses.
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'port/26.2'
+    paths:
+      - '.github/workflows/probe-mc.yml'
 
 jobs:
   probe:

@@ -26,13 +26,11 @@ package aztech.modern_industrialization.client.blocks.storage.barrel;
 
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.client.util.RenderHelper;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -42,7 +40,9 @@ public class DeferredBarrelTextRenderer {
     private record Entry(BlockPos pos, int sideMask, int itemNameColor) {}
 
     private static final List<Entry> barrelsToRender = new ArrayList<>();
-    private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new ByteBufferBuilder(128));
+    // TODO 26.2: immediate-mode MultiBufferSource was removed in the Vulkan render rework.
+    // The barrel text render pass is already disabled (commented out below); the immediate
+    // buffer is dropped and must be reimplemented via the submit-node API to restore it.
 
     public static void init() {
 //        NeoForge.EVENT_BUS.addListener(DeferredBarrelTextRenderer::render);

@@ -26,11 +26,9 @@ package aztech.modern_industrialization.client.machines.multiblocks;
 
 import aztech.modern_industrialization.client.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,7 +39,9 @@ import org.jspecify.annotations.Nullable;
 
 public class MultiblockErrorHighlight {
     private static final Map<BlockPos, @Nullable BlockState> highlightQueue = new HashMap<>();
-    private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new ByteBufferBuilder(128));
+    // TODO 26.2: immediate-mode MultiBufferSource was removed in the Vulkan render rework.
+    // The highlight render pass is already disabled (commented out below); the immediate buffer
+    // is dropped and must be reimplemented via the submit-node API to restore error highlights.
 
     public static void init() {
         NeoForge.EVENT_BUS.addListener(MultiblockErrorHighlight::end);

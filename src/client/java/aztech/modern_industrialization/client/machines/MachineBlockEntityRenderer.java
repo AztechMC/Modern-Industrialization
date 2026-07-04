@@ -40,8 +40,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.IdentityHashMap;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelSet;
@@ -117,7 +116,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
                 BakedQuad quad = getCachedQuad(data, d);
                 state.activeOverlays[d.get3DDataValue()].quad = quad;
                 if (quad != null) {
-                    state.activeOverlays[d.get3DDataValue()].packedLight = LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, machine.getLevel(), machine.getBlockState(), machine.getBlockPos().relative(d));
+                    state.activeOverlays[d.get3DDataValue()].packedLight = LightCoordsUtil.getLightCoords(LightCoordsUtil.BrightnessGetter.DEFAULT, machine.getLevel(), machine.getBlockState(), machine.getBlockPos().relative(d));
                 }
             }
 
@@ -137,7 +136,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
                 continue;
             }
             int packedLight = activeOverlay.packedLight;
-            submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
+            submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockItemSheet(), (pose, vc) -> {
                 var quadInstance = new QuadInstance();
                 quadInstance.setLightCoords(packedLight);
                 vc.putBakedQuad(pose, quad, quadInstance);

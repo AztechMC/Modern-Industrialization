@@ -108,7 +108,6 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -181,9 +180,8 @@ public class MIClient {
                     false);
         });
 
-        modBus.addListener(RegisterRenderBuffersEvent.class, event -> {
-//            event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
-        });
+        // RegisterRenderBuffersEvent was removed in NeoForge 26.2 (Vulkan render rework);
+        // the registration was already commented out, so this listener is dropped entirely.
 
         // Warn if neither JEI nor REI is present!
         if (!ModList.get().isLoaded("emi") && !ModList.get().isLoaded("jei")

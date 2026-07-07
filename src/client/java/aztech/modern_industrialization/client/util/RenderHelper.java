@@ -38,7 +38,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -212,7 +211,7 @@ public class RenderHelper {
     private static final SpriteId LOCKED_TEXTURE_LOCATION = new SpriteId(AtlasIds.BLOCKS, MI.id("block/locked"));
 
     public static void drawLockedTexture(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int colorRgb) {
-        submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
+        submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockItemSheet(), (pose, vc) -> {
             var sprite = Minecraft.getInstance().getAtlasManager().get(LOCKED_TEXTURE_LOCATION);
             // draw the sprite on each face
 
@@ -249,9 +248,9 @@ public class RenderHelper {
 
     public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y, double z, float red,
             float green, float blue, float alpha) {
-        for (AABB aabb : shape.toAabbs()) {
-            ShapeRenderer.renderShape(poseStack, consumer, Shapes.create(aabb), x, y, z, ARGB.colorFromFloat(alpha, red, green, blue), Minecraft.getInstance().getWindow().getAppropriateLineWidth());
-        }
+        // TODO 26.2: ShapeRenderer and immediate-mode line rendering were removed in the Vulkan
+        // render rework. This helper currently has no live callers (all outline draws are commented
+        // out); reimplement against the new submit-node line API when restoring shape outlines.
     }
 
     public static void renderAndDecorateItem(GuiGraphicsExtractor guiGraphics, ItemStack stack, int x, int y) {

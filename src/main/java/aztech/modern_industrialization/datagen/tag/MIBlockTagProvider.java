@@ -33,6 +33,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -48,12 +49,12 @@ public class MIBlockTagProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         for (BlockDefinition<?> definition : MIBlock.BLOCK_DEFINITIONS.values()) {
             for (var tag : definition.tags) {
-                tag(tag).add(definition.asBlock());
+                tag(tag).add(kb(definition.asBlock()));
             }
         }
 
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE.get());
-        tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MIPipes.BLOCK_PIPE.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(kb(MIPipes.BLOCK_PIPE.get()));
+        tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(kb(MIPipes.BLOCK_PIPE.get()));
 
         for (var entry : TagsToGenerate.getTags().entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
@@ -65,9 +66,9 @@ public class MIBlockTagProvider extends BlockTagsProvider {
                 }
                 var key = BlockTags.create(entry.getKey().location());
                 if (optional) {
-                    tag(key).addOptional(block.get());
+                    tag(key).addOptional(kb(block.get()));
                 } else {
-                    tag(key).add(block.get());
+                    tag(key).add(kb(block.get()));
                 }
             }
         }
@@ -80,6 +81,11 @@ public class MIBlockTagProvider extends BlockTagsProvider {
                 }
             }
         }
+    }
+
+    // MC 26.2: TagAppender.add now takes ResourceKey instead of the block object.
+    private static ResourceKey<Block> kb(Block block) {
+        return block.builtInRegistryHolder().key();
     }
 
     private static TagKey<Block> key(Identifier id) {

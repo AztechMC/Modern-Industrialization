@@ -36,6 +36,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.WeatheringCopperCollection;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -49,39 +51,12 @@ public class VanillaCompatRecipeProvider extends BaseRecipeProvider {
 
     @Override
     public void buildRecipes() {
-        generateCopperOxidation(Items.COPPER_BLOCK, Items.EXPOSED_COPPER, Items.WEATHERED_COPPER, Items.OXIDIZED_COPPER);
-        generateCopperOxidation(Items.CUT_COPPER, Items.EXPOSED_CUT_COPPER, Items.WEATHERED_CUT_COPPER, Items.OXIDIZED_CUT_COPPER);
-        generateCopperOxidation(Items.CUT_COPPER_SLAB, Items.EXPOSED_CUT_COPPER_SLAB, Items.WEATHERED_CUT_COPPER_SLAB,
-                Items.OXIDIZED_CUT_COPPER_SLAB);
-        generateCopperOxidation(Items.CUT_COPPER_STAIRS, Items.EXPOSED_CUT_COPPER_STAIRS, Items.WEATHERED_CUT_COPPER_STAIRS,
-                Items.OXIDIZED_CUT_COPPER_STAIRS);
-        // waxed variants
-        generateCopperOxidation(Items.WAXED_COPPER_BLOCK, Items.WAXED_EXPOSED_COPPER, Items.WAXED_WEATHERED_COPPER,
-                Items.WAXED_OXIDIZED_COPPER);
-        generateCopperOxidation(Items.WAXED_CUT_COPPER, Items.WAXED_EXPOSED_CUT_COPPER, Items.WAXED_WEATHERED_CUT_COPPER,
-                Items.WAXED_OXIDIZED_CUT_COPPER);
-        generateCopperOxidation(Items.WAXED_CUT_COPPER_SLAB, Items.WAXED_EXPOSED_CUT_COPPER_SLAB, Items.WAXED_WEATHERED_CUT_COPPER_SLAB,
-                Items.WAXED_OXIDIZED_CUT_COPPER_SLAB);
-        generateCopperOxidation(Items.WAXED_CUT_COPPER_STAIRS, Items.WAXED_EXPOSED_CUT_COPPER_STAIRS,
-                Items.WAXED_WEATHERED_CUT_COPPER_STAIRS, Items.WAXED_OXIDIZED_CUT_COPPER_STAIRS);
-
-        // wax
-        generateWax(Items.COPPER_BLOCK, Items.WAXED_COPPER_BLOCK);
-        generateWax(Items.CUT_COPPER, Items.WAXED_CUT_COPPER);
-        generateWax(Items.CUT_COPPER_SLAB, Items.WAXED_CUT_COPPER_SLAB);
-        generateWax(Items.CUT_COPPER_STAIRS, Items.WAXED_CUT_COPPER_STAIRS);
-        generateWax(Items.EXPOSED_COPPER, Items.WAXED_EXPOSED_COPPER);
-        generateWax(Items.EXPOSED_CUT_COPPER, Items.WAXED_EXPOSED_CUT_COPPER);
-        generateWax(Items.EXPOSED_CUT_COPPER_SLAB, Items.WAXED_EXPOSED_CUT_COPPER_SLAB);
-        generateWax(Items.EXPOSED_CUT_COPPER_STAIRS, Items.WAXED_EXPOSED_CUT_COPPER_STAIRS);
-        generateWax(Items.WEATHERED_COPPER, Items.WAXED_WEATHERED_COPPER);
-        generateWax(Items.WEATHERED_CUT_COPPER, Items.WAXED_WEATHERED_CUT_COPPER);
-        generateWax(Items.WEATHERED_CUT_COPPER_SLAB, Items.WAXED_WEATHERED_CUT_COPPER_SLAB);
-        generateWax(Items.WEATHERED_CUT_COPPER_STAIRS, Items.WAXED_WEATHERED_CUT_COPPER_STAIRS);
-        generateWax(Items.OXIDIZED_COPPER, Items.WAXED_OXIDIZED_COPPER);
-        generateWax(Items.OXIDIZED_CUT_COPPER, Items.WAXED_OXIDIZED_CUT_COPPER);
-        generateWax(Items.OXIDIZED_CUT_COPPER_SLAB, Items.WAXED_OXIDIZED_CUT_COPPER_SLAB);
-        generateWax(Items.OXIDIZED_CUT_COPPER_STAIRS, Items.WAXED_OXIDIZED_CUT_COPPER_STAIRS);
+        // MC 26.2 unified copper variants into WeatheringCopperCollection<Item>; iterate the families
+        // instead of referencing ~56 now-removed individual Items.* fields.
+        generateCopperFamily(Items.COPPER_BLOCK);
+        generateCopperFamily(Items.CUT_COPPER);
+        generateCopperFamily(Items.CUT_COPPER_SLAB);
+        generateCopperFamily(Items.CUT_COPPER_STAIRS);
 
         // misc recipes
         machine(MIMachineRecipeTypes.MACERATOR, 2, 100)
@@ -90,10 +65,23 @@ public class VanillaCompatRecipeProvider extends BaseRecipeProvider {
                 .offerTo(output, "vanilla_recipes/macerator/stone_to_cobblestone");
     }
 
-    private void generateCopperOxidation(Item unaffected, Item exposed, Item weathered, Item oxidized) {
-        oxidize(unaffected, exposed);
-        oxidize(exposed, weathered);
-        oxidize(weathered, oxidized);
+    private void generateCopperFamily(WeatheringCopperCollection<Item> family) {
+        generateCopperOxidation(family.weathering());
+        generateCopperOxidation(family.waxed());
+
+        // wax: each weathering state -> its waxed counterpart
+        var weathering = family.weathering();
+        var waxed = family.waxed();
+        generateWax(weathering.unaffected(), waxed.unaffected());
+        generateWax(weathering.exposed(), waxed.exposed());
+        generateWax(weathering.weathered(), waxed.weathered());
+        generateWax(weathering.oxidized(), waxed.oxidized());
+    }
+
+    private void generateCopperOxidation(WeatheringCopperCollection.ByState<Item> states) {
+        oxidize(states.unaffected(), states.exposed());
+        oxidize(states.exposed(), states.weathered());
+        oxidize(states.weathered(), states.oxidized());
     }
 
     private void oxidize(Item from, Item to) {

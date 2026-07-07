@@ -139,7 +139,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
                         null);
 
                 widgets.drawable(guiGraphics -> {
-                    var helper = Minecraft.getInstance().screen;
+                    var helper = Minecraft.getInstance().gui.screen();
                     for (int i = 1; i < area.w() / 2; i++) {
                         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, area.x() + i, area.y() + 4, 0, 255, 1, 1, 256, 256);
                     }

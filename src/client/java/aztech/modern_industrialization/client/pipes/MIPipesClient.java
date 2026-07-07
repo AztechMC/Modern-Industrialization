@@ -90,7 +90,7 @@ public class MIPipesClient {
             if (player.isShiftKeyDown() && MIItem.CONFIG_CARD.is(player.getItemInHand(InteractionHand.MAIN_HAND))) {
                 // noinspection NonAtomicOperationOnVolatileField
                 MIPipes.transparentCamouflage = !MIPipes.transparentCamouflage;
-                Minecraft.getInstance().levelRenderer.allChanged();
+                Minecraft.getInstance().levelExtractor.allChanged();
                 var miText = MIPipes.transparentCamouflage ? MIText.TransparentCamouflageEnabled : MIText.TransparentCamouflageDisabled;
                 player.sendOverlayMessage(miText.text());
                 event.setCanceled(true);

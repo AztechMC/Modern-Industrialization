@@ -32,7 +32,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.FluidTagsProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
 public class MIFluidTagProvider extends FluidTagsProvider {
@@ -44,15 +46,20 @@ public class MIFluidTagProvider extends FluidTagsProvider {
     protected void addTags(HolderLookup.Provider pProvider) {
         for (var def : MIFluids.FLUID_DEFINITIONS.values()) {
             if (def.isGas) {
-                tag(Tags.Fluids.GASEOUS).add(def.asFluid());
+                tag(Tags.Fluids.GASEOUS).add(kf(def.asFluid()));
             }
 
             // Give a #c: tag to every MI fluid. That should allow other mods to use MI's fluids in many cases.
             tag(FluidTags.create(Identifier.fromNamespaceAndPath("c", def.path())))
-                    .add(def.asFluid());
+                    .add(kf(def.asFluid()));
         }
 
         tag(ReplicatorMachineBlockEntity.BLACKLISTED_FLUIDS)
-                .add(MIFluids.UU_MATTER.asFluid());
+                .add(kf(MIFluids.UU_MATTER.asFluid()));
+    }
+
+    // MC 26.2: TagAppender.add now takes ResourceKey instead of the fluid object.
+    private static ResourceKey<Fluid> kf(Fluid fluid) {
+        return fluid.builtInRegistryHolder().key();
     }
 }

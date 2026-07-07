@@ -56,7 +56,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.util.Tuple;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -111,7 +111,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
 
     // Because we can't access the PipeNetworksComponent in fromTag because the
     // world is null, we defer the node loading.
-    private final List<Tuple<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
+    private final List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
     /**
      * Set to true in PipeBlock to tell apart unloads and removals.
      */
@@ -121,9 +121,9 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
         if (level.isClientSide() || unloadedPipes.size() == 0)
             return;
 
-        for (Tuple<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
-            PipeNetworks.get((ServerLevel) level).getManager(unloaded.getA()).nodeLoaded(unloaded.getB(), worldPosition);
-            pipes.add(unloaded.getB());
+        for (Pair<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
+            PipeNetworks.get((ServerLevel) level).getManager(unloaded.getFirst()).nodeLoaded(unloaded.getSecond(), worldPosition);
+            pipes.add(unloaded.getSecond());
         }
         unloadedPipes.clear();
 
@@ -417,9 +417,9 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
             pipe.save(output.child("pipe_data_" + i));
             i++;
         }
-        for (Tuple<PipeNetworkType, PipeNetworkNode> entry : unloadedPipes) {
-            output.putString("pipe_type_" + i, entry.getA().getIdentifier().toString());
-            entry.getB().save(output.child("pipe_data_" + i));
+        for (Pair<PipeNetworkType, PipeNetworkNode> entry : unloadedPipes) {
+            output.putString("pipe_type_" + i, entry.getFirst().getIdentifier().toString());
+            entry.getSecond().save(output.child("pipe_data_" + i));
             i++;
         }
         if (camouflage != null) {
@@ -444,7 +444,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
                 PipeNetworkType type = PipeNetworkType.get(typeId);
                 PipeNetworkNode node = type.getNodeCtor().get();
                 node.read(input.child("pipe_data_" + i).orElseThrow());
-                unloadedPipes.add(new Tuple<>(type, node));
+                unloadedPipes.add(Pair.of(type, node));
                 i++;
             }
         } else {

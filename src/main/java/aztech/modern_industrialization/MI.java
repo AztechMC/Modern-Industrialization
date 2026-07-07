@@ -79,6 +79,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -135,7 +136,12 @@ public class MI {
         ChunkEventListeners.init();
         DebugCommands.init();
         GuidebookEvents.init();
-        MIGuide.init();
+        // TEMPORARY (26.2 port): GuideME is an optional dependency until a 26.2 build exists.
+        // Only build the guide when GuideME is actually present, otherwise MIGuide would touch
+        // missing GuideME classes and crash startup.
+        if (ModList.get().isLoaded("guideme")) {
+            MIGuide.init();
+        }
         MIArmorEffects.init();
 
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, event -> MIKeyMap.clear(event.getEntity()));

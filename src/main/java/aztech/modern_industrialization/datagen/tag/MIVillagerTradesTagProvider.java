@@ -6,12 +6,12 @@ import aztech.modern_industrialization.trading.MITrades;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.KeyTagProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.item.trading.VillagerTrade;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MIVillagerTradesTagProvider extends KeyTagProvider<VillagerTrade> {
+public class MIVillagerTradesTagProvider extends TagsProvider<VillagerTrade> {
     public MIVillagerTradesTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, Registries.VILLAGER_TRADE, lookupProvider, MI.ID);
     }

@@ -272,7 +272,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.input.getItem().shrink(current.value().count());
         if (!tool.getItem().isEmpty()) {
             if (!world.isClientSide()) {
-                tool.getItem().hurtAndBreak(current.value().hammerDamage(), (ServerLevel) world, (ServerPlayer) this.player,
+                tool.getItem().hurtAndBreak(current.value().hammerDamage(), (ServerLevel) world, (net.minecraft.world.entity.LivingEntity) this.player,
                         item -> tool.set(ItemStack.EMPTY));
             }
             if (tool.getItem().getDamageValue() >= tool.getItem().getMaxDamage()) {

@@ -120,7 +120,10 @@ configurations {
 
 dependencies {
     api "org.jspecify:jspecify:${project.jspecify_version}"
-    implementation "org.appliedenergistics:guideme:${project.guideme_version}"
+    // TEMPORARY (26.2 port): compileOnly (was implementation) — GuideME has no 26.2 build yet, so
+    // it is an optional runtime dependency. MI compiles against the 26.1 API but boots without it
+    // (guidebook disabled). Restore to implementation once a 26.2 GuideME ships.
+    compileOnly "org.appliedenergistics:guideme:${project.guideme_version}"
 
     compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
     if (project.runtime_itemlist_mod == "jei") {

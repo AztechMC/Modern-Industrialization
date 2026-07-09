@@ -46,6 +46,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class ConfigCardItem extends Item {
@@ -80,6 +81,9 @@ public class ConfigCardItem extends Item {
 
     public static boolean setCamouflage(Player player, InteractionHand usedHand, BlockState hitState) {
         if (CamouflageHelper.isReasonableCamouflage(hitState)) {
+            if (hitState.hasProperty(BlockStateProperties.WATERLOGGED)) {
+                hitState = hitState.setValue(BlockStateProperties.WATERLOGGED, false);
+            }
             player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
             player.getItemInHand(usedHand).set(MIComponents.CAMOUFLAGE, hitState);
             player.displayClientMessage(

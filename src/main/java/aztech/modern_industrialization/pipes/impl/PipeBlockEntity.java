@@ -61,6 +61,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -427,6 +428,9 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         camouflage = tag.contains("camouflage") ? NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("camouflage")) : null;
+        if (camouflage != null && camouflage.hasProperty(BlockStateProperties.WATERLOGGED)) {
+            camouflage = camouflage.setValue(BlockStateProperties.WATERLOGGED, false);
+        }
 
         if (!tag.contains("pipes")) {
             pipes.clear();

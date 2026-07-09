@@ -151,7 +151,7 @@ public class SteamDrillItem
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        if (isSupportedBlock(stack, state) && canUse(stack) && !state.is(Tiers.NETHERITE.getIncorrectBlocksForDrops())) {
+        if (isSupportedBlock(stack, state) && canUse(stack) && !state.is(Tiers.DIAMOND.getIncorrectBlocksForDrops())) {
             return true;
         }
         return super.isCorrectToolForDrops(stack, state);

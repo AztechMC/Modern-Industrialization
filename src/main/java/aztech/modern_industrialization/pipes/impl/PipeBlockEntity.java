@@ -258,7 +258,9 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
             throw new IllegalStateException("Cannot call setCamouflage on the client");
         }
 
-        boolean hadCamouflage = hasCamouflage();
+        if (camouflage == newCamouflage) {
+            return;
+        }
 
         if (camouflage != null) {
             // Give stack back
@@ -294,16 +296,15 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
             rebuildCollisionShape();
         }
 
-        if (hadCamouflage != hasCamouflage()) {
-            var newState = getBlockState().setValue(PipeBlock.CAMOUFLAGED, hasCamouflage());
-            if (hasCamouflage()) {
-                newState = newState.setValue(PipeBlock.WATERLOGGED, false); // sorry not sorry
-                if (camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE)) {
-                    newState = newState.setValue(PipeBlock.TRANSPARENT, true);
-                }
-            } else {
-                newState = newState.setValue(PipeBlock.TRANSPARENT, false);
-            }
+        var originalState = getBlockState();
+        var newState = originalState.setValue(PipeBlock.CAMOUFLAGED, hasCamouflage());
+        if (hasCamouflage()) {
+            newState = newState.setValue(PipeBlock.WATERLOGGED, false); // sorry not sorry
+            newState = newState.setValue(PipeBlock.TRANSPARENT, camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE));
+        } else {
+            newState = newState.setValue(PipeBlock.TRANSPARENT, false);
+        }
+        if (newState != originalState) {
             level.setBlockAndUpdate(worldPosition, newState);
         }
     }

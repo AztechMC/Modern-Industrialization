@@ -269,7 +269,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     @SuppressWarnings("deprecation")
     @Override
     public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-        return state.getValue(CAMOUFLAGED) ? (state.getValue(TRANSPARENT) ? 0 : 1) : 0;
+        return state.getValue(CAMOUFLAGED) ? (state.getValue(TRANSPARENT) ? 0 : world.getMaxLightLevel()) : 0;
     }
 
     @Override

@@ -282,7 +282,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         if (level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
             return pipe.hasCamouflage() ? Shapes.block() : pipe.currentCollisionShape;
         }
-        return Shapes.block();
+        return PipeBlockEntity.DEFAULT_SHAPE;
     }
 
     @Override

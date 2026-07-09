@@ -261,6 +261,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
         if (camouflage == newCamouflage) {
             return;
         }
+        newCamouflage = PipeBlock.guaranteeNotWaterlogged(newCamouflage);
 
         if (camouflage != null) {
             // Give stack back
@@ -426,7 +427,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
 
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        camouflage = tag.contains("camouflage") ? NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("camouflage")) : null;
+        camouflage = tag.contains("camouflage") ? PipeBlock.guaranteeNotWaterlogged(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("camouflage"))) : null;
 
         if (!tag.contains("pipes")) {
             pipes.clear();

@@ -78,6 +78,13 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     public static final BooleanProperty CAMOUFLAGED = BooleanProperty.create("camouflaged");
     public static final BooleanProperty TRANSPARENT = BooleanProperty.create("transparent");
 
+    public static BlockState guaranteeNotWaterlogged(@Nullable BlockState state) {
+        if (state != null && state.hasProperty(WATERLOGGED)) {
+            return state.setValue(WATERLOGGED, false);
+        }
+        return state;
+    }
+
     public PipeBlock(Properties settings) {
         super(settings
                 .isValidSpawn(MobSpawning.NO_SPAWN)

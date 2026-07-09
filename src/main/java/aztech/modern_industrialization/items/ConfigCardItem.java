@@ -79,6 +79,7 @@ public class ConfigCardItem extends Item {
     }
 
     public static boolean setCamouflage(Player player, InteractionHand usedHand, BlockState hitState) {
+        hitState = PipeBlock.guaranteeNotWaterlogged(hitState);
         if (CamouflageHelper.isReasonableCamouflage(hitState)) {
             player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
             player.getItemInHand(usedHand).set(MIComponents.CAMOUFLAGE, hitState);

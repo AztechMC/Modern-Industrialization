@@ -278,11 +278,11 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
-            return pipe.hasCamouflage() ? Shapes.block() : pipe.currentCollisionShape;
-        }
-        return PipeBlockEntity.DEFAULT_SHAPE;
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        BlockEntity be = world.getBlockEntity(pos);
+        if (!(be instanceof PipeBlockEntity entity))
+            return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
+        return entity.hasCamouflage() ? Shapes.block() : entity.currentCollisionShape;
     }
 
     @Override

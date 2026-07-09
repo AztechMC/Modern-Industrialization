@@ -369,4 +369,10 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         }
         return neighborState.skipRendering(pipe.camouflage, dir.getOpposite());
     }
+
+    @Override
+    public boolean shouldHideAdjacentFluidFace(BlockState state, Direction direction, FluidState adjacentFluid) {
+        return super.shouldHideAdjacentFluidFace(state, direction, adjacentFluid) ||
+                (state.getValue(CAMOUFLAGED) && !state.getValue(TRANSPARENT));
+    }
 }

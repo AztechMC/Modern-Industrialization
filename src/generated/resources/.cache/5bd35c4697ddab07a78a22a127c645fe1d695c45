@@ -1,4 +1,4 @@
-// 1.21.1	2026-06-30T18:58:33.679616329	Tags for minecraft:block mod id modern_industrialization
+// 1.21.1	2026-07-09T08:12:33.598692837	Tags for minecraft:block mod id modern_industrialization
 ef72297aa0ecfbc2672c0b74167d4bf1fa4b262e data/c/tags/block/ores.json
 b74bc7a6e8507c54ded11660bf60f4e7e06910a0 data/c/tags/block/ores/antimony.json
 692748c1f1e0425903fdf4da21c318c4c4a739bb data/c/tags/block/ores/bauxite.json
@@ -72,4 +72,4 @@ ba09e47df7025bb1c4d4a072a54ce0b2e307f003 data/c/tags/block/storage_blocks/yttriu
 0598637f8fa446913456c69504f5c6bc1a6b19f1 data/minecraft/tags/block/needs_stone_tool.json
 2f4942034efc4f0ca583b4947ecf67ae3ee08540 data/modern_industrialization/tags/block/barrels.json
 ed3e8137fcabedef6118d8d5980c348ad5ef1d22 data/modern_industrialization/tags/block/tanks.json
-04cebeb2d742fe55d77908d1bb3829e25f9a8549 data/modern_industrialization/tags/block/transparent_pipe_camouflage.json
+503db4170600aaf58e5984fe23343a736046e18c data/modern_industrialization/tags/block/transparent_pipe_camouflage.json

@@ -37,6 +37,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -56,7 +57,11 @@ public class MIBlockTagProvider extends BlockTagsProvider {
             }
         }
 
-        tag(MITags.TRANSPARENT_PIPE_CAMOUFLAGE).addTags(Tags.Blocks.GLASS_BLOCKS, BlockTags.LEAVES);
+        tag(MITags.TRANSPARENT_PIPE_CAMOUFLAGE)
+                .addTags(Tags.Blocks.GLASS_BLOCKS, BlockTags.LEAVES)
+                .add(Blocks.MANGROVE_ROOTS, Blocks.SLIME_BLOCK, Blocks.HONEY_BLOCK)
+                .add(Blocks.COPPER_GRATE, Blocks.EXPOSED_COPPER_GRATE, Blocks.WEATHERED_COPPER_GRATE, Blocks.OXIDIZED_COPPER_GRATE)
+                .add(Blocks.WAXED_COPPER_GRATE, Blocks.WAXED_EXPOSED_COPPER_GRATE, Blocks.WAXED_WEATHERED_COPPER_GRATE, Blocks.WAXED_OXIDIZED_COPPER_GRATE);
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE.get());
         tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MIPipes.BLOCK_PIPE.get());
 

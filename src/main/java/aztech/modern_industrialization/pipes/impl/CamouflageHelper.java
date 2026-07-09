@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.MITags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -38,7 +39,8 @@ public class CamouflageHelper {
             return false;
         }
 
-        return state.getRenderShape() == RenderShape.MODEL && state.isRedstoneConductor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+        return (state.getRenderShape() == RenderShape.MODEL && state.isRedstoneConductor(EmptyBlockGetter.INSTANCE, BlockPos.ZERO)) ||
+                state.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE);
     }
 
     @Nullable

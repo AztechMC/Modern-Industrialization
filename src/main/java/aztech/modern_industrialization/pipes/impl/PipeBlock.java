@@ -76,16 +76,17 @@ import org.jspecify.annotations.Nullable;
 public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty CAMOUFLAGED = BooleanProperty.create("camouflaged");
+    public static final BooleanProperty TRANSPARENT = BooleanProperty.create("transparent");
 
     public PipeBlock(Properties settings) {
         super(settings
                 .isValidSpawn(MobSpawning.NO_SPAWN)
-                .isRedstoneConductor((state, level, pos) -> state.getValue(CAMOUFLAGED))
+                .isRedstoneConductor((state, level, pos) -> state.getValue(CAMOUFLAGED) && !state.getValue(TRANSPARENT))
                 // Disable occlusion like this to bypass the occlusion cache,
                 // which cannot capture a dependency on the global transparent rendering setting.
                 // We still implement an occlusion check in hidesNeighborFace.
                 .noOcclusion());
-        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(CAMOUFLAGED, false));
+        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(CAMOUFLAGED, false).setValue(TRANSPARENT, false));
     }
 
     @Override
@@ -95,7 +96,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(WATERLOGGED, CAMOUFLAGED));
+        super.createBlockStateDefinition(builder.add(WATERLOGGED, CAMOUFLAGED, TRANSPARENT));
     }
 
     @Nullable
@@ -268,7 +269,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     @SuppressWarnings("deprecation")
     @Override
     public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-        return state.getValue(CAMOUFLAGED) ? world.getMaxLightLevel() : 0;
+        return state.getValue(CAMOUFLAGED) ? (state.getValue(TRANSPARENT) ? 0 : world.getMaxLightLevel()) : 0;
     }
 
     @Override
@@ -276,18 +277,22 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         BlockEntity be = world.getBlockEntity(pos);
         if (!(be instanceof PipeBlockEntity entity))
             return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
-        return entity.currentCollisionShape;
+        return entity.hasCamouflage() ? Shapes.block() : entity.currentCollisionShape;
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(CAMOUFLAGED) ? Shapes.block() : Shapes.empty();
+    protected boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        return state.getValue(CAMOUFLAGED) && !state.getValue(TRANSPARENT);
+    }
+
+    @Override
+    protected float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
+        return state.getValue(CAMOUFLAGED) && !state.getValue(TRANSPARENT) ? super.getShadeBrightness(state, level, pos) : 1f;
     }
 
     @Override
@@ -339,7 +344,29 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @Override
     public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
-        // If we are a full block, we should always be able to occlude...
-        return !MIPipes.transparentCamouflage && state.getValue(CAMOUFLAGED);
+        if (!state.getValue(CAMOUFLAGED)) {
+            return false;
+        }
+        // Always hide neighbor faces when camo is opaque
+        if (!state.getValue(TRANSPARENT)) {
+            return !MIPipes.transparentCamouflage;
+        }
+        if (!(level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) ||
+                !pipe.hasCamouflage()) {
+            return false;
+        }
+        var neighborPos = pos.relative(dir);
+        if (neighborState.is(state.getBlock()) && neighborState.getValue(CAMOUFLAGED)) {
+            // Hide all neighbor pipe camo faces when in transparent camouflage mode
+            if (MIPipes.transparentCamouflage) {
+                return true;
+            }
+            if (!(level.getBlockEntity(neighborPos) instanceof PipeBlockEntity neighborPipe)) {
+                return false;
+            }
+            return neighborPipe.hasCamouflage() &&
+                    neighborPipe.camouflage.skipRendering(pipe.camouflage, dir.getOpposite());
+        }
+        return neighborState.skipRendering(pipe.camouflage, dir.getOpposite());
     }
 }

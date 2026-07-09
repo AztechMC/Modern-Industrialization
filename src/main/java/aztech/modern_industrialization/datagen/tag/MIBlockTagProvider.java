@@ -26,6 +26,7 @@ package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
 import java.util.concurrent.CompletableFuture;
@@ -55,6 +56,7 @@ public class MIBlockTagProvider extends BlockTagsProvider {
             }
         }
 
+        tag(MITags.TRANSPARENT_PIPE_CAMOUFLAGE).addTags(Tags.Blocks.GLASS_BLOCKS, BlockTags.LEAVES);
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE.get());
         tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MIPipes.BLOCK_PIPE.get());
 

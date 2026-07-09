@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.client.pipes.impl;
 
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.client.thirdparty.fabricrendering.ModelHelper;
 import aztech.modern_industrialization.client.thirdparty.fabricrendering.SpriteFinder;
@@ -89,11 +90,15 @@ public class PipeBakedModel implements IDynamicBakedModel {
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         var attachment = data.get(PipeBlockEntity.RenderAttachment.KEY);
+        var extraData = data.get(ExtraData.KEY);
 
-        if (attachment == null || attachment.camouflage() == null) {
+        if (attachment == null || attachment.camouflage() == null || extraData == null) {
             return RENDER_TYPES_NORMAL;
         } else {
-            return ChunkRenderTypeSet.all();
+            var camouflage = attachment.camouflage();
+            var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
+            var camouflageModelData = camouflageModel.getModelData(extraData.level(), extraData.pos(), camouflage, ModelData.EMPTY);
+            return ChunkRenderTypeSet.union(RENDER_TYPES_NORMAL, camouflageModel.getRenderTypes(camouflage, rand, camouflageModelData));
         }
     }
 
@@ -114,50 +119,44 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
         var camouflage = attachment.camouflage();
 
-        if (camouflage == null || MIPipes.transparentCamouflage) {
-            var renderNormal = checkRenderType(RenderType.cutout(), renderType);
-            var renderFluid = checkRenderType(RenderType.translucent(), renderType);
+        if ((camouflage == null || camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE) || MIPipes.transparentCamouflage) &&
+                checkRenderType(RenderType.cutout(), renderType)) {
+            var renderContext = new PipeRenderContext(spriteFinder, true, true);
+            ret = renderContext.quads;
 
-            if (renderNormal || renderFluid) {
-                var renderContext = new PipeRenderContext(spriteFinder, renderNormal, renderFluid);
-                ret = renderContext.quads;
+            int centerSlots = attachment.types().length;
+            for (int slot = 0; slot < centerSlots; slot++) {
+                // Set color
+                int color = attachment.types()[slot].getColor();
+                renderContext.pushTransform(getColorTransform(color));
 
-                int centerSlots = attachment.types().length;
-                for (int slot = 0; slot < centerSlots; slot++) {
-                    // Set color
-                    int color = attachment.types()[slot].getColor();
-                    renderContext.pushTransform(getColorTransform(color));
+                renderers.get(PipeRenderer.get(attachment.types()[slot])).draw(extraData.level(), extraData.pos(), renderContext, slot,
+                        attachment.renderedConnections(), attachment.customData()[slot]);
 
-                    renderers.get(PipeRenderer.get(attachment.types()[slot])).draw(extraData.level(), extraData.pos(), renderContext, slot,
-                            attachment.renderedConnections(), attachment.customData()[slot]);
-
-                    renderContext.popTransform();
-                }
+                renderContext.popTransform();
             }
 
-            if (renderNormal) {
-                boolean hasMeWire = false;
-                if (meWireConnectors != null) {
-                    for (var type : attachment.types()) {
-                        if (type.getIdentifier().getPath().endsWith("me_wire")) {
-                            hasMeWire = true;
-                        }
+            boolean hasMeWire = false;
+            if (meWireConnectors != null) {
+                for (var type : attachment.types()) {
+                    if (type.getIdentifier().getPath().endsWith("me_wire")) {
+                        hasMeWire = true;
                     }
                 }
-                if (hasMeWire) {
-                    // Render connector if needed
-                    for (var direction : Direction.values()) {
-                        boolean renderConnector = false;
-                        for (int slot = 0; slot < attachment.types().length; ++slot) {
-                            var conn = attachment.renderedConnections()[slot][direction.get3DDataValue()];
-                            if (conn == PipeEndpointType.BLOCK && attachment.types()[slot].getIdentifier().getPath().endsWith("me_wire")) {
-                                renderConnector = true;
-                            }
+            }
+            if (hasMeWire) {
+                // Render connector if needed
+                for (var direction : Direction.values()) {
+                    boolean renderConnector = false;
+                    for (int slot = 0; slot < attachment.types().length; ++slot) {
+                        var conn = attachment.renderedConnections()[slot][direction.get3DDataValue()];
+                        if (conn == PipeEndpointType.BLOCK && attachment.types()[slot].getIdentifier().getPath().endsWith("me_wire")) {
+                            renderConnector = true;
                         }
+                    }
 
-                        if (renderConnector) {
-                            ret.addAll(meWireConnectors[direction.get3DDataValue()].getQuads(state, side, rand, data, renderType));
-                        }
+                    if (renderConnector) {
+                        ret.addAll(meWireConnectors[direction.get3DDataValue()].getQuads(state, side, rand, data, renderType));
                     }
                 }
             }
@@ -166,46 +165,58 @@ public class PipeBakedModel implements IDynamicBakedModel {
         boolean processCamouflage = !MIPipes.transparentCamouflage || checkRenderType(RenderType.translucent(), renderType);
 
         if (camouflage != null && processCamouflage) {
-            if (MIPipes.transparentCamouflage && side != null) {
-                var adjacentModelData = extraData.level().getModelData(extraData.pos().relative(side))
-                        .get(PipeBlockEntity.RenderAttachment.KEY);
-                if (adjacentModelData != null && adjacentModelData.camouflage() != null) {
-                    // Don't draw faces between camouflaged pipes
+            // Don't draw faces between camouflaged pipes and the block they are camouflaged as or other camouflaged pipe if in transparent camouflage mode
+            if ((camouflage.is(MITags.TRANSPARENT_PIPE_CAMOUFLAGE) || MIPipes.transparentCamouflage) && side != null) {
+                var adjacentPos = extraData.pos().relative(side);
+                boolean skip = false;
+                if (MIPipes.transparentCamouflage) {
+                    var adjacentModelData = extraData.level().getModelData(adjacentPos)
+                            .get(PipeBlockEntity.RenderAttachment.KEY);
+                    skip = adjacentModelData != null && adjacentModelData.camouflage() != null;
+                }
+                if (!skip) {
+                    var adjacentBlockState = extraData.level().getBlockState(adjacentPos);
+                    skip = adjacentBlockState.skipRendering(camouflage, side.getOpposite());
+                }
+                if (skip) {
                     return ret != null ? ret : List.of();
                 }
             }
 
             var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
             var camouflageModelData = camouflageModel.getModelData(extraData.level(), extraData.pos(), camouflage, ModelData.EMPTY);
+            var camouflageModelRenderTypes = camouflageModel.getRenderTypes(camouflage, rand, camouflageModelData);
 
-            for (var quad : camouflageModel.getQuads(camouflage, side, rand, camouflageModelData, renderType)) {
-                if (quad.isTinted() || MIPipes.transparentCamouflage) {
-                    // Copy quad to modify inner data
-                    int[] quadData = quad.getVertices().clone();
+            if (camouflageModelRenderTypes.contains(renderType)) {
+                for (var quad : camouflageModel.getQuads(camouflage, side, rand, camouflageModelData, renderType)) {
+                    if (quad.isTinted() || MIPipes.transparentCamouflage) {
+                        // Copy quad to modify inner data
+                        int[] quadData = quad.getVertices().clone();
 
-                    // Fix tinting
-                    if (quad.isTinted()) {
-                        var blockColorMap = Minecraft.getInstance().getBlockColors();
-                        int color = 0xFF000000 | blockColorMap.getColor(camouflage, extraData.level(), extraData.pos(), quad.getTintIndex());
+                        // Fix tinting
+                        if (quad.isTinted()) {
+                            var blockColorMap = Minecraft.getInstance().getBlockColors();
+                            int color = 0xFF000000 | blockColorMap.getColor(camouflage, extraData.level(), extraData.pos(), quad.getTintIndex());
 
-                        for (int vertex = 0; vertex < 4; vertex++) {
-                            setColor(quadData, vertex, multiplyColor(color, getColor(quadData, vertex)));
+                            for (int vertex = 0; vertex < 4; vertex++) {
+                                setColor(quadData, vertex, multiplyColor(color, getColor(quadData, vertex)));
+                            }
                         }
+
+                        if (MIPipes.transparentCamouflage) {
+                            for (int vertex = 0; vertex < 4; ++vertex) {
+                                setColor(quadData, vertex, multiplyColor(0x9FFFFFFF, getColor(quadData, vertex)));
+                            }
+                        }
+
+                        quad = new BakedQuad(quadData, -1, quad.getDirection(), quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
                     }
 
-                    if (MIPipes.transparentCamouflage) {
-                        for (int vertex = 0; vertex < 4; ++vertex) {
-                            setColor(quadData, vertex, multiplyColor(0x9FFFFFFF, getColor(quadData, vertex)));
-                        }
+                    if (ret == null) {
+                        ret = new ArrayList<>();
                     }
-
-                    quad = new BakedQuad(quadData, -1, quad.getDirection(), quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
+                    ret.add(quad);
                 }
-
-                if (ret == null) {
-                    ret = new ArrayList<>();
-                }
-                ret.add(quad);
             }
         }
 

@@ -30,7 +30,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -79,6 +81,30 @@ public interface SimpleMember {
 
     static SimpleMember forBlockId(ResourceLocation id) {
         return forBlock(() -> BuiltInRegistries.BLOCK.get(id));
+    }
+
+    static SimpleMember forBlockTag(ResourceLocation id, ResourceLocation tagId) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(tagId);
+
+        var tag = TagKey.create(Registries.BLOCK, tagId);
+
+        return new SimpleMember() {
+            @Override
+            public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
+                return state.is(tag);
+            }
+
+            @Override
+            public @Nullable BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
+                return null;
+            }
+
+            @Override
+            public BlockState getPreviewState() {
+                return BuiltInRegistries.BLOCK.get(id).defaultBlockState();
+            }
+        };
     }
 
     static SimpleMember forBlockState(BlockState state) {

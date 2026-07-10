@@ -185,9 +185,8 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
             var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
             var camouflageModelData = camouflageModel.getModelData(extraData.level(), extraData.pos(), camouflage, ModelData.EMPTY);
-            var camouflageModelRenderTypes = camouflageModel.getRenderTypes(camouflage, rand, camouflageModelData);
 
-            if (camouflageModelRenderTypes.contains(renderType)) {
+            if (renderType == null || camouflageModel.getRenderTypes(camouflage, rand, camouflageModelData).contains(renderType)) {
                 for (var quad : camouflageModel.getQuads(camouflage, side, rand, camouflageModelData, renderType)) {
                     if (quad.isTinted() || MIPipes.transparentCamouflage) {
                         // Copy quad to modify inner data

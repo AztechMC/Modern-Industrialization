@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.client.compat.viewer.impl.rei;
 
+import aztech.modern_industrialization.client.compat.viewer.abstraction.IngredientCount;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -118,23 +119,23 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
-            public void invisibleInput(ItemStack item) {
+            public void invisibleInput(Ingredient ingredient) {
                 var ing = new IngredientBuilder(0, 0, true);
-                ing.item(item);
+                ing.ingredient(ingredient, 1, 1);
                 ing.isVisible = false;
                 inputs.add(ing);
             }
 
             @Override
-            public void invisibleOutput(ItemStack item) {
+            public void invisibleOutput(Ingredient ingredient) {
                 var ing = new IngredientBuilder(0, 0, false);
-                ing.item(item);
+                ing.ingredient(ingredient, 1, 1);
                 ing.isVisible = false;
                 outputs.add(ing);
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
+            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
                 int x = (wrapped.width / 2) - (18 * cols) / 2 + 1;
                 int y = wrapped.height - (rows * 18) - 3;
                 int index = 0;
@@ -143,8 +144,9 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
                         int ix = x + (col * 18);
                         int iy = y + (row * 18);
                         var slot = this.inputSlot(ix, iy);
-                        if (index < stacks.size()) {
-                            slot.item(stacks.get(index));
+                        if (index < ingredients.size()) {
+                            var ingredient = ingredients.get(index);
+                            slot.ingredient(ingredient.ingredient, ingredient.count, 1);
                         }
                         index++;
                     }
@@ -346,7 +348,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {}
+            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {}
         });
 
         // Inputs and outputs

@@ -25,12 +25,14 @@
 package aztech.modern_industrialization.client.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.client.compat.viewer.abstraction.IngredientCount;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -94,21 +96,23 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void invisibleInput(ItemStack stack) {
+            public void invisibleInput(Ingredient ingredient) {
                 builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
-                        .addItemStack(stack);
+                        .addIngredients(ingredient);
             }
 
             @Override
-            public void invisibleOutput(ItemStack stack) {
+            public void invisibleOutput(Ingredient ingredient) {
                 builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
-                        .addItemStack(stack);
+                        .addIngredients(ingredient);
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
-                for (var stack : stacks) {
-                    builder.addInputSlot().addItemStack(stack);
+            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
+                for (var ingredient : ingredients) {
+                    builder.addInputSlot().addItemStacks(Arrays.stream(ingredient.ingredient.getItems())
+                            .map((stack) -> stack.copyWithCount(ingredient.count))
+                            .toList());
                 }
             }
 
@@ -214,13 +218,13 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void invisibleInput(ItemStack stack) {}
+            public void invisibleInput(Ingredient ingredient) {}
 
             @Override
-            public void invisibleOutput(ItemStack stack) {}
+            public void invisibleOutput(Ingredient ingredient) {}
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
+            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
                 var slots = builder.getRecipeSlots().getSlots(RecipeIngredientRole.INPUT);
                 var scrollWidget = builder.addScrollGridWidget(slots, cols, rows);
                 scrollWidget.setPosition(0, 0, getWidth(), getHeight(), HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM);
@@ -268,7 +272,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {}
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {}
+            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {}
         });
 
         guiGraphics.pose().popPose();
@@ -309,7 +313,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {}
+            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {}
         });
     }
 

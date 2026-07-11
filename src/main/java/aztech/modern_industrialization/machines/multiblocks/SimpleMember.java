@@ -24,22 +24,32 @@
 
 package aztech.modern_industrialization.machines.multiblocks;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.Tags;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -54,8 +64,12 @@ public interface SimpleMember {
 
     BlockState getPreviewState();
 
-    default ItemStack getItemPreviewState(RegistryAccess registries) {
-        return this.getPreviewState().getBlock().asItem().getDefaultInstance();
+    default Ingredient getItemPreviewState(RegistryAccess registries) {
+        return Ingredient.of(this.getPreviewState().getBlock().asItem());
+    }
+
+    default List<Component> getTooltipPreview(RegistryAccess registries) {
+        return List.of(this.getPreviewState().getBlock().getName());
     }
 
     static SimpleMember forBlock(Supplier<? extends Block> block) {
@@ -79,15 +93,9 @@ public interface SimpleMember {
         };
     }
 
-    static SimpleMember forBlockId(ResourceLocation id) {
-        return forBlock(() -> BuiltInRegistries.BLOCK.get(id));
-    }
-
-    static SimpleMember forBlockTag(ResourceLocation id, ResourceLocation tagId) {
-        Objects.requireNonNull(id);
-        Objects.requireNonNull(tagId);
-
-        var tag = TagKey.create(Registries.BLOCK, tagId);
+    static SimpleMember forBlockTag(Supplier<? extends Block> block, TagKey<Block> tag) {
+        Objects.requireNonNull(block);
+        Objects.requireNonNull(tag);
 
         return new SimpleMember() {
             @Override
@@ -102,9 +110,45 @@ public interface SimpleMember {
 
             @Override
             public BlockState getPreviewState() {
-                return BuiltInRegistries.BLOCK.get(id).defaultBlockState();
+                return block.get().defaultBlockState();
+            }
+
+            @Override
+            public Ingredient getItemPreviewState(RegistryAccess registries) {
+                var blocks = BuiltInRegistries.BLOCK.getTagOrEmpty(tag);
+                return Ingredient.of(StreamSupport.stream(blocks.spliterator(), false)
+                        .map(Holder::value)
+                        .map(Block::asItem)
+                        .filter((item) -> item != Items.AIR)
+                        .map(ItemStack::new));
+            }
+
+            @Override
+            public List<Component> getTooltipPreview(RegistryAccess registries) {
+                List<Component> lines = new ArrayList<>();
+                var translation = Tags.getTagTranslationKey(tag);
+                var tagText = Component.literal("#" + tag.location());
+                if (I18n.exists(translation)) {
+                    lines.add(Component.translatable(translation));
+                    lines.add(tagText.withStyle(ChatFormatting.DARK_GRAY));
+                } else {
+                    lines.add(tagText);
+                }
+                return lines;
             }
         };
+    }
+
+    static SimpleMember forBlockId(ResourceLocation id) {
+        return forBlock(() -> BuiltInRegistries.BLOCK.get(id));
+    }
+
+    static SimpleMember forBlockTagId(ResourceLocation id, ResourceLocation tagId) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(tagId);
+
+        var tag = TagKey.create(Registries.BLOCK, tagId);
+        return forBlockTag(() -> BuiltInRegistries.BLOCK.get(id), tag);
     }
 
     static SimpleMember forBlockState(BlockState state) {

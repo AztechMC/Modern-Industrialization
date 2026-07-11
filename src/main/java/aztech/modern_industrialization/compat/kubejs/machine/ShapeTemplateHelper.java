@@ -45,7 +45,7 @@ public interface ShapeTemplateHelper {
     }
 
     default SimpleMember memberOfBlockTag(String blockId, String blockTag) {
-        return SimpleMember.forBlockTag(ResourceLocation.parse(blockId), ResourceLocation.parse(blockTag));
+        return SimpleMember.forBlockTagId(ResourceLocation.parse(blockId), ResourceLocation.parse(blockTag));
     }
 
     default HatchFlags noHatch() {

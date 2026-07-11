@@ -60,7 +60,9 @@ public interface SimpleMember {
     boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity);
 
     @Nullable
-    BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state);
+    default BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
+        return null;
+    }
 
     BlockState getPreviewState();
 
@@ -82,11 +84,6 @@ public interface SimpleMember {
             }
 
             @Override
-            public @Nullable BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
-                return null;
-            }
-
-            @Override
             public BlockState getPreviewState() {
                 return block.get().defaultBlockState();
             }
@@ -101,11 +98,6 @@ public interface SimpleMember {
             @Override
             public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
                 return state.is(tag);
-            }
-
-            @Override
-            public @Nullable BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
-                return null;
             }
 
             @Override
@@ -161,11 +153,6 @@ public interface SimpleMember {
             }
 
             @Override
-            public @Nullable BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
-                return null;
-            }
-
-            @Override
             public BlockState getPreviewState() {
                 return state;
             }
@@ -177,11 +164,6 @@ public interface SimpleMember {
             @Override
             public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
                 return state.is(Blocks.CHAIN) && state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y;
-            }
-
-            @Override
-            public @Nullable BlockEntity newBlockEntity(RegistryAccess registries, @Nullable Level level, BlockPos pos, BlockState state) {
-                return null;
             }
 
             @Override

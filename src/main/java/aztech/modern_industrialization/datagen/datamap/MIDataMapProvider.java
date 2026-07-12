@@ -46,6 +46,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
@@ -92,6 +94,8 @@ public class MIDataMapProvider extends DataMapProvider {
     }
 
     private void gatherFluidFuels() {
+        int creosote = 160;
+
         addFluidFuel(MIFluids.HYDROGEN, 1);
         addFluidFuel(MIFluids.DEUTERIUM, 1);
         addFluidFuel(MIFluids.TRITIUM, 1);
@@ -99,16 +103,22 @@ public class MIDataMapProvider extends DataMapProvider {
         addFluidFuel(MIFluids.SYNTHETIC_OIL, 16);
         addFluidFuel(MIFluids.RAW_BIODIESEL, 50);
         addFluidFuel(MIFluids.NAPHTHA, 80);
-        addFluidFuel(MIFluids.CREOSOTE, 160);
+        addFluidFuel(MIFluids.CREOSOTE, creosote);
         addFluidFuel(MIFluids.LIGHT_FUEL, 160);
         addFluidFuel(MIFluids.HEAVY_FUEL, 240);
         addFluidFuel(MIFluids.BIODIESEL, 250);
         addFluidFuel(MIFluids.DIESEL, 400);
         addFluidFuel(MIFluids.BOOSTED_DIESEL, 800);
+
+        addFluidFuel(ResourceLocation.fromNamespaceAndPath("immersiveengineering", "creosote"), creosote, new ModLoadedCondition("immersiveengineering"));
     }
 
     private void addFluidFuel(FluidDefinition fluidDefinition, int euPerMb) {
-        builder(MIDataMaps.FLUID_FUELS).add(fluidDefinition.getId(), new FluidFuel(euPerMb), false);
+        addFluidFuel(fluidDefinition.getId(), euPerMb);
+    }
+
+    private void addFluidFuel(ResourceLocation fluidId, int euPerMb, ICondition... conditions) {
+        builder(MIDataMaps.FLUID_FUELS).add(fluidId, new FluidFuel(euPerMb), false, conditions);
     }
 
     private void gatherItemPipeUpgrades() {

@@ -1,5 +1,14 @@
 {
   "values": {
+    "immersiveengineering:creosote": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "immersiveengineering"
+        }
+      ],
+      "eu_per_mb": 160
+    },
     "modern_industrialization:biodiesel": {
       "eu_per_mb": 250
     },

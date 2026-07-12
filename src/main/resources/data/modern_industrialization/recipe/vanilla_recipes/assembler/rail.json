@@ -14,7 +14,7 @@
   ],
   "fluid_inputs": [
     {
-      "fluid": "modern_industrialization:creosote",
+      "tag": "c:creosote",
       "amount": 100
     }
   ],

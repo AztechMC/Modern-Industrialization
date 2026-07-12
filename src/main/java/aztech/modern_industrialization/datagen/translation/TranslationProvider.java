@@ -25,6 +25,7 @@
 package aztech.modern_industrialization.datagen.translation;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.energy.CableTier;
@@ -128,6 +129,10 @@ public final class TranslationProvider implements DataProvider {
 
         for (var casingName : MachineCasings.translations) {
             addTranslation(casingName.casing().getTranslationKey(), casingName.englishName());
+        }
+
+        for (var fluid : MIFluids.FLUID_DEFINITIONS.values()) {
+            addTranslation("tag.fluid.c." + fluid.getId().getPath(), fluid.getEnglishName());
         }
     }
 

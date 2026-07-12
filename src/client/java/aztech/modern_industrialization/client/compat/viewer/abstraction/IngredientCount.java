@@ -24,41 +24,14 @@
 
 package aztech.modern_industrialization.client.compat.viewer.abstraction;
 
-import java.util.List;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.world.item.crafting.Ingredient;
 
-public class ViewerPageManager {
-    public final List<IngredientCount> stacks;
-    public final int pageSize;
+public class IngredientCount {
+    public final Ingredient ingredient;
 
-    public int currentPage;
+    public int count;
 
-    public ViewerPageManager(List<IngredientCount> stacks, int pageSize) {
-        this.stacks = stacks;
-        this.pageSize = pageSize;
-    }
-
-    public int totalPages() {
-        return (stacks.size() - 1) / pageSize + 1;
-    }
-
-    public void scroll(int delta) {
-        currentPage += delta;
-        int totalPages = totalPages();
-        if (currentPage < 0) {
-            currentPage = totalPages - 1;
-        }
-        if (currentPage >= totalPages) {
-            currentPage = 0;
-        }
-    }
-
-    @Nullable
-    public IngredientCount get(int index) {
-        index += pageSize * currentPage;
-        if (index < stacks.size()) {
-            return stacks.get(index);
-        }
-        return null;
+    public IngredientCount(Ingredient ingredient) {
+        this.ingredient = ingredient;
     }
 }

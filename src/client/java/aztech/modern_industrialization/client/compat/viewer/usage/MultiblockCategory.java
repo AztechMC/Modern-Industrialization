@@ -27,6 +27,7 @@ package aztech.modern_industrialization.client.compat.viewer.usage;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.client.compat.viewer.abstraction.IngredientCount;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
@@ -38,6 +39,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.jspecify.annotations.Nullable;
 
@@ -62,7 +64,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
 
     @Override
     public void buildLayout(Recipe recipe, LayoutBuilder builder) {
-        builder.invisibleInput(recipe.controller);
+        builder.invisibleInput(Ingredient.of(recipe.controller));
         builder.outputSlot((width / 2) - 8, 5).item(recipe.controller);
 
         builder.scrollableSlots(COLUMNS, ROWS, recipe.materials);
@@ -80,28 +82,28 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
 
     protected static class Recipe {
         public final ItemStack controller;
-        public final List<ItemStack> materials = new ArrayList<>();
+        public final List<IngredientCount> materials = new ArrayList<>();
         public final ResourceLocation id;
 
         public Recipe(ResourceLocation controller, ShapeTemplate shapeTemplate, @Nullable String alternative, RegistryAccess registries) {
             this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
-            List<ItemStack> materials = new ArrayList<>();
+            List<IngredientCount> materials = new ArrayList<>();
 
             outer:
             for (var entry : shapeTemplate.simpleMembers.entrySet()) {
-                var previewStack = entry.getValue().getItemPreviewState(registries).copy();
-                if (!previewStack.isEmpty()) {
+                var previewState = entry.getValue().getItemPreviewState(registries);
+                if (!previewState.isEmpty()) {
                     for (var materialStack : materials) {
-                        if (ItemStack.isSameItemSameComponents(materialStack, previewStack)) {
-                            materialStack.setCount(materialStack.getCount() + previewStack.getCount());
+                        if (materialStack.ingredient.equals(previewState)) {
+                            materialStack.count++;
                             continue outer;
                         }
                     }
-                    materials.add(previewStack);
+                    materials.add(new IngredientCount(previewState));
                 }
             }
 
-            materials.sort(Comparator.comparing(ItemStack::getCount).reversed());
+            materials.sort(Comparator.comparing((IngredientCount material) -> material.count).reversed());
             this.materials.addAll(materials);
             this.id = ResourceLocation.fromNamespaceAndPath(controller.getNamespace(),
                     "/" + controller.getPath() + "/" + materials.size() + (alternative == null ? "" : "/" + alternative));

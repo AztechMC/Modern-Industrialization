@@ -150,7 +150,7 @@ The main difference is that the shape of the multiblock has to be specified.
 Here are a few explanations about the shape system:
 - The shape is a 3D grid, and each position contains two things: the block that should be there, and which hatches are allowed to replace that block.
 - To add something to the shape, use `.add(x, y, z, block, hatches)`.
-  - The block can be created using `event.memberOfBlock(block id)`.
+  - The block can be created using `event.memberOfBlock(block id)` or `event.memberOfBlockTag(block id, block tag)`. In the case of a block tag member, the block id will be what appears in the hologram view, and the tag is what is accepted at that position.
   - The hatches can be created using `event.hatchOf(list of accepted hatches)`. The hatch types are `item_input`, `item_output`, `fluid_input`, `fluid_output`, `energy_input`, and `energy_output`.
 - The controller is always at position `(0, 0, 0)`, and will replace whatever block is there.
   - Positive `x` is for blocks to the right of the controller, negative `x` for blocks to the left.

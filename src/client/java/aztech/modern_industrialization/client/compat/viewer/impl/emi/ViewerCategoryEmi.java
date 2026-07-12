@@ -25,6 +25,7 @@
 package aztech.modern_industrialization.client.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.client.compat.viewer.abstraction.IngredientCount;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerPageManager;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
@@ -91,24 +92,24 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             }
 
             @Override
-            public void invisibleInput(ItemStack item) {
+            public void invisibleInput(Ingredient ingredient) {
                 var ing = new IngredientBuilder(0, 0);
-                ing.item(item);
+                ing.ingredient(ingredient, 1, 1);
                 ing.isVisible = false;
                 inputs.add(ing);
             }
 
             @Override
-            public void invisibleOutput(ItemStack item) {
+            public void invisibleOutput(Ingredient ingredient) {
                 var ing = new IngredientBuilder(0, 0);
-                ing.item(item);
+                ing.ingredient(ingredient, 1, 1);
                 ing.isVisible = false;
                 outputs.add(ing);
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
-                stacks.forEach(this::invisibleInput);
+            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
+                ingredients.forEach((ingredient) -> this.invisibleInput(ingredient.ingredient));
             }
         });
     }
@@ -326,13 +327,13 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 }
 
                 @Override
-                public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
+                public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
                     int offsetX = (widgets.getWidth() / 2) - ((cols * 18) / 2);
                     int offsetY = 20;
                     int pageHeight = (widgets.getHeight() - 21) / 18;
                     int pageSize = cols * rows;
-                    ViewerPageManager pages = new ViewerPageManager(stacks, pageSize);
-                    if (pageSize < stacks.size()) {
+                    ViewerPageManager pages = new ViewerPageManager(ingredients, pageSize);
+                    if (pageSize < ingredients.size()) {
                         widgets.addButton(2, 2, 12, 12, 0, 0, () -> true, (mx, my, button) -> {
                             pages.scroll(-1);
                         });
@@ -341,17 +342,18 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                         });
                     }
                     int index = 0;
-                    for (; index < stacks.size() && index / cols <= pageHeight; index++) {
+                    for (; index < ingredients.size() && index / cols <= pageHeight; index++) {
                         final int finalIndex = index;
                         widgets.add(new SlotWidget(EmiStack.EMPTY, index % cols * 18 + offsetX, index / cols * 18 + offsetY) {
                             @Override
                             public EmiIngredient getStack() {
-                                return EmiStack.of(pages.getStack(finalIndex));
+                                var ingredient = pages.get(finalIndex);
+                                return ingredient == null ? EmiStack.EMPTY : EmiIngredient.of(ingredient.ingredient);
                             }
 
                             @Override
                             public void drawStack(GuiGraphics draw, int mouseX, int mouseY, float delta) {
-                                var stack = pages.getStack(finalIndex);
+                                var ingredient = pages.get(finalIndex);
 
                                 Bounds bounds = getBounds();
                                 int xOff = (bounds.width() - 16) / 2;
@@ -360,8 +362,8 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                                 // Draw count separately to handle amounts >= 100 reasonably
                                 int stackX = bounds.x() + xOff;
                                 int stackY = bounds.y() + yOff;
-                                EmiStack.of(stack, 1).render(draw, stackX, stackY, delta);
-                                var amount = Component.literal(String.valueOf(stack.getCount()));
+                                EmiIngredient.of(ingredient.ingredient).render(draw, stackX, stackY, delta);
+                                var amount = Component.literal(String.valueOf(ingredient.count));
                                 // Could use 1.0 if the count is < 100, but this looks more uniform
                                 float scale = 0.8f;
 

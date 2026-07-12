@@ -103,11 +103,11 @@ public abstract class ViewerCategory<D> {
 
         SlotBuilder outputSlot(int x, int y);
 
-        void invisibleInput(ItemStack item);
+        void invisibleInput(Ingredient ingredient);
 
-        void invisibleOutput(ItemStack item);
+        void invisibleOutput(Ingredient ingredient);
 
-        void scrollableSlots(int cols, int rows, List<ItemStack> stacks);
+        void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients);
     }
 
     public interface SlotBuilder {
@@ -188,7 +188,7 @@ public abstract class ViewerCategory<D> {
 
         void tooltip(int x, int y, int w, int h, List<Component> tooltip);
 
-        void scrollableSlots(int cols, int rows, List<ItemStack> stacks);
+        void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients);
     }
 
     public enum TextAlign {

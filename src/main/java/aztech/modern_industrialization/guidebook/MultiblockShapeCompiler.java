@@ -80,7 +80,7 @@ public class MultiblockShapeCompiler implements SceneElementTagCompiler {
             var ingredient = member.getItemPreviewState(scene.getLevel().registryAccess());
             List<Component> tooltipLines = new ArrayList<>(member.getTooltipPreview(scene.getLevel().registryAccess()));
             var hatch = shape.hatchFlags.get(entry.getKey());
-            if (hatch != null) {
+            if (hatch != null && !hatch.values().isEmpty()) {
                 tooltipLines.add(MIText.AcceptsHatches.text());
                 for (var type : hatch.values()) {
                     tooltipLines.add(Component.literal("- ").append(type.description()));

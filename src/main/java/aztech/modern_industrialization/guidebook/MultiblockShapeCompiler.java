@@ -80,14 +80,15 @@ public class MultiblockShapeCompiler implements SceneElementTagCompiler {
             var ingredient = member.getItemPreviewState(scene.getLevel().registryAccess());
             List<Component> tooltipLines = new ArrayList<>(member.getTooltipPreview(scene.getLevel().registryAccess()));
             var hatch = shape.hatchFlags.get(entry.getKey());
-            if (hatch != null && !hatch.values().isEmpty()) {
+            boolean hasHatches = hatch != null && !hatch.values().isEmpty();
+            if (hasHatches) {
                 tooltipLines.add(MIText.AcceptsHatches.text());
                 for (var type : hatch.values()) {
                     tooltipLines.add(Component.literal("- ").append(type.description()));
                 }
             }
             var minCorner = Vec3.atLowerCornerOf(pos);
-            var annotation = new InWorldBoxAnnotation(minCorner.toVector3f(), minCorner.add(1, 1, 1).toVector3f(), hatch == null ? ConstantColor.TRANSPARENT : SymbolicColor.GREEN);
+            var annotation = new InWorldBoxAnnotation(minCorner.toVector3f(), minCorner.add(1, 1, 1).toVector3f(), hasHatches ? SymbolicColor.GREEN : ConstantColor.TRANSPARENT);
             annotation.setTooltip(new TextTooltip(tooltipLines));
             scene.addAnnotation(annotation);
         }

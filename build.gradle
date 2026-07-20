@@ -6,7 +6,7 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.112'
     id 'dev.lukebemish.immaculate' version '0.1.13'
     id 'net.neoforged.licenser' version '0.7.5'
-    id 'me.modmuss50.mod-publish-plugin' version '1.0.0'
+    id 'me.modmuss50.mod-publish-plugin' version '2.1.0'
 }
 
 version = System.getenv("MI_VERSION")

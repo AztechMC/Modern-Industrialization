@@ -50,7 +50,7 @@ import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.client.machines.models.MachineBakedModel;
 import aztech.modern_industrialization.client.machines.models.MachineUnbakedModel;
 import aztech.modern_industrialization.client.machines.models.UseBlockModelUnbakedModel;
-import aztech.modern_industrialization.client.machines.multiblocks.MultiblockErrorHighlight;
+import aztech.modern_industrialization.client.machines.multiblocks.MultiblockHighlight;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockTankBER;
 import aztech.modern_industrialization.client.misc.VersionEvents;
@@ -126,10 +126,12 @@ public class MIClient {
         modContainer.registerConfig(ModConfig.Type.CLIENT, MIClientConfig.SPEC);
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
+        MIShaders.init(modBus);
+
         NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
         NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
         DeferredBarrelTextRenderer.init();
-        MultiblockErrorHighlight.init();
+        MultiblockHighlight.init();
         MIPipesClient.setupClient(modBus);
         VersionEvents.init(ModLoadingContext.get().getActiveContainer());
 
@@ -175,6 +177,7 @@ public class MIClient {
 
         modBus.addListener(RegisterRenderBuffersEvent.class, event -> {
             event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
+            event.registerRenderBuffer(MIRenderTypes.translucentHighlight());
         });
 
         // Warn if neither JEI nor REI is present!

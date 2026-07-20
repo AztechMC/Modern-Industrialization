@@ -32,7 +32,8 @@ import org.jspecify.annotations.Nullable;
 
 public class MIRenderTypes {
     private static @Nullable RenderType MACHINE_WRENCH_OVERLAY;
-    private static @Nullable RenderType CUTOUT_HIGHLIGHT; // used by hatch preview and wrong block highlight
+    private static @Nullable RenderType CUTOUT_HIGHLIGHT; // used by wrong block highlight
+    private static @Nullable RenderType TRANSLUCENT_HIGHLIGHT; // used by hatch preview
 
     public static RenderType machineOverlay() {
         if (MACHINE_WRENCH_OVERLAY == null) {
@@ -46,6 +47,13 @@ public class MIRenderTypes {
             CUTOUT_HIGHLIGHT = Factory.makeCutoutHighlight();
         }
         return CUTOUT_HIGHLIGHT;
+    }
+
+    public static RenderType translucentHighlight() {
+        if (TRANSLUCENT_HIGHLIGHT == null) {
+            TRANSLUCENT_HIGHLIGHT = Factory.makeTranslucentHighlight();
+        }
+        return TRANSLUCENT_HIGHLIGHT;
     }
 
     // This is a subclass to get access to a bunch of fields and classes.
@@ -74,6 +82,19 @@ public class MIRenderTypes {
                             .setTextureState(new TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
                             .setLightmapState(LIGHTMAP)
                             .setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
+                            .createCompositeState(false));
+        }
+
+        private static RenderType makeTranslucentHighlight() {
+            // Use block vertex format to use the fast path in BufferBuilder, even if the shader doesn't use the extra vertex attributes.
+            return create("translucent_highlight", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 65536, false, true,
+                    CompositeState.builder()
+                            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                            .setTextureState(new TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
+                            .setLightmapState(LIGHTMAP)
+                            .setShaderState(MIShaders.CUTOUT_HIGHLIGHT)
+                            .setCullState(CULL)
+                            .setDepthTestState(LEQUAL_DEPTH_TEST)
                             .createCompositeState(false));
         }
     }

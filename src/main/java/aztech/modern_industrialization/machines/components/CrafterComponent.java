@@ -388,8 +388,11 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 continue;
             if (canStartRecipe(recipe.value())) {
                 if (newActiveRecipe != null) {
-                    matchesMultipleRecipes = true;
-                    return false;
+                    if (overlaps(newActiveRecipe.value(), recipe.value())) {
+                        matchesMultipleRecipes = true;
+                        return false;
+                    }
+                    continue;
                 }
                 newActiveRecipe = recipe;
                 if (outputsLocked) {
@@ -410,6 +413,34 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             recipeEnergy = newActiveRecipe.value().getTotalEu();
             recipeMaxEu = getRecipeMaxEu(newActiveRecipe.value().eu, recipeEnergy, efficiencyTicks);
             return true;
+        }
+        return false;
+    }
+
+    private boolean overlaps(MachineRecipe first, MachineRecipe second) {
+        // When we find which ingredient matches, check if the second recipe has an ingredient that also matches this stack
+        // We must do an overlap check this way because ingredients are not able to be easily compared against each other aside from equality
+        for (var stack : inventory.getFluidInputs()) {
+            for (var input : first.fluidInputs) {
+                if (input.fluid().test(stack.toStack())) {
+                    for (var otherInput : second.fluidInputs) {
+                        if (otherInput.fluid().test(stack.toStack())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        for (var stack : inventory.getItemInputs()) {
+            for (var input : first.itemInputs) {
+                if (input.matches(stack.toStack())) {
+                    for (var otherInput : second.itemInputs) {
+                        if (otherInput.matches(stack.toStack())) {
+                            return true;
+                        }
+                    }
+                }
+            }
         }
         return false;
     }

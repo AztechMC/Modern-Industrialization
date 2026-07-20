@@ -387,9 +387,12 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             if (behavior.banRecipe(recipe.value()))
                 continue;
             if (canStartRecipe(recipe.value())) {
-                if (newActiveRecipe != null && overlaps(newActiveRecipe.value(), recipe.value())) {
-                    matchesMultipleRecipes = true;
-                    return false;
+                if (newActiveRecipe != null) {
+                    if (overlaps(newActiveRecipe.value(), recipe.value())) {
+                        matchesMultipleRecipes = true;
+                        return false;
+                    }
+                    continue;
                 }
                 newActiveRecipe = recipe;
                 if (outputsLocked) {

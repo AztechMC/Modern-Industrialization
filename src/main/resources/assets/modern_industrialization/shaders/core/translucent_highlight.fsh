@@ -12,5 +12,6 @@ out vec4 fragColor;
 
 void main() {
     vec4 color = texture(Sampler0, texCoord0) * vertexColor;
+    // do not discard transparent pixels so that the depth is written and can cull highlights behind it
     fragColor = color * ColorModulator;
 }

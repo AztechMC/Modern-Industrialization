@@ -26,7 +26,6 @@ package aztech.modern_industrialization.client.machines.multiblocks;
 
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.client.machines.MachineBlockEntityRenderer;
-import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
@@ -71,16 +70,11 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                     continue;
                 }
 
-                matrices.pushPose();
-                matrices.translate(pos.getX() - be.getBlockPos().getX(), pos.getY() - be.getBlockPos().getY(), pos.getZ() - be.getBlockPos().getZ());
-
                 HatchFlags hatchFlag = matcher.getHatchFlags(pos);
                 if (hatchType != null) {
                     if (MIClientConfig.INSTANCE.hatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
                         // Highlight placeable hatches in green
-                        matrices.translate(-0.005, -0.005, -0.005);
-                        matrices.scale(1.01f, 1.01f, 1.01f);
-                        RenderHelper.drawOverlay(matrices, vcp, overlay);
+                        MultiblockHighlight.enqueueHatchHighlight(pos);
                     }
                 }
                 if (drawHighlights) {
@@ -91,15 +85,13 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                             var member = matcher.getSimpleMember(pos);
                             var state = ShapeMatcher.toWorldState(be.getLevel(), pos, member.getPreviewState(), matcher.controllerDirection);
                             var blockEntity = member.newBlockEntity(be.getLevel().registryAccess(), be.getLevel(), pos, state);
-                            MultiblockErrorHighlight.enqueueHighlight(pos, state, blockEntity);
+                            MultiblockHighlight.enqueueErrorHighlight(pos, state, blockEntity);
                         } else {
                             // Enqueue red cube
-                            MultiblockErrorHighlight.enqueueHighlight(pos, null, null);
+                            MultiblockHighlight.enqueueErrorHighlight(pos, null, null);
                         }
                     }
                 }
-
-                matrices.popPose();
             }
         }
     }

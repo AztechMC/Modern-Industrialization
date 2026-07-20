@@ -39,6 +39,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexSorting;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -80,7 +82,7 @@ public class RenderHelper {
     private static final QuadCube overlayQuads = new QuadCube(MI.id("block/hatch_placement_overlay"));
 
     public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, int overlay) {
-        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.translucentHighlight());
         for (BakedQuad overlayQuad : overlayQuads.getQuads()) {
             vc.putBulkData(ms.last(), overlayQuad, 1.0f, 1.0f, 1.0f, 1.0f, LightTexture.FULL_BRIGHT, /* not used by shader */ overlay);
         }
@@ -276,5 +278,9 @@ public class RenderHelper {
             charSequences.addAll(Tooltip.splitTooltip(Minecraft.getInstance(), component));
         }
         return charSequences;
+    }
+
+    public static VertexSorting reverseVertexSorting(VertexSorting sorting) {
+        return (vertices) -> IntArrays.reverse(sorting.sort(vertices));
     }
 }

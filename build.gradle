@@ -56,9 +56,8 @@ repositories {
         }
     }
     maven {
-        url "https://maven.terraformersmc.com"
+        url "https://maven.gnomecraft.net/repository/maven-public"
         content {
-            includeGroup "com.terraformersmc"
             includeGroup "dev.emi"
         }
     }

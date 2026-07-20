@@ -92,7 +92,7 @@ public class MIRenderTypes {
                             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                             .setTextureState(new TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
                             .setLightmapState(LIGHTMAP)
-                            .setShaderState(MIShaders.CUTOUT_HIGHLIGHT)
+                            .setShaderState(MIShaders.TRANSLUCENT_HIGHLIGHT)
                             .setCullState(CULL)
                             .setDepthTestState(LEQUAL_DEPTH_TEST)
                             .createCompositeState(false));

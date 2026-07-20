@@ -1,6 +1,6 @@
 {
   "vertex": "minecraft:position_color_tex_lightmap",
-  "fragment": "modern_industrialization:cutout_highlight",
+  "fragment": "modern_industrialization:translucent_highlight",
   "samplers": [
     { "name": "Sampler0" }
   ],

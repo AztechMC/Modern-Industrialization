@@ -11,13 +11,13 @@ import org.jspecify.annotations.Nullable;
 
 public class MIShaders {
     @Nullable
-    private static ShaderInstance CUTOUT_HIGHLIGHT_INSTANCE;
+    private static ShaderInstance TRANSLUCENT_HIGHLIGHT_INSTANCE;
 
-    private static ShaderInstance cutoutHighlight() {
-        return CUTOUT_HIGHLIGHT_INSTANCE;
+    private static ShaderInstance translucentHighlight() {
+        return TRANSLUCENT_HIGHLIGHT_INSTANCE;
     }
 
-    public static final RenderStateShard.ShaderStateShard CUTOUT_HIGHLIGHT = new RenderStateShard.ShaderStateShard(MIShaders::cutoutHighlight);
+    public static final RenderStateShard.ShaderStateShard TRANSLUCENT_HIGHLIGHT = new RenderStateShard.ShaderStateShard(MIShaders::translucentHighlight);
 
     public static void init(IEventBus bus) {
         bus.addListener(MIShaders::registerShaders);
@@ -25,7 +25,7 @@ public class MIShaders {
 
     private static void registerShaders(RegisterShadersEvent event) {
         try {
-            event.registerShader(new ShaderInstance(event.getResourceProvider(), MI.id("cutout_highlight"), DefaultVertexFormat.BLOCK), (shader) -> CUTOUT_HIGHLIGHT_INSTANCE = shader);
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), MI.id("translucent_highlight"), DefaultVertexFormat.BLOCK), (shader) -> TRANSLUCENT_HIGHLIGHT_INSTANCE = shader);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

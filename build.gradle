@@ -411,6 +411,8 @@ publishMods {
         projectId = project.curseforge_project
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
         javaVersions.add JavaVersion.VERSION_21
+        client = true
+        server = true
         shared it
         embeds "grandpower"
         optional "roughly-enough-items"

@@ -53,6 +53,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
@@ -108,7 +109,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
         ShapeTemplate.Builder templateBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL);
         SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("steel_machine_casing")));
-        SimpleMember glass = SimpleMember.forBlock(() -> Blocks.GLASS);
+        SimpleMember glass = SimpleMember.forBlockTag(() -> Blocks.GLASS, Tags.Blocks.GLASS_BLOCKS);
         HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchTypes.LARGE_TANK).build();
 
         for (int x = -sizeX / 2; x <= sizeX / 2; x++) {

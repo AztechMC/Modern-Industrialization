@@ -392,7 +392,7 @@ public class MultiblockMachines {
     }
 
     private static void pressurizer() {
-        ShapeTemplate.Builder pressurizeShapeBuilder = new ShapeTemplate.Builder(MachineCasings.TITANIUM);
+        ShapeTemplate.Builder pressurizeShapeBuilder = new ShapeTemplate.Builder(MachineCasings.SOLID_TITANIUM);
         for (int y = -1; y < 3; y++) {
             SimpleMember member = (y == -1 || y == 2) ? titaniumCasing : titaniumPipe;
             HatchFlags flag = null;
@@ -418,7 +418,7 @@ public class MultiblockMachines {
     }
 
     private static void implosionCompressor() {
-        ShapeTemplate.Builder implosionCompressorShapeBuilder = new ShapeTemplate.Builder(MachineCasings.TITANIUM);
+        ShapeTemplate.Builder implosionCompressorShapeBuilder = new ShapeTemplate.Builder(MachineCasings.SOLID_TITANIUM);
         HatchFlags hatchs = new HatchFlags.Builder().with(ITEM_OUTPUT, ITEM_INPUT, ENERGY_INPUT).build();
         implosionCompressorShapeBuilder.add3by3(0, titaniumCasing, false, hatchs);
         implosionCompressorShapeBuilder.add3by3(1, blastProofCasing, true, null);

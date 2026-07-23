@@ -38,8 +38,9 @@ public class PipeVoxelShape {
      */
     public final VoxelShape shape;
     /**
-     * The network type.
+     * The network type. If null, this is associated with no particular type or multiple types (for example, an ME wire connector)
      */
+    @Nullable
     public final PipeNetworkType type;
     /**
      * If null, the center of the pipe. Otherwise, the connector in the given
@@ -53,7 +54,7 @@ public class PipeVoxelShape {
      */
     final boolean opensGui;
 
-    PipeVoxelShape(VoxelShape shape, PipeNetworkType type, @Nullable Direction direction, boolean opensGui) {
+    PipeVoxelShape(VoxelShape shape, @Nullable PipeNetworkType type, @Nullable Direction direction, boolean opensGui) {
         this.shape = shape;
         this.type = type;
         this.direction = direction;

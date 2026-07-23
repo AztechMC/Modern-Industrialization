@@ -584,27 +584,22 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
                 }
             }
         }
+        // ME Wire connectors
+        for (Direction direction : Direction.values()) {
+            for (var entry : connections.entrySet()) {
+                var conn = entry.getValue()[direction.get3DDataValue()];
+                if (conn == PipeEndpointType.BLOCK && entry.getKey().getIdentifier().getPath().endsWith("me_wire")) {
+                    shapes.add(new PipeVoxelShape(ME_WIRE_CONNECTOR_SHAPES[direction.get3DDataValue()], null, direction, false));
+                    break;
+                }
+            }
+        }
 
         return shapes;
     }
 
     private void rebuildCollisionShape() {
         currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(Shapes.empty(), Shapes::or);
-
-        for (Direction direction : Direction.values()) {
-            boolean renderConnector = false;
-            for (var entry : connections.entrySet()) {
-                var conn = entry.getValue()[direction.get3DDataValue()];
-                if (conn == PipeEndpointType.BLOCK && entry.getKey().getIdentifier().getPath().endsWith("me_wire")) {
-                    renderConnector = true;
-                }
-            }
-
-            if (renderConnector) {
-                currentCollisionShape = Shapes.or(currentCollisionShape, ME_WIRE_CONNECTOR_SHAPES[direction.get3DDataValue()]);
-            }
-        }
-
         currentCollisionShape = currentCollisionShape.optimize();
     }
 

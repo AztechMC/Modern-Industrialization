@@ -177,7 +177,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         }
 
         PipeVoxelShape partShape = getHitPart(pipe, hit);
-        if (partShape == null) {
+        if (partShape == null || partShape.type == null) {
             return false;
         }
 
@@ -236,7 +236,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         }
 
         PipeVoxelShape partShape = getHitPart(pipeEntity, hit);
-        if (partShape == null || !partShape.opensGui || pipeEntity.hasCamouflage()) {
+        if (partShape == null || partShape.type == null || !partShape.opensGui || pipeEntity.hasCamouflage()) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 
@@ -342,7 +342,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                 }
 
                 var targetedPart = PipeBlock.getHitPart(player.level(), bhr.getBlockPos(), bhr);
-                return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
+                return new ItemStack(targetedPart == null || targetedPart.type == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
             }
         }
 

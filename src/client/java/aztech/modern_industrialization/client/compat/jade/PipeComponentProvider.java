@@ -81,7 +81,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         PipeVoxelShape shape = getHitShape(accessor);
-        if (shape != null) {
+        if (shape != null && shape.type != null) {
             CompoundTag tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
             var helper = IElementHelper.get();
 

@@ -65,7 +65,11 @@ public class PipeItem extends Item {
         // TODO: Check BlockItem code and implement all checks.
         // TODO: Check advancement criteria.
 
-        BlockPos placingPos = tryPlace(context);
+        // When clicking an unassociated pipe part (such as an ME wire connector part), treat this as trying to place the pipe against the block it is connected to
+        var hitPipePart = PipeBlock.getHitPart(context.getLevel(), context.getClickedPos(), context.getHitResult());
+        boolean shouldForcePlaceConnection = hitPipePart != null && hitPipePart.type == null && hitPipePart.direction == context.getClickedFace().getOpposite();
+
+        BlockPos placingPos = tryPlace(context, shouldForcePlaceConnection);
         if (placingPos != null) {
             Level world = context.getLevel();
             Player player = context.getPlayer();
@@ -86,7 +90,7 @@ public class PipeItem extends Item {
             return InteractionResult.sidedSuccess(world.isClientSide);
         } else {
             // if we couldn't place a pipe, we try to add a connection instead
-            placingPos = context.getClickedPos().relative(context.getClickedFace());
+            placingPos = shouldForcePlaceConnection ? context.getClickedPos() : context.getClickedPos().relative(context.getClickedFace());
             Level world = context.getLevel();
             BlockEntity entity = world.getBlockEntity(placingPos);
             if (entity instanceof PipeBlockEntity pipeEntity) {
@@ -111,12 +115,12 @@ public class PipeItem extends Item {
     // Try placing the pipe and registering the new pipe to the entity, returns null
     // if it failed
     @Nullable
-    private BlockPos tryPlace(UseOnContext context) {
+    private BlockPos tryPlace(UseOnContext context, boolean skipPlaceAdjacent) {
         BlockPos hitPos = context.getClickedPos();
         BlockPos adjacentPos = hitPos.relative(context.getClickedFace());
         if (tryPlaceAt(context, hitPos)) {
             return hitPos;
-        } else if (tryPlaceAt(context, adjacentPos)) {
+        } else if (!skipPlaceAdjacent && tryPlaceAt(context, adjacentPos)) {
             return adjacentPos;
         } else {
             return null;

@@ -62,19 +62,22 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
                 return item;
             }
 
-            ItemVariant resource = ItemVariant.of(item);
-
+            // A bit messy, but lets us avoid always getting an ItemVariant which takes unnecessary time with a map lookup
+            ItemVariant resource = null;
             boolean canInsert;
-
-            if (stack.getAmount() == 0) {
-                // If the amount is 0, we check if the lock allows it.
-                canInsert = stack.isResourceAllowedByLock(resource);
+            if (stack.amount == 0) {
+                canInsert = stack.isResourceAllowedByLock(item.getItem());
+            } else if ((item.isEmpty() || item.isComponentsPatchEmpty()) && (stack.isEmpty() || stack.getResource().getComponentsPatch().isEmpty())) {
+                canInsert = item.is(stack.getResource().getItem());
             } else {
-                // Otherwise we check that the resources match exactly.
+                resource = ItemVariant.of(item);
                 canInsert = stack.getResource().equals(resource);
             }
 
             if (canInsert) {
+                if (resource == null) {
+                    resource = ItemVariant.of(item);
+                }
                 long inserted = Math.min(item.getCount(), stack.getRemainingCapacityFor(resource));
 
                 if (inserted > 0 && !simulate) {

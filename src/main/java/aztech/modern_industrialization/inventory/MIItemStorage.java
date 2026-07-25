@@ -134,7 +134,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
         @Override
         public void getWhitelistedItems(Set<Item> whitelist) {
             for (ConfigurableItemStack stack : stacks) {
-                if (stack.pipesInsert && stack.getLockedInstance() != Items.AIR) {
+                if (stack.pipesInsert && !stack.isLockedTo(Items.AIR) && stack.getAmount() < stack.getCapacity()) {
                     whitelist.add(stack.getLockedInstance());
                 }
             }

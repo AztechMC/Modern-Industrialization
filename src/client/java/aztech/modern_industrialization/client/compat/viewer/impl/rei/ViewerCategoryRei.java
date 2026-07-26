@@ -119,17 +119,17 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
-            public void invisibleInput(Ingredient ingredient) {
+            public void invisibleInput(Ingredient ingredient, int count) {
                 var ing = new IngredientBuilder(0, 0, true);
-                ing.ingredient(ingredient, 1, 1);
+                ing.ingredient(ingredient, count, 1);
                 ing.isVisible = false;
                 inputs.add(ing);
             }
 
             @Override
-            public void invisibleOutput(Ingredient ingredient) {
+            public void invisibleOutput(Ingredient ingredient, int count) {
                 var ing = new IngredientBuilder(0, 0, false);
-                ing.ingredient(ingredient, 1, 1);
+                ing.ingredient(ingredient, count, 1);
                 ing.isVisible = false;
                 outputs.add(ing);
             }

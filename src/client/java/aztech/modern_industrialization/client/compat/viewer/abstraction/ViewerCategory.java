@@ -103,9 +103,9 @@ public abstract class ViewerCategory<D> {
 
         SlotBuilder outputSlot(int x, int y);
 
-        void invisibleInput(Ingredient ingredient);
+        void invisibleInput(Ingredient ingredient, int count);
 
-        void invisibleOutput(Ingredient ingredient);
+        void invisibleOutput(Ingredient ingredient, int count);
 
         void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients);
     }

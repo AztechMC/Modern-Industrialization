@@ -92,24 +92,24 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             }
 
             @Override
-            public void invisibleInput(Ingredient ingredient) {
+            public void invisibleInput(Ingredient ingredient, int count) {
                 var ing = new IngredientBuilder(0, 0);
-                ing.ingredient(ingredient, 1, 1);
+                ing.ingredient(ingredient, count, 1);
                 ing.isVisible = false;
                 inputs.add(ing);
             }
 
             @Override
-            public void invisibleOutput(Ingredient ingredient) {
+            public void invisibleOutput(Ingredient ingredient, int count) {
                 var ing = new IngredientBuilder(0, 0);
-                ing.ingredient(ingredient, 1, 1);
+                ing.ingredient(ingredient, count, 1);
                 ing.isVisible = false;
                 outputs.add(ing);
             }
 
             @Override
             public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
-                ingredients.forEach((ingredient) -> this.invisibleInput(ingredient.ingredient));
+                ingredients.forEach((ingredient) -> this.invisibleInput(ingredient.ingredient, ingredient.count));
             }
         });
     }

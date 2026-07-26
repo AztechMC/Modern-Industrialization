@@ -64,7 +64,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
 
     @Override
     public void buildLayout(Recipe recipe, LayoutBuilder builder) {
-        builder.invisibleInput(Ingredient.of(recipe.controller));
+        builder.invisibleInput(Ingredient.of(recipe.controller), 1);
         builder.outputSlot((width / 2) - 8, 5).item(recipe.controller);
 
         builder.scrollableSlots(COLUMNS, ROWS, recipe.materials);

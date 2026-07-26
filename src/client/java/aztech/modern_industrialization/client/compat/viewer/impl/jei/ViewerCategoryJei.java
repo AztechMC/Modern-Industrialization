@@ -96,13 +96,13 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void invisibleInput(Ingredient ingredient) {
+            public void invisibleInput(Ingredient ingredient, int count) {
                 builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
                         .addIngredients(ingredient);
             }
 
             @Override
-            public void invisibleOutput(Ingredient ingredient) {
+            public void invisibleOutput(Ingredient ingredient, int count) {
                 builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
                         .addIngredients(ingredient);
             }
@@ -218,10 +218,10 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void invisibleInput(Ingredient ingredient) {}
+            public void invisibleInput(Ingredient ingredient, int count) {}
 
             @Override
-            public void invisibleOutput(Ingredient ingredient) {}
+            public void invisibleOutput(Ingredient ingredient, int count) {}
 
             @Override
             public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {

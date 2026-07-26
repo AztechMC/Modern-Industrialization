@@ -62,14 +62,17 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
                 return item;
             }
 
-            // A bit messy, but lets us avoid always getting an ItemVariant which takes unnecessary time with a map lookup
+            // A bit messy, but lets us avoid always getting an ItemVariant which takes unnecessary time with a map lookup.
             ItemVariant resource = null;
             boolean canInsert;
             if (stack.amount == 0) {
+                // If the amount is 0, we check if the lock allows it.
                 canInsert = stack.isResourceAllowedByLock(item.getItem());
             } else if ((item.isEmpty() || item.isComponentsPatchEmpty()) && (stack.isEmpty() || stack.getResource().getComponentsPatch().isEmpty())) {
+                // If both items don't have components, we check if they are the same item.
                 canInsert = item.is(stack.getResource().getItem());
             } else {
+                // Otherwise we check that the resources match exactly.
                 resource = ItemVariant.of(item);
                 canInsert = stack.getResource().equals(resource);
             }

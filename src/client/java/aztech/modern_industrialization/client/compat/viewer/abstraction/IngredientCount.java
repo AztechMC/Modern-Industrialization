@@ -31,7 +31,8 @@ public class IngredientCount {
 
     public int count;
 
-    public IngredientCount(Ingredient ingredient) {
+    public IngredientCount(Ingredient ingredient, int count) {
         this.ingredient = ingredient;
+        this.count = count;
     }
 }

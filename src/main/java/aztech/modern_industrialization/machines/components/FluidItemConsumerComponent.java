@@ -87,7 +87,12 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
      * less efficient when producing at its maximum.
      */
     private static float fluidFuelDiscount(float scalar) {
-        return (-1.2f * scalar) + 1f;
+        if (scalar <= 0.1f) {
+            return 1;
+        } else if (scalar >= 0.9f) {
+            return -0.2f;
+        }
+        return (-1.5f * scalar) + 1.15f;
     }
 
     public static FluidItemConsumerComponent ofFluidFuels(long maxEuProduction) {

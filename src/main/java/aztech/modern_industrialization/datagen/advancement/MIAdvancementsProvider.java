@@ -176,6 +176,9 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         var mvLvTransformer = createBasic(consumer, "mv_lv_transformer", analogCircuit, "Optimus Prime!", "Craft an MV to LV Transformer", existingFileHelper);
         var electricBlastFurnace = createBasic(consumer, "electric_blast_furnace", lvSteamTurbine, AdvancementType.GOAL, "Electric Best Friend", "Craft an Electric Blast Furnace to start producing Aluminum", existingFileHelper);
         var electronicCircuit = createBasic(consumer, "electronic_circuit", electricBlastFurnace, "The Power of Silicon", "Craft a Electronic Circuit", existingFileHelper);
+        var dieselJetpack = createBasic(consumer, "diesel_jetpack", electricBlastFurnace, AdvancementType.CHALLENGE, "Ely... We Meant Jetpack!", "Craft a Diesel Jetpack", existingFileHelper);
+        var dieselChainsaw = createBasic(consumer, "diesel_chainsaw", electricBlastFurnace, AdvancementType.CHALLENGE, "The Texas Chain Saw Massacre", "Craft a Diesel Chainsaw", existingFileHelper);
+        var dieselMiningDrill = createBasic(consumer, "diesel_mining_drill", electricBlastFurnace, AdvancementType.CHALLENGE, "Through The Walls Of Ba Sing Se", "Craft a Diesel Mining Drill", existingFileHelper);
         var centrifuge = createBasic(consumer, "centrifuge", electronicCircuit, "Actually It's The Centripetal Force", "Craft a Centrifuge", existingFileHelper);
         var electrolyzer = createBasic(consumer, "electrolyzer", electronicCircuit, "It's Got What Plants Crave", "Craft an Electrolyzer", existingFileHelper);
         var chemicalReactor = createBasic(consumer, "chemical_reactor", electronicCircuit, "Walter White Approves", "Craft a Chemical Reactor", existingFileHelper);
@@ -185,9 +188,6 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         var vacuumFreezer = createBasic(consumer, "vacuum_freezer", electronicCircuit, AdvancementType.GOAL, "Enslaved Winter", "Craft a Vacuum Freezer", existingFileHelper);
         var mvSteamTurbine = createBasic(consumer, "mv_steam_turbine", electronicCircuit, AdvancementType.GOAL, "Better Than Wind Mills", "Craft an Advanced Steam Turbine", existingFileHelper);
         var dieselGenerator = createBasic(consumer, "mv_diesel_generator", distillery, "Fast and Furious", "Craft an MV Diesel Generator", existingFileHelper);
-        var dieselJetpack = createBasic(consumer, "diesel_jetpack", distillery, AdvancementType.CHALLENGE, "Ely... We Meant Jetpack!", "Craft a Diesel Jetpack", existingFileHelper);
-        var dieselChainsaw = createBasic(consumer, "diesel_chainsaw", distillery, AdvancementType.CHALLENGE, "The Texas Chain Saw Massacre", "Craft a Diesel Chainsaw", existingFileHelper);
-        var dieselMiningDrill = createBasic(consumer, "diesel_mining_drill", distillery, AdvancementType.CHALLENGE, "Through The Walls Of Ba Sing Se", "Craft a Diesel Mining Drill", existingFileHelper);
         var digitalCircuit = createBasic(consumer, "digital_circuit", distillery, "No need for Sodium anymore", "Craft a Digital Circuit", existingFileHelper);
         var turboDieselGenerator = createBasic(consumer, "hv_diesel_generator", dieselGenerator, "Fast and Furious 2: Revenge", "Craft an HV Diesel Generator", existingFileHelper);
         var largeDieselGenerator = createBasic(consumer, "large_diesel_generator", turboDieselGenerator, "Fast and Furious 42: Armageddon", "Craft a Large Diesel Generator", existingFileHelper);

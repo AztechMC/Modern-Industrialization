@@ -1,13 +1,13 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
-    " Rr",
+    "cRr",
     "MrR",
-    "tM "
+    "tMc"
   ],
   "key" : {
     "M": {
-      "item" : "modern_industrialization:large_motor"
+      "item" : "modern_industrialization:motor"
     },
     "r" : {
       "item" : "modern_industrialization:invar_rotary_blade"
@@ -17,6 +17,9 @@
     },
     "R" : {
       "item" : "modern_industrialization:rubber_sheet"
+    },
+    "c": {
+      "item" : "modern_industrialization:analog_circuit"
     }
   },
   "result": {

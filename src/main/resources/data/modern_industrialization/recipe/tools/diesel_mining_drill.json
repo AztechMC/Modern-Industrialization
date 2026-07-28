@@ -7,10 +7,10 @@
   ],
   "key" : {
     "P" : {
-      "item" : "modern_industrialization:large_pump"
+      "item" : "modern_industrialization:pump"
     },
     "M": {
-      "item" : "modern_industrialization:large_motor"
+      "item" : "modern_industrialization:motor"
     },
     "r" : {
       "item" : "modern_industrialization:invar_rotary_blade"
@@ -19,7 +19,7 @@
       "item" : "modern_industrialization:aluminum_tank"
     },
     "c": {
-      "item" : "modern_industrialization:electronic_circuit"
+      "item" : "modern_industrialization:analog_circuit"
     },
     "H" : {
       "item" : "modern_industrialization:aluminum_drill_head"

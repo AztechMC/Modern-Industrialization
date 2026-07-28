@@ -1,5 +1,5 @@
 {
-  "parent": "modern_industrialization:distillery",
+  "parent": "modern_industrialization:electric_blast_furnace",
   "criteria": {
     "checkInv": {
       "conditions": {

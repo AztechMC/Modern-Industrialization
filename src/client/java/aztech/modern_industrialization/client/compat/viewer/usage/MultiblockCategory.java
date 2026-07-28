@@ -99,7 +99,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
                             continue outer;
                         }
                     }
-                    materials.add(new IngredientCount(previewState));
+                    materials.add(new IngredientCount(previewState, 1));
                 }
             }
 

@@ -7,46 +7,40 @@
           "modid": "immersiveengineering"
         }
       ],
-      "eu_per_mb": 160
+      "eu_per_mb": 320
     },
     "modern_industrialization:biodiesel": {
-      "eu_per_mb": 250
+      "eu_per_mb": 500
     },
     "modern_industrialization:boosted_diesel": {
-      "eu_per_mb": 800
+      "eu_per_mb": 1600
     },
     "modern_industrialization:creosote": {
-      "eu_per_mb": 160
+      "eu_per_mb": 320
     },
     "modern_industrialization:crude_oil": {
-      "eu_per_mb": 16
-    },
-    "modern_industrialization:deuterium": {
-      "eu_per_mb": 1
+      "eu_per_mb": 32
     },
     "modern_industrialization:diesel": {
-      "eu_per_mb": 400
+      "eu_per_mb": 800
     },
     "modern_industrialization:heavy_fuel": {
-      "eu_per_mb": 240
+      "eu_per_mb": 480
     },
     "modern_industrialization:hydrogen": {
-      "eu_per_mb": 1
+      "eu_per_mb": 2
     },
     "modern_industrialization:light_fuel": {
-      "eu_per_mb": 160
+      "eu_per_mb": 320
     },
     "modern_industrialization:naphtha": {
-      "eu_per_mb": 80
+      "eu_per_mb": 160
     },
     "modern_industrialization:raw_biodiesel": {
-      "eu_per_mb": 50
+      "eu_per_mb": 100
     },
     "modern_industrialization:synthetic_oil": {
-      "eu_per_mb": 16
-    },
-    "modern_industrialization:tritium": {
-      "eu_per_mb": 1
+      "eu_per_mb": 32
     }
   }
 }

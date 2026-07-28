@@ -336,7 +336,8 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             return new FluidItemConsumerComponent(
                     maxEnergyProduction,
                     doesAcceptAllItemFuels ? FluidItemConsumerComponent.itemFuels() : itemEuProductionMapBuilder.build(),
-                    doesAcceptAllFluidFuels ? FluidItemConsumerComponent.fluidFuels() : fluidEuProductionMapBuilder.build());
+                    doesAcceptAllFluidFuels ? FluidItemConsumerComponent.fluidFuels() : fluidEuProductionMapBuilder.build(),
+                    null);
         }
     }
 }

@@ -94,21 +94,19 @@ public class MIDataMapProvider extends DataMapProvider {
     }
 
     private void gatherFluidFuels() {
-        int creosote = 160;
+        int creosote = 320;
 
-        addFluidFuel(MIFluids.HYDROGEN, 1);
-        addFluidFuel(MIFluids.DEUTERIUM, 1);
-        addFluidFuel(MIFluids.TRITIUM, 1);
-        addFluidFuel(MIFluids.CRUDE_OIL, 16);
-        addFluidFuel(MIFluids.SYNTHETIC_OIL, 16);
-        addFluidFuel(MIFluids.RAW_BIODIESEL, 50);
-        addFluidFuel(MIFluids.NAPHTHA, 80);
+        addFluidFuel(MIFluids.HYDROGEN, 2);
+        addFluidFuel(MIFluids.CRUDE_OIL, 32);
+        addFluidFuel(MIFluids.SYNTHETIC_OIL, 32);
+        addFluidFuel(MIFluids.RAW_BIODIESEL, 100);
+        addFluidFuel(MIFluids.NAPHTHA, 160);
         addFluidFuel(MIFluids.CREOSOTE, creosote);
-        addFluidFuel(MIFluids.LIGHT_FUEL, 160);
-        addFluidFuel(MIFluids.HEAVY_FUEL, 240);
-        addFluidFuel(MIFluids.BIODIESEL, 250);
-        addFluidFuel(MIFluids.DIESEL, 400);
-        addFluidFuel(MIFluids.BOOSTED_DIESEL, 800);
+        addFluidFuel(MIFluids.LIGHT_FUEL, 320);
+        addFluidFuel(MIFluids.HEAVY_FUEL, 480);
+        addFluidFuel(MIFluids.BIODIESEL, 500);
+        addFluidFuel(MIFluids.DIESEL, 800);
+        addFluidFuel(MIFluids.BOOSTED_DIESEL, 1600);
 
         addFluidFuel(ResourceLocation.fromNamespaceAndPath("immersiveengineering", "creosote"), creosote, new ModLoadedCondition("immersiveengineering"));
     }

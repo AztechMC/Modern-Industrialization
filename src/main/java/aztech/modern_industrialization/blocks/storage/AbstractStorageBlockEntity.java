@@ -133,7 +133,11 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             if (!(resource instanceof ItemVariant itemResource)) {
                 throw new IllegalStateException("Cannot get ItemStack of non-item storage");
             }
-            cachedItemStack = amount == 0 ? ItemStack.EMPTY : itemResource.toStack(Ints.saturatedCast(amount));
+            if (behaviour.isCreative()) {
+                cachedItemStack = itemResource.toStack();
+            } else {
+                cachedItemStack = amount == 0 ? ItemStack.EMPTY : itemResource.toStack(Ints.saturatedCast(amount));
+            }
         }
         return cachedItemStack;
     }

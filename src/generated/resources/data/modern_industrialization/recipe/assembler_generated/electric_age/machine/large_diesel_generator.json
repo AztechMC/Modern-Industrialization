@@ -4,12 +4,12 @@
   "eu": 8,
   "item_inputs": [
     {
-      "amount": 2,
-      "item": "modern_industrialization:advanced_pump"
+      "amount": 1,
+      "item": "modern_industrialization:hv_diesel_generator"
     },
     {
-      "amount": 1,
-      "item": "modern_industrialization:highly_advanced_machine_hull"
+      "amount": 2,
+      "item": "modern_industrialization:advanced_pump"
     },
     {
       "amount": 1,
@@ -17,15 +17,15 @@
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:titanium_gear"
-    },
-    {
-      "amount": 2,
       "item": "modern_industrialization:advanced_motor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:hv_diesel_generator"
+      "item": "modern_industrialization:highly_advanced_machine_hull"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:titanium_gear"
     }
   ],
   "item_outputs": [

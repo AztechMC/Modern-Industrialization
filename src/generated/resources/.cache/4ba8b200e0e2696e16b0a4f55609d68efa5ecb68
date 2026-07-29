@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-28T23:04:29.00107507	Server Data (aggregated)
+// 1.21.1	2026-07-28T23:12:16.157715658	Server Data (aggregated)
 3ed44658dfe9569ce8f176ca3f3c3c82fe6feeaa data/modern_industrialization/recipe/alloy/mixer/battery_alloy/dust.json
 17019fa80e9403e189de444bc671ebd0e01cd445 data/modern_industrialization/recipe/alloy/mixer/battery_alloy/tiny_dust.json
 4f16b34fe53d232383c92af163f2227351f88801 data/modern_industrialization/recipe/alloy/mixer/bronze/dust.json
@@ -109,7 +109,7 @@ d3b221f6d816fe56e6da73b749596059ad0f3bb4 data/modern_industrialization/recipe/as
 96fa7afe0a77dc32ebb36325fd1ae9fb9b8e6d2d data/modern_industrialization/recipe/assembler_generated/electric_age/machine/hv_diesel_generator.json
 317706a8875aaacb912e648ecbfa9ed110e27400 data/modern_industrialization/recipe/assembler_generated/electric_age/machine/hv_steam_turbine.json
 312ea17d4038e83b9127ce98537d0e620ae3515c data/modern_industrialization/recipe/assembler_generated/electric_age/machine/implosion_compressor.json
-88397f158610144a6351a5897f16aa1575756acb data/modern_industrialization/recipe/assembler_generated/electric_age/machine/large_diesel_generator.json
+46cd36f65c5b3000b27f1195826494adc7c8b007 data/modern_industrialization/recipe/assembler_generated/electric_age/machine/large_diesel_generator.json
 6061a5c9d59bb515163b4da8316f9104aa45d38c data/modern_industrialization/recipe/assembler_generated/electric_age/machine/large_steam_boiler.json
 ab234f54169128f5c7c057e89c133b151026793c data/modern_industrialization/recipe/assembler_generated/electric_age/machine/large_steam_turbine.json
 995c6b0e673b7ba571b410715a93e5b45d85534f data/modern_industrialization/recipe/assembler_generated/electric_age/machine/large_tank.json

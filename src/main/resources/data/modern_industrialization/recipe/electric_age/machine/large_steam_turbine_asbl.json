@@ -5,8 +5,7 @@
     "RHR",
     "mtm"
   ],
-  "key":
-  {
+  "key": {
     "t": {
       "item" : "modern_industrialization:hv_steam_turbine"
     },
@@ -26,7 +25,6 @@
       "item" : "modern_industrialization:stainless_steel_rotor"
     }
   },
-
   "result": {
     "id": "modern_industrialization:large_steam_turbine"
   }

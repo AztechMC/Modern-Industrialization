@@ -311,7 +311,7 @@ public class MultiblockMachines {
                 "large_diesel_generator", bet ->
                         new GeneratorMultiblockBlockEntity(bet, "large_diesel_generator",
                                 largeDieselGeneratorShape,
-                                FluidItemConsumerComponent.ofFluidFuels(16384)));
+                                FluidItemConsumerComponent.ofFluidFuels(16384, 2)));
         ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
     }
 

@@ -7,7 +7,7 @@
   ],
   "key": {
     "p" : {
-      "item" : "modern_industrialization:large_advanced_pump"
+      "item" : "modern_industrialization:advanced_pump"
     },
     "H" : {
       "item" : "modern_industrialization:highly_advanced_machine_hull"
@@ -19,7 +19,7 @@
       "item" : "modern_industrialization:titanium_gear"
     },
     "m" : {
-      "item" : "modern_industrialization:large_advanced_motor"
+      "item" : "modern_industrialization:advanced_motor"
     },
     "e" : {
       "item" : "modern_industrialization:hv_diesel_generator"

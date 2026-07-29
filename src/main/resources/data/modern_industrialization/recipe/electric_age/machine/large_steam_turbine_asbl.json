@@ -1,9 +1,9 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
-    "tpt",
+    "pcp",
     "RHR",
-    "tpt"
+    "mtm"
   ],
   "key":
   {
@@ -13,8 +13,14 @@
     "p" : {
       "item" : "modern_industrialization:advanced_pump"
     },
+    "c" : {
+      "item" : "modern_industrialization:processing_unit"
+    },
+    "m" : {
+      "item" : "modern_industrialization:advanced_motor"
+    },
     "H" :{
-      "item" : "modern_industrialization:turbo_machine_hull"
+      "item" : "modern_industrialization:highly_advanced_machine_hull"
     },
     "R" : {
       "item" : "modern_industrialization:stainless_steel_rotor"

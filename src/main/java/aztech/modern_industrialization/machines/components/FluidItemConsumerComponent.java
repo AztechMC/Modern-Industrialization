@@ -33,7 +33,6 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.HolderLookup;
@@ -43,7 +42,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A component that turns fluids and/or item into energy.
@@ -58,17 +56,13 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
 
     public final EUProductionMap<Item> itemEUProductionMap;
     public final EUProductionMap<Fluid> fluidEUProductionMap;
-    @Nullable
-    private final Function<Float, Float> discountFunction;
 
     public FluidItemConsumerComponent(long maxEuProduction,
             EUProductionMap<Item> itemEUProductionMap,
-            EUProductionMap<Fluid> fluidEUProductionMap,
-            @Nullable Function<Float, Float> discountFunction) {
+            EUProductionMap<Fluid> fluidEUProductionMap) {
         this.itemEUProductionMap = itemEUProductionMap;
         this.fluidEUProductionMap = fluidEUProductionMap;
         this.maxEuProduction = maxEuProduction;
-        this.discountFunction = discountFunction;
     }
 
     public boolean doAllowMoreThanOne() {
@@ -82,31 +76,16 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
         return ofFluid(maxEuProduction, new EuProductionMapBuilder<>(BuiltInRegistries.FLUID).add(acceptedFluid.getId(), fluidEUperMb).build());
     }
 
-    /**
-     * Fluid fuels (in Diesel Generators) are twice as efficient when producing less EU/t than its maximum, but 20%
-     * less efficient when producing at its maximum.
-     */
-    private static float fluidFuelDiscount(float scalar) {
-        if (scalar <= 0.1f) {
-            return 1;
-        } else if (scalar >= 0.9f) {
-            return -0.2f;
-        }
-        return (-1.5f * scalar) + 1.15f;
-    }
-
     public static FluidItemConsumerComponent ofFluidFuels(long maxEuProduction) {
         return new FluidItemConsumerComponent(maxEuProduction,
                 EUProductionMap.empty(),
-                fluidFuels(),
-                FluidItemConsumerComponent::fluidFuelDiscount);
+                fluidFuels());
     }
 
     public static FluidItemConsumerComponent ofFluid(long maxEuProduction, EUProductionMap<Fluid> fluidEUProductionMap) {
         return new FluidItemConsumerComponent(maxEuProduction,
                 EUProductionMap.empty(),
-                fluidEUProductionMap,
-                null);
+                fluidEUProductionMap);
     }
 
     @Override
@@ -133,10 +112,6 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
             return maxEuProduced;
         }
 
-        // Determine the fuel discount based on how full the storage is
-        float euProducedScale = maxEuProduced / (float) maxEuProduction;
-        float fuelDiscount = discountFunction != null ? discountFunction.apply(euProducedScale) : 0;
-
         long euProduced = 0;
 
         // Consume from the buffer first
@@ -147,10 +122,9 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
             Fluid fluid = stack.getResource().getFluid();
             if (fluidEUProductionMap.accept(fluid) && stack.getAmount() > 0) {
                 long fuelEu = fluidEUProductionMap.getEuProduction(fluid);
-                long usedFluid = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount());
-                long euProducedByFuel = fuelEu * usedFluid;
-                euProduced += euProducedByFuel + Math.round(euProducedByFuel * fuelDiscount);
-                stack.decrement(usedFluid);
+                long usedDroplets = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount());
+                euProduced += usedDroplets * fuelEu;
+                stack.decrement(usedDroplets);
 
                 if (euProduced >= maxEuProduced) {
                     euBuffer += euProduced - maxEuProduced;
@@ -165,8 +139,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
                 if (!itemEUProductionMap.isStandardFuels() || ItemStackHelper.consumeFuel(stack, true)) {
                     long fuelEU = itemEUProductionMap.getEuProduction(fuel);
                     long usedItem = Math.min((maxEuProduced - euProduced + fuelEU - 1) / fuelEU, stack.getAmount());
-                    long euProducedByFuel = fuelEU * usedItem;
-                    euProduced += euProducedByFuel + Math.round(euProducedByFuel * fuelDiscount);
+                    euProduced += fuelEU * usedItem;
 
                     if (itemEUProductionMap.isStandardFuels()) {
                         ItemStackHelper.consumeFuel(stack, false);

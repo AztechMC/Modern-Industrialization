@@ -154,15 +154,11 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         // This function is implemented for AE2 pattern shift-clicking compat.
-        // This is the reason the counts of the ItemStacks in the ingredient are
-        // modified.
-        // (They should never be used somewhere else anyway)
-        return new DefaultedListWrapper<>(itemInputs.stream().filter(i -> i.probability == 1).map(i -> {
-            for (ItemStack stack : i.ingredient.getItems()) {
-                stack.setCount(i.amount);
-            }
-            return i.ingredient;
-        }).collect(Collectors.toList()));
+        // The item stacks in the ingredient are copied with the correct count
+        // instead of being modified in place, because some mods (e.g. AllTheLeaks)
+        // cache and lock the item stacks of ingredients.
+        return new DefaultedListWrapper<>(itemInputs.stream().filter(i -> i.probability == 1).map(i -> Ingredient.of(
+                Arrays.stream(i.ingredient.getItems()).map(stack -> stack.copyWithCount(i.amount)))).collect(Collectors.toList()));
     }
 
     @Override

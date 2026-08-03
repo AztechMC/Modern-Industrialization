@@ -64,6 +64,9 @@ public class SteelUpgradeItem extends Item {
         // Find new block
         Block block = context.getLevel().getBlockState(context.getClickedPos()).getBlock();
         ResourceLocation blockKey = BuiltInRegistries.BLOCK.getKey(block);
+        if (!blockKey.getPath().contains("bronze_")) {
+            return super.useOn(context);
+        }
         ResourceLocation newBlock = blockKey.withPath(p -> p.replace("bronze_", "steel_"));
         if (!BuiltInRegistries.BLOCK.containsKey(newBlock)) {
             return super.useOn(context);

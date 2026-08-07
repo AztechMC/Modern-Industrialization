@@ -47,8 +47,6 @@ import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockMachineBlockEntity> {
-    private static final double MAX_HIGHLIGHT_DISTANCE = 32.0;
-
     public MultiblockMachineBER(BlockEntityRendererProvider.Context ctx) {
         super(ctx);
     }
@@ -56,6 +54,11 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
     @Override
     public void render(MultiblockMachineBlockEntity be, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
         super.render(be, tickDelta, matrices, vcp, light, overlay);
+
+        int maxHighlightDistance = MIClientConfig.INSTANCE.maxMultiblockHighlightOverlayRange.getAsInt();
+        if (maxHighlightDistance == 0) {
+            return;
+        }
 
         // Only render if holding a wrench AND if the shape is not valid.
         boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
@@ -65,7 +68,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
             var player = Minecraft.getInstance().player;
 
             for (BlockPos pos : matcher.getPositions()) {
-                if (player != null && player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > MAX_HIGHLIGHT_DISTANCE * MAX_HIGHLIGHT_DISTANCE) {
+                if (player != null && player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > maxHighlightDistance * maxHighlightDistance) {
                     // Skip blocks that are far from the player to mitigate FPS drops.
                     continue;
                 }

@@ -56,9 +56,12 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
         super.render(be, tickDelta, matrices, vcp, light, overlay);
 
         int maxHighlightDistance = MIClientConfig.INSTANCE.maxMultiblockHighlightOverlayRange.getAsInt();
+        if (maxHighlightDistance == 0) {
+            return;
+        }
 
         // Only render if holding a wrench AND if the shape is not valid.
-        boolean drawHighlights = maxHighlightDistance > 0 && isHoldingWrench() && !be.isShapeValid();
+        boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
         HatchType hatchType = getHeldHatchType();
         if (drawHighlights || hatchType != null) {
             ShapeMatcher matcher = be.createShapeMatcher();

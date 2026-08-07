@@ -276,6 +276,11 @@ public class DieselToolItem extends Item implements DynamicToolItem {
         return FluidFuelItemHelper.getAmount(pStack) > 0;
     }
 
+    @Override
+    public boolean isNotReplaceableByPickAction(ItemStack stack, Player player, int inventorySlot) {
+        return true;
+    }
+
     private static class StrippingAccess extends AxeItem {
         private StrippingAccess(Tier material, Properties settings) {
             super(material, settings);

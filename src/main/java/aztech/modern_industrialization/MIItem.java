@@ -146,7 +146,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> QUANTUM_UPGRADE = item("Quantum Upgrade", "quantum_upgrade", (p) -> new Item(p.stacksTo(1).rarity(Rarity.RARE)), ITEMS_ORDERED.next());
 
     // Tools
-    public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_ORDERED.next());
+    public static final ItemDefinition<WrenchItem> WRENCH = itemNoModel("Wrench", "wrench", WrenchItem::new, ITEMS_ORDERED.next());
 
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill", SteamDrillItem::new, ITEMS_ORDERED.next());
 

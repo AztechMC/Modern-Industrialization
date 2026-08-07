@@ -56,7 +56,7 @@ repositories {
         }
     }
     maven {
-        url "https://maven.gnomecraft.net/repository/maven-public"
+        url "https://repo.sleeping.town/"
         content {
             includeGroup "dev.emi"
         }

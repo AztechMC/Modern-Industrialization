@@ -645,10 +645,10 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                     stackId++;
                     ItemVariant key = stack.getResource();
                     if (key.equals(output.variant()) || key.isBlank()) {
-                        // If simulating or chanced output, respect the adjusted capacity.
-                        // If putting the output, don't respect the adjusted capacity in case it was
+                        // If simulating or chanced output or is the first try, respect the adjusted capacity.
+                        // If putting the output on the second try, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
-                        int remainingCapacity = simulate || output.probability() < 1
+                        int remainingCapacity = simulate || output.probability() < 1 || loopRun == 0
                                 ? (int) stack.getRemainingCapacityFor(output.variant())
                                 : output.variant().getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);

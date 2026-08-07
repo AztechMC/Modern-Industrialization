@@ -535,6 +535,11 @@ public class SteamDrillItem
     }
 
     @Override
+    public boolean isNotReplaceableByPickAction(ItemStack stack, Player player, int inventorySlot) {
+        return true;
+    }
+
+    @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         var data = (SteamDrillTooltipData) getTooltipImage(stack).get();
 

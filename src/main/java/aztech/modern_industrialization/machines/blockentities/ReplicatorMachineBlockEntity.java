@@ -44,11 +44,15 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -196,5 +200,14 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
             setChanged();
         }
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+        var result = super.useItemOn(player, hand, face);
+        if (!result.consumesAction()) {
+            result = redstoneControl.onUse(this, player, hand);
+        }
+        return result;
     }
 }

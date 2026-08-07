@@ -46,6 +46,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
 
 public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
     private static final ShapeTemplate[] shapeTemplates;
@@ -123,6 +126,15 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                 efficiencyHistory.clear();
             }
         }
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+        var result = super.useItemOn(player, hand, face);
+        if (!result.consumesAction()) {
+            result = redstoneControl.onUse(this, player, hand);
+        }
+        return result;
     }
 
     @Override

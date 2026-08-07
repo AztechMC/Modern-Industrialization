@@ -67,9 +67,9 @@ public class PipeItem extends Item {
 
         // When clicking an unassociated pipe part (such as an ME wire connector part), treat this as trying to place the pipe against the block it is connected to
         var hitPipePart = PipeBlock.getHitPart(context.getLevel(), context.getClickedPos(), context.getHitResult());
-        boolean shouldForcePlaceConnection = hitPipePart != null && hitPipePart.type == null && hitPipePart.direction == context.getClickedFace().getOpposite();
+        boolean onlyPlaceConnection = hitPipePart != null && hitPipePart.type == null && hitPipePart.direction == context.getClickedFace().getOpposite();
 
-        BlockPos placingPos = tryPlace(context, shouldForcePlaceConnection);
+        BlockPos placingPos = tryPlace(context, onlyPlaceConnection);
         if (placingPos != null) {
             Level world = context.getLevel();
             Player player = context.getPlayer();
@@ -90,7 +90,7 @@ public class PipeItem extends Item {
             return InteractionResult.sidedSuccess(world.isClientSide);
         } else {
             // if we couldn't place a pipe, we try to add a connection instead
-            placingPos = shouldForcePlaceConnection ? context.getClickedPos() : context.getClickedPos().relative(context.getClickedFace());
+            placingPos = onlyPlaceConnection ? context.getClickedPos() : context.getClickedPos().relative(context.getClickedFace());
             Level world = context.getLevel();
             BlockEntity entity = world.getBlockEntity(placingPos);
             if (entity instanceof PipeBlockEntity pipeEntity) {
@@ -115,52 +115,53 @@ public class PipeItem extends Item {
     // Try placing the pipe and registering the new pipe to the entity, returns null
     // if it failed
     @Nullable
-    private BlockPos tryPlace(UseOnContext context, boolean skipPlaceAdjacent) {
-        BlockPos hitPos = context.getClickedPos();
-        BlockPos adjacentPos = hitPos.relative(context.getClickedFace());
-        if (tryPlaceAt(context, hitPos)) {
-            return hitPos;
-        } else if (!skipPlaceAdjacent && tryPlaceAt(context, adjacentPos)) {
-            return adjacentPos;
-        } else {
-            return null;
+    private BlockPos tryPlace(UseOnContext context, boolean onlyPlaceConnection) {
+        var blockPlaceContext = new BlockPlaceContext(context);
+        // Try to add the pipe directly to the clicked block
+        if (tryAddPipeAt(context.getLevel(), context.getClickedPos())) {
+            return context.getClickedPos();
         }
+        // Try to add the pipe to the adjacent clicked block, given we cannot replace the targeted block
+        if (!blockPlaceContext.replacingClickedOnBlock() && tryAddPipeAt(context.getLevel(), blockPlaceContext.getClickedPos())) {
+            return blockPlaceContext.getClickedPos();
+        }
+        // Try to place a new pipe block into the world
+        if (!onlyPlaceConnection && canPlace(blockPlaceContext)) {
+            placeAt(context.getLevel(), blockPlaceContext.getClickedPos());
+            return blockPlaceContext.getClickedPos();
+        }
+        return null;
     }
 
-    /**
-     * Try adding the pipe to an existing block entity, or replacing the current
-     * state if that was not possible.
-     *
-     * @return True if succeeded, false otherwise.
-     */
-    private boolean tryPlaceAt(UseOnContext context, BlockPos pos) {
-        Level world = context.getLevel();
-        // If there is a block entity we try to add the pipe.
-        BlockEntity be = world.getBlockEntity(pos);
+    private boolean tryAddPipeAt(Level level, BlockPos pos) {
+        BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof PipeBlockEntity pipeBe) {
             if (pipeBe.canAddPipe(type)) {
-                if (!world.isClientSide()) {
+                if (!level.isClientSide()) {
                     pipeBe.addPipe(type, defaultData.clone());
                 }
                 return true;
             }
         }
-        // Otherwise we try replacing the target block.
-        if (canPlace(context, pos)) {
-            boolean waterLog = context.getLevel().getFluidState(pos).getType() == Fluids.WATER;
-
-            // neighbor update is handled later
-            world.setBlock(pos, MIPipes.BLOCK_PIPE.get().defaultBlockState().setValue(PipeBlock.WATERLOGGED, waterLog), 3);
-            if (!world.isClientSide()) {
-                PipeBlockEntity pipeBe = (PipeBlockEntity) world.getBlockEntity(pos);
-                pipeBe.addPipe(type, defaultData.clone());
-            }
-            return true;
-        }
         return false;
     }
 
-    private static boolean canPlace(UseOnContext ctx, BlockPos pos) {
+    private void placeAt(Level world, BlockPos pos) {
+        boolean waterLog = world.getFluidState(pos).getType() == Fluids.WATER;
+
+        // neighbor update is handled later
+        world.setBlock(pos, MIPipes.BLOCK_PIPE.get().defaultBlockState().setValue(PipeBlock.WATERLOGGED, waterLog), 3);
+        if (!world.isClientSide()) {
+            PipeBlockEntity pipeBe = (PipeBlockEntity) world.getBlockEntity(pos);
+            pipeBe.addPipe(type, defaultData.clone());
+        }
+    }
+
+    private static boolean canPlace(BlockPlaceContext ctx) {
+        if (!ctx.canPlace()) {
+            return false;
+        }
+        BlockPos pos = ctx.getClickedPos();
         if (!ctx.getLevel().isInWorldBounds(pos)) {
             int worldHeightLimit = ctx.getLevel().getMaxBuildHeight();
             if (ctx.getPlayer() instanceof ServerPlayer player && pos.getY() >= worldHeightLimit) {
@@ -170,7 +171,7 @@ public class PipeItem extends Item {
         }
         BlockState state = MIPipes.BLOCK_PIPE.get().defaultBlockState();
         CollisionContext shapeContext = ctx.getPlayer() == null ? CollisionContext.empty() : CollisionContext.of(ctx.getPlayer());
-        return ctx.getLevel().getBlockState(pos).canBeReplaced(new BlockPlaceContext(ctx)) && state.canSurvive(ctx.getLevel(), pos)
+        return state.canSurvive(ctx.getLevel(), pos)
                 && ctx.getLevel().isUnobstructed(state, pos, shapeContext);
     }
 

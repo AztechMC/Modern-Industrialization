@@ -49,7 +49,11 @@ import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class GeneratorMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder, CableTierHolder {
@@ -206,6 +210,15 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
                 }
             });
         });
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+        var result = super.useItemOn(player, hand, face);
+        if (!result.consumesAction()) {
+            result = redstoneControl.onUse(this, player, hand);
+        }
+        return result;
     }
 
     @Override

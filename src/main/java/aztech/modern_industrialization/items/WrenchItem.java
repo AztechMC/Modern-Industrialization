@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class WrenchItem extends Item {
     public WrenchItem(Properties properties) {
-        super(properties);
+        super(properties.stacksTo(1));
     }
 
     @Override

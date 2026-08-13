@@ -101,12 +101,15 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
 
     private static boolean isHoldingWrench() {
         Player player = Minecraft.getInstance().player;
-        return player.getMainHandItem().is(MITags.WRENCHES) || player.getOffhandItem().is(MITags.WRENCHES);
+        return player != null && (player.getMainHandItem().is(MITags.WRENCHES) || player.getOffhandItem().is(MITags.WRENCHES));
     }
 
     @Nullable
     private static HatchType getHeldHatchType() {
         Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return null;
+        }
         HatchType mainHand = getHatchType(player.getMainHandItem());
         HatchType offHand = getHatchType(player.getOffhandItem());
         return mainHand == null ? offHand : mainHand;

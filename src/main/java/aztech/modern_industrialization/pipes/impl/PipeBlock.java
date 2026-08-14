@@ -280,12 +280,10 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Override
-    public boolean hasDynamicShape() {
-        return true;
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        if (state.getValue(CAMOUFLAGED)) {
+            return Shapes.block();
+        }
         BlockEntity be = world.getBlockEntity(pos);
         if (!(be instanceof PipeBlockEntity entity))
             return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up

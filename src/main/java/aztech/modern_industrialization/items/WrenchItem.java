@@ -22,17 +22,19 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.client.compat.viewer.abstraction;
+package aztech.modern_industrialization.items;
 
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
-public class IngredientCount {
-    public final Ingredient ingredient;
+public class WrenchItem extends Item {
+    public WrenchItem(Properties properties) {
+        super(properties.stacksTo(1));
+    }
 
-    public int count;
-
-    public IngredientCount(Ingredient ingredient, int count) {
-        this.ingredient = ingredient;
-        this.count = count;
+    @Override
+    public boolean isNotReplaceableByPickAction(ItemStack stack, Player player, int inventorySlot) {
+        return true;
     }
 }

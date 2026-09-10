@@ -129,7 +129,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
     @Override
     public List<Component> getTooltips() {
-        return fuelBurning.getTooltips();
+        return fuelBurning.getTooltips(false);
     }
 
     @Override

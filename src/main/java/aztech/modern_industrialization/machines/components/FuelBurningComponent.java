@@ -179,7 +179,7 @@ public class FuelBurningComponent implements MachineComponent {
         burningItemTotalEu = tag.getLong("burningItemTotalEu");
     }
 
-    public List<Component> getTooltips() {
+    public List<Component> getTooltips(boolean acceptsFluid) {
         List<Component> returnList = new ArrayList<>();
         returnList.add(new MITooltips.Line(MIText.MaxEuProductionSteam).arg(
                 this.maxEuProduction,
@@ -187,9 +187,9 @@ public class FuelBurningComponent implements MachineComponent {
                 .arg(MIFluids.STEAM)
                 .build());
 
-        if (burningItemEuMultiplier == 2) {
-            returnList.add(
-                    new MITooltips.Line(MIText.DoubleItemFuelEfficiency).build());
+        returnList.add(new MITooltips.Line(burningItemEuMultiplier == 2 ? MIText.FuelEfficiencyItemDouble : MIText.FuelEfficiencyItemNormal).build());
+        if (acceptsFluid) {
+            returnList.add(new MITooltips.Line(MIText.FuelEfficiencyFluidNormal).build());
         }
 
         return returnList;

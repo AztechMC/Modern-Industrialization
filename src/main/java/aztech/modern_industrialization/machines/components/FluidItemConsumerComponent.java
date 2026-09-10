@@ -59,14 +59,18 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
     public final EUProductionMap<Item> itemEUProductionMap;
     public final EUProductionMap<Fluid> fluidEUProductionMap;
 
+    private final boolean hideEfficiencyTooltip;
+
     public FluidItemConsumerComponent(long maxEuProduction,
             long euMultiplier,
             EUProductionMap<Item> itemEUProductionMap,
-            EUProductionMap<Fluid> fluidEUProductionMap) {
+            EUProductionMap<Fluid> fluidEUProductionMap,
+            boolean hideEfficiencyTooltip) {
         this.itemEUProductionMap = itemEUProductionMap;
         this.fluidEUProductionMap = fluidEUProductionMap;
         this.maxEuProduction = maxEuProduction;
         this.euMultiplier = euMultiplier;
+        this.hideEfficiencyTooltip = hideEfficiencyTooltip;
     }
 
     public boolean doAllowMoreThanOne() {
@@ -84,14 +88,16 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
         return new FluidItemConsumerComponent(maxEuProduction,
                 euMultiplier,
                 EUProductionMap.empty(),
-                fluidFuels());
+                fluidFuels(),
+                false);
     }
 
     public static FluidItemConsumerComponent ofFluid(long maxEuProduction, EUProductionMap<Fluid> fluidEUProductionMap) {
         return new FluidItemConsumerComponent(maxEuProduction,
                 1,
                 EUProductionMap.empty(),
-                fluidEUProductionMap);
+                fluidEUProductionMap,
+                true);
     }
 
     @Override
@@ -171,6 +177,29 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
                 this.maxEuProduction,
                 MITooltips.EU_PER_TICK_PARSER).build());
 
+        if (this.itemEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
+            if (this.itemEUProductionMap.isStandardFuels()) {
+                returnList.add(new MITooltips.Line(MIText.AcceptAnyItemFuels).build());
+            } else {
+                var informationEntries = this.itemEUProductionMap.getAllAcceptedWithEU();
+                if (informationEntries.size() == 1) {
+                    var entry = informationEntries.iterator().next();
+                    returnList.add(new MITooltips.Line(MIText.AcceptSingleItem)
+                            .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                } else {
+                    returnList.add(new MITooltips.Line(MIText.ConsumesTheFollowing).build());
+                    for (var entry : informationEntries) {
+                        returnList.add(
+                                new MITooltips.Line(MIText.AcceptFollowingItemEntry)
+                                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                    }
+                }
+            }
+            if (!hideEfficiencyTooltip) {
+                returnList.add(new MITooltips.Line(euMultiplier == 2 ? MIText.FuelEfficiencyItemDouble : MIText.FuelEfficiencyItemNormal).build());
+            }
+        }
+
         if (this.fluidEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
             if (this.fluidEUProductionMap.isStandardFuels()) {
                 returnList.add(new MITooltips.Line(MIText.AcceptAnyFluidFuels).build());
@@ -189,36 +218,9 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
                                         .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
                     }
                 }
-
             }
-            if (euMultiplier == 2) {
-                returnList.add(
-                        new MITooltips.Line(MIText.DoubleFluidFuelEfficiency).build());
-            }
-        }
-
-        if (this.itemEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
-            if (this.itemEUProductionMap.isStandardFuels()) {
-                returnList.add(new MITooltips.Line(MIText.AcceptAnyItemFuels).build());
-            } else {
-                var informationEntries = this.itemEUProductionMap.getAllAcceptedWithEU();
-                if (informationEntries.size() == 1) {
-                    var entry = informationEntries.iterator().next();
-                    returnList.add(new MITooltips.Line(MIText.AcceptSingleItem)
-                            .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
-                } else {
-                    returnList.add(new MITooltips.Line(MIText.ConsumesTheFollowing).build());
-                    for (var entry : informationEntries) {
-                        returnList.add(
-                                new MITooltips.Line(MIText.AcceptFollowingItemEntry)
-                                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
-                    }
-                }
-
-            }
-            if (euMultiplier == 2) {
-                returnList.add(
-                        new MITooltips.Line(MIText.DoubleItemFuelEfficiency).build());
+            if (!hideEfficiencyTooltip) {
+                returnList.add(new MITooltips.Line(euMultiplier == 2 ? MIText.FuelEfficiencyFluidDouble : MIText.FuelEfficiencyFluidNormal).build());
             }
         }
 

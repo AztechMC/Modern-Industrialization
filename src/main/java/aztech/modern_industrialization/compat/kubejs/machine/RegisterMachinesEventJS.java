@@ -299,7 +299,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
     public static class FluidItemConsumerBuilder {
         long maxEnergyProduction;
 
-        long euMultiplier;
+        long euMultiplier = 1;
 
         FluidItemConsumerComponent.EuProductionMapBuilder<Item> itemEuProductionMapBuilder = new FluidItemConsumerComponent.EuProductionMapBuilder<>(
                 BuiltInRegistries.ITEM);
@@ -309,6 +309,8 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
 
         boolean doesAcceptAllFluidFuels = false;
         boolean doesAcceptAllItemFuels = false;
+
+        boolean hideEfficiencyTooltip = false;
 
         public FluidItemConsumerBuilder(long maxEnergyProduction) {
             this.maxEnergyProduction = maxEnergyProduction;
@@ -339,12 +341,18 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             return this;
         }
 
+        public FluidItemConsumerBuilder hideEfficiencyTooltip() {
+            hideEfficiencyTooltip = true;
+            return this;
+        }
+
         public FluidItemConsumerComponent build() {
             return new FluidItemConsumerComponent(
                     maxEnergyProduction,
                     euMultiplier,
                     doesAcceptAllItemFuels ? FluidItemConsumerComponent.itemFuels() : itemEuProductionMapBuilder.build(),
-                    doesAcceptAllFluidFuels ? FluidItemConsumerComponent.fluidFuels() : fluidEuProductionMapBuilder.build());
+                    doesAcceptAllFluidFuels ? FluidItemConsumerComponent.fluidFuels() : fluidEuProductionMapBuilder.build(),
+                    hideEfficiencyTooltip);
         }
     }
 }

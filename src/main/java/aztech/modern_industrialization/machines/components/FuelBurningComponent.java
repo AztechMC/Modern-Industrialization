@@ -52,7 +52,7 @@ public class FuelBurningComponent implements MachineComponent {
      * Multiplier on the efficiency of the boiler, i.e. the number of EUs produced
      * per burn tick.
      */
-    private final long burningItemEuMultiplier;
+    private final double burningItemEuMultiplier;
 
     /**
      * How many EUs one furnace burn tick is worth. Remembering that 1 furnace
@@ -70,7 +70,7 @@ public class FuelBurningComponent implements MachineComponent {
      */
     private long burningItemTotalEu;
 
-    public FuelBurningComponent(TemperatureComponent temperature, long maxEuProduction, long euPerDegree, long burningItemEuMultiplier) {
+    public FuelBurningComponent(TemperatureComponent temperature, long maxEuProduction, long euPerDegree, double burningItemEuMultiplier) {
         this.temperature = temperature;
         this.maxEuProduction = maxEuProduction;
         this.euPerDegree = euPerDegree;
@@ -81,7 +81,7 @@ public class FuelBurningComponent implements MachineComponent {
         this(temperature, maxEuProduction, euPerDegree, 1);
     }
 
-    public FuelBurningComponent(SteamHeaterComponent steamHeater, long burningItemEuMultiplier) {
+    public FuelBurningComponent(SteamHeaterComponent steamHeater, double burningItemEuMultiplier) {
         this(steamHeater, steamHeater.maxEuProduction, steamHeater.euPerDegree, burningItemEuMultiplier);
     }
 
@@ -132,7 +132,7 @@ public class FuelBurningComponent implements MachineComponent {
                 if (ItemStackHelper.consumeFuel(stack, true)) {
                     int fuelTime = fuel.getBurnTime(null);
                     if (fuelTime > 0) {
-                        long fuelTotalEu = fuelTime * EU_PER_BURN_TICK * burningItemEuMultiplier;
+                        long fuelTotalEu = (long) (fuelTime * EU_PER_BURN_TICK * burningItemEuMultiplier);
                         burningEuBuffer += fuelTotalEu;
                         burningItemTotalEu = fuelTotalEu;
                         ItemStackHelper.consumeFuel(stack, false);

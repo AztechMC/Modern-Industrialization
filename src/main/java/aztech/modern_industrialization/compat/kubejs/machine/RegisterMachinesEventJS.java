@@ -299,7 +299,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
     public static class FluidItemConsumerBuilder {
         long maxEnergyProduction;
 
-        long euMultiplier = 1;
+        double euMultiplier = 1;
 
         FluidItemConsumerComponent.EuProductionMapBuilder<Item> itemEuProductionMapBuilder = new FluidItemConsumerComponent.EuProductionMapBuilder<>(
                 BuiltInRegistries.ITEM);
@@ -316,7 +316,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             this.maxEnergyProduction = maxEnergyProduction;
         }
 
-        public FluidItemConsumerBuilder euMultiplier(long euMultiplier) {
+        public FluidItemConsumerBuilder euMultiplier(double euMultiplier) {
             this.euMultiplier = euMultiplier;
             return this;
         }

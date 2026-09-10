@@ -54,7 +54,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
      */
     public final long maxEuProduction;
 
-    protected final long euMultiplier;
+    protected final double euMultiplier;
 
     public final EUProductionMap<Item> itemEUProductionMap;
     public final EUProductionMap<Fluid> fluidEUProductionMap;
@@ -62,7 +62,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
     private final boolean hideEfficiencyTooltip;
 
     public FluidItemConsumerComponent(long maxEuProduction,
-            long euMultiplier,
+            double euMultiplier,
             EUProductionMap<Item> itemEUProductionMap,
             EUProductionMap<Fluid> fluidEUProductionMap,
             boolean hideEfficiencyTooltip) {
@@ -84,7 +84,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
         return ofFluid(maxEuProduction, new EuProductionMapBuilder<>(BuiltInRegistries.FLUID).add(acceptedFluid.getId(), fluidEUperMb).build());
     }
 
-    public static FluidItemConsumerComponent ofFluidFuels(long maxEuProduction, long euMultiplier) {
+    public static FluidItemConsumerComponent ofFluidFuels(long maxEuProduction, double euMultiplier) {
         return new FluidItemConsumerComponent(maxEuProduction,
                 euMultiplier,
                 EUProductionMap.empty(),
@@ -133,7 +133,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
         for (ConfigurableFluidStack stack : fluidInputs) {
             Fluid fluid = stack.getResource().getFluid();
             if (fluidEUProductionMap.accept(fluid) && stack.getAmount() > 0) {
-                long fuelEu = fluidEUProductionMap.getEuProduction(fluid) * euMultiplier;
+                long fuelEu = (long) (fluidEUProductionMap.getEuProduction(fluid) * euMultiplier);
                 long usedDroplets = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount());
                 euProduced += usedDroplets * fuelEu;
                 stack.decrement(usedDroplets);
@@ -149,7 +149,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
             Item fuel = stack.getResource().getItem();
             if (itemEUProductionMap.accept(fuel) && stack.getAmount() > 0) {
                 if (!itemEUProductionMap.isStandardFuels() || ItemStackHelper.consumeFuel(stack, true)) {
-                    long fuelEU = itemEUProductionMap.getEuProduction(fuel) * euMultiplier;
+                    long fuelEU = (long) (itemEUProductionMap.getEuProduction(fuel) * euMultiplier);
                     long usedItem = Math.min((maxEuProduced - euProduced + fuelEU - 1) / fuelEU, stack.getAmount());
                     euProduced += fuelEU * usedItem;
 

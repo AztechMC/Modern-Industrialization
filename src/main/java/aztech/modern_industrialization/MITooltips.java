@@ -198,10 +198,11 @@ public class MITooltips {
         }
     };
 
-    public static final Parser<Long> MULTIPLIER_PARSER = new Parser<>() {
+    public static final Parser<Double> MULTIPLIER_PARSER = new Parser<>() {
         @Override
-        public Component parse(Long multiplier) {
-            return Component.literal(multiplier + "x").withStyle(NUMBER_TEXT);
+        public Component parse(Double multiplier) {
+            String multiplierText = multiplier % 1 == 0 ? String.valueOf(multiplier.intValue()) : String.format("%.1f", multiplier);
+            return Component.literal(multiplierText + "x").withStyle(NUMBER_TEXT);
         }
     };
 

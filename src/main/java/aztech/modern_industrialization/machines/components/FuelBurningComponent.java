@@ -187,7 +187,11 @@ public class FuelBurningComponent implements MachineComponent {
                 .arg(MIFluids.STEAM)
                 .build());
 
-        returnList.add(new MITooltips.Line(burningItemEuMultiplier == 2 ? MIText.FuelEfficiencyItemDouble : MIText.FuelEfficiencyItemNormal).build());
+        if (burningItemEuMultiplier == 1) {
+            returnList.add(new MITooltips.Line(MIText.FuelEfficiencyItemNormal).build());
+        } else {
+            returnList.add(new MITooltips.Line(MIText.FuelEfficiencyItem).arg(burningItemEuMultiplier, MITooltips.MULTIPLIER_PARSER).arg(burningItemEuMultiplier, MITooltips.MULTIPLIER_PARSER).build());
+        }
         if (acceptsFluid) {
             returnList.add(new MITooltips.Line(MIText.FuelEfficiencyFluidNormal).build());
         }

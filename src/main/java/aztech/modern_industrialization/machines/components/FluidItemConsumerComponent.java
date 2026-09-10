@@ -196,7 +196,11 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
                 }
             }
             if (!hideEfficiencyTooltip) {
-                returnList.add(new MITooltips.Line(euMultiplier == 2 ? MIText.FuelEfficiencyItemDouble : MIText.FuelEfficiencyItemNormal).build());
+                if (euMultiplier == 1) {
+                    returnList.add(new MITooltips.Line(MIText.FuelEfficiencyItemNormal).build());
+                } else {
+                    returnList.add(new MITooltips.Line(MIText.FuelEfficiencyItem).arg(euMultiplier, MITooltips.MULTIPLIER_PARSER).arg(euMultiplier, MITooltips.MULTIPLIER_PARSER).build());
+                }
             }
         }
 
@@ -220,7 +224,11 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
                 }
             }
             if (!hideEfficiencyTooltip) {
-                returnList.add(new MITooltips.Line(euMultiplier == 2 ? MIText.FuelEfficiencyFluidDouble : MIText.FuelEfficiencyFluidNormal).build());
+                if (euMultiplier == 1) {
+                    returnList.add(new MITooltips.Line(MIText.FuelEfficiencyFluidNormal).build());
+                } else {
+                    returnList.add(new MITooltips.Line(MIText.FuelEfficiencyFluid).arg(euMultiplier, MITooltips.MULTIPLIER_PARSER).arg(euMultiplier, MITooltips.MULTIPLIER_PARSER).build());
+                }
             }
         }
 

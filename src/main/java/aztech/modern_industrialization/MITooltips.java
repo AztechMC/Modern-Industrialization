@@ -198,6 +198,13 @@ public class MITooltips {
         }
     };
 
+    public static final Parser<Long> MULTIPLIER_PARSER = new Parser<>() {
+        @Override
+        public Component parse(Long multiplier) {
+            return Component.literal(multiplier + "x").withStyle(NUMBER_TEXT);
+        }
+    };
+
     public static final Parser<BlockState> BLOCK_STATE_PARSER = state -> {
         return state.getBlock().getName().withStyle(NUMBER_TEXT);
     };

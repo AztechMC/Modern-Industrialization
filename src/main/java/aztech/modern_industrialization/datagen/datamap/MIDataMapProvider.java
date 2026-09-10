@@ -96,9 +96,7 @@ public class MIDataMapProvider extends DataMapProvider {
     private void gatherFluidFuels() {
         int creosote = 160;
 
-        addFluidFuel(MIFluids.HYDROGEN, 1);
-        addFluidFuel(MIFluids.DEUTERIUM, 1);
-        addFluidFuel(MIFluids.TRITIUM, 1);
+        addFluidFuel(MIFluids.HYDROGEN, 2);
         addFluidFuel(MIFluids.CRUDE_OIL, 16);
         addFluidFuel(MIFluids.SYNTHETIC_OIL, 16);
         addFluidFuel(MIFluids.RAW_BIODIESEL, 50);

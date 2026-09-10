@@ -382,6 +382,12 @@ builder.fluid("minecraft:lava", 10) // This will make the generator accept lava 
 // multiple fuels can be added ex:
 builder.item("minecraft:coal", 100).fluid("minecraft:lava", 10);
 // will automatically add the correct input slot in the machine inventory
+
+builder.euMultiplier(2) // This will make the fuels burned in the generator be twice as efficient
+builder.euMultiplier(1.5) // This will make the fuels burned in the generator be 50% more efficient
+builder.euMultiplier(0.5) // This will make the fuels burned in the generator be 50% less efficient
+
+builder.hideEfficiencyTooltip() // Hides the "Accepts item/fluid fuel at X efficiency" tooltip lines. Used for turbines, for example
 ```
 
 ### Adding a Multiblock Generator

@@ -53,12 +53,12 @@ public class GeneratorTests {
             tx.commit();
         }
 
-        // Should produce 64 per tick: 192 after 3 ticks and only 250 (the biodiesel value) after 4 ticks
+        // Should produce 64 per tick: 448 after 7 ticks and only 500 (2x the biodiesel value) after 8 ticks
         helper.startSequence()
-                .thenIdle(3)
-                .thenExecute(() -> helper.assertEnergy(generatorPos, 192, Direction.NORTH))
+                .thenIdle(7)
+                .thenExecute(() -> helper.assertEnergy(generatorPos, 448, Direction.NORTH))
                 .thenIdle(1)
-                .thenExecute(() -> helper.assertEnergy(generatorPos, 250, Direction.NORTH))
+                .thenExecute(() -> helper.assertEnergy(generatorPos, 500, Direction.NORTH))
                 .thenSucceed();
     }
 }

@@ -21,9 +21,6 @@
     "modern_industrialization:crude_oil": {
       "eu_per_mb": 16
     },
-    "modern_industrialization:deuterium": {
-      "eu_per_mb": 1
-    },
     "modern_industrialization:diesel": {
       "eu_per_mb": 400
     },
@@ -31,7 +28,7 @@
       "eu_per_mb": 240
     },
     "modern_industrialization:hydrogen": {
-      "eu_per_mb": 1
+      "eu_per_mb": 2
     },
     "modern_industrialization:light_fuel": {
       "eu_per_mb": 160
@@ -44,9 +41,6 @@
     },
     "modern_industrialization:synthetic_oil": {
       "eu_per_mb": 16
-    },
-    "modern_industrialization:tritium": {
-      "eu_per_mb": 1
     }
   }
 }

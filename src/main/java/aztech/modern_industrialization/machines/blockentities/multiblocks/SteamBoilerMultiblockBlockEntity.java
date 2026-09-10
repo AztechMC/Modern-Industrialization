@@ -140,7 +140,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
     @Override
     public List<Component> getTooltips() {
-        List<Component> tooltips = fuelBurning.getTooltips();
+        List<Component> tooltips = fuelBurning.getTooltips(true);
 
         tooltips.add(new MITooltips.Line(MIText.ContinuousOperation).build());
 

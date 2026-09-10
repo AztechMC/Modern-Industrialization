@@ -198,6 +198,14 @@ public class MITooltips {
         }
     };
 
+    public static final Parser<Double> MULTIPLIER_PARSER = new Parser<>() {
+        @Override
+        public Component parse(Double multiplier) {
+            String multiplierText = multiplier % 1 == 0 ? String.valueOf(multiplier.intValue()) : String.format("%.1f", multiplier);
+            return Component.literal(multiplierText + "x").withStyle(NUMBER_TEXT);
+        }
+    };
+
     public static final Parser<BlockState> BLOCK_STATE_PARSER = state -> {
         return state.getBlock().getName().withStyle(NUMBER_TEXT);
     };

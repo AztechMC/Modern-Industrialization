@@ -3,28 +3,27 @@
   "pattern" : [
     "pcp",
     "GHG",
-    "mem"
+    "mgm"
   ],
   "key": {
-    "p" : {
-      "item" : "modern_industrialization:large_advanced_pump"
+    "g": {
+      "item" : "modern_industrialization:hv_diesel_generator"
     },
-    "H" : {
-      "item" : "modern_industrialization:highly_advanced_machine_hull"
+    "p" : {
+      "item" : "modern_industrialization:advanced_pump"
     },
     "c" : {
       "item" : "modern_industrialization:processing_unit"
     },
-    "G":{
-      "item" : "modern_industrialization:titanium_gear"
-    },
     "m" : {
-      "item" : "modern_industrialization:large_advanced_motor"
+      "item" : "modern_industrialization:advanced_motor"
     },
-    "e" : {
-      "item" : "modern_industrialization:hv_diesel_generator"
+    "H" :{
+      "item" : "modern_industrialization:highly_advanced_machine_hull"
+    },
+    "G" : {
+      "item" : "modern_industrialization:titanium_gear"
     }
-
   },
   "result": {
     "id": "modern_industrialization:large_diesel_generator"

@@ -4,7 +4,7 @@
   "eu": 8,
   "item_inputs": [
     {
-      "amount": 4,
+      "amount": 1,
       "item": "modern_industrialization:hv_steam_turbine"
     },
     {
@@ -13,7 +13,15 @@
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:turbo_machine_hull"
+      "item": "modern_industrialization:processing_unit"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:advanced_motor"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:highly_advanced_machine_hull"
     },
     {
       "amount": 2,

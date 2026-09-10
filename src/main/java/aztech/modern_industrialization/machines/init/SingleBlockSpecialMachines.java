@@ -64,19 +64,19 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.registerMachine("LV Diesel Generator", "lv_diesel_generator",
                 bet -> new GeneratorMachineBlockEntity(bet, "lv_diesel_generator", false,
                         CableTier.LV, 4000, 16000,
-                        FluidItemConsumerComponent.ofFluidFuels(64)),
+                        FluidItemConsumerComponent.ofFluidFuels(64, 2)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("MV Diesel Generator", "mv_diesel_generator",
                 bet -> new GeneratorMachineBlockEntity(bet, "mv_diesel_generator", false,
                         CableTier.MV, 12000, 32000,
-                        FluidItemConsumerComponent.ofFluidFuels(256)),
+                        FluidItemConsumerComponent.ofFluidFuels(256, 2)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("HV Diesel Generator", "hv_diesel_generator",
                 bet -> new GeneratorMachineBlockEntity(bet, "hv_diesel_generator", false,
                         CableTier.HV, 60000, 64000,
-                        FluidItemConsumerComponent.ofFluidFuels(1024)),
+                        FluidItemConsumerComponent.ofFluidFuels(1024, 2)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("Configurable Chest", "configurable_chest", ConfigurableChestMachineBlockEntity::new,

@@ -55,7 +55,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
     }
 
     private static boolean transferWithItem(ItemStack stack, BarrelBlockEntity barrelBlockEntity, Direction direction, boolean fromItemToBarrel) {
-        if (stack.getItem() instanceof BarrelItem barrelItem) {
+        if (stack.getItem() instanceof BarrelItem barrelItem && stack.getCount() == 1) {
             var itemItemHandler = Capabilities.ItemHandler.ITEM.getCapability(stack, null);
             var blockItemHandler = Capabilities.ItemHandler.BLOCK.getCapability(
                     barrelBlockEntity.getLevel(), barrelBlockEntity.getBlockPos(), barrelBlockEntity.getBlockState(),

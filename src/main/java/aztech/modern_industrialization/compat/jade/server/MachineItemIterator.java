@@ -53,7 +53,10 @@ public class MachineItemIterator extends ItemIterator<MachineBlockEntity> {
 
     private static void addStacks(List<ItemStack> stacks, List<? extends ItemAccess> itemAccesses) {
         for (ItemAccess access : itemAccesses) {
-            stacks.add(access.toStack());
+            var stack = access.toStack();
+            if (!stack.isEmpty()) {
+                stacks.add(stack);
+            }
         }
     }
 }

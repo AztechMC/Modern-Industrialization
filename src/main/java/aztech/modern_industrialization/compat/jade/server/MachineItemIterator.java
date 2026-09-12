@@ -35,11 +35,11 @@ import snownee.jade.addon.universal.ItemIterator;
 
 public class MachineItemIterator extends ItemIterator<MachineBlockEntity> {
     public MachineItemIterator() {
-        super(MachineBlockEntity.class::cast, 0);
+        super((accessor) -> (MachineBlockEntity) accessor.getTarget(), 0);
     }
 
     @Override
-    public Stream<ItemStack> populate(MachineBlockEntity machine) {
+    public Stream<ItemStack> populate(MachineBlockEntity machine, int amount) {
         List<ItemStack> stacks = new ArrayList<>();
         if (machine instanceof MultiblockInventoryComponentHolder multiblock) {
             var component = multiblock.getMultiblockInventoryComponent();
@@ -48,7 +48,7 @@ public class MachineItemIterator extends ItemIterator<MachineBlockEntity> {
         } else {
             addStacks(stacks, machine.getInventory().getItemStacks());
         }
-        return stacks.isEmpty() ? Stream.empty() : stacks.stream();
+        return stacks.isEmpty() ? Stream.empty() : stacks.stream().limit(amount);
     }
 
     private static void addStacks(List<ItemStack> stacks, List<? extends ItemAccess> itemAccesses) {

@@ -66,6 +66,10 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
             throw new AssertionError("This method should only be called on a ItemContainingItemHelper.");
         }
 
+        if (barrelLike.getCount() != 1) {
+            return false;
+        }
+
         var barrelHandler = new ItemHandler(barrelLike, this);
 
         // Try to fill barrel with otherStack

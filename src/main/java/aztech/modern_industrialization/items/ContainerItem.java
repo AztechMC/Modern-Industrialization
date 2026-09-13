@@ -155,6 +155,9 @@ public interface ContainerItem<T extends TransferVariant<?>> {
     class ItemHandler extends BaseHandler<ItemVariant> implements IItemHandler {
         public ItemHandler(ItemStack stack, ContainerItem<ItemVariant> containerItem) {
             super(stack, containerItem);
+            if (stack.getCount() != 1) {
+                throw new UnsupportedOperationException("Cannot have item handler for container item stack that is not exactly 1 item");
+            }
         }
 
         @Override

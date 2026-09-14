@@ -369,8 +369,9 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             pipe.setChanged();
-            pipe.sync();
-
+            if(remesh) {
+                pipe.sync();
+            }
         }
 
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {

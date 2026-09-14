@@ -34,11 +34,11 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.pipes.item.ItemPipeInterface;
-import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.IOFluidHandler;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -170,7 +170,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
             var conn = new FluidConnection(direction, BLOCK_IN, 0);
             connections.add(conn);
             var offhandItem = player.getOffhandItem();
-            if(MIItem.CONFIG_CARD.is(offhandItem)){
+            if (MIItem.CONFIG_CARD.is(offhandItem)) {
                 conn.applyConfig(pipe, offhandItem.get(MIComponents.SAVED_CONFIG));
             }
         }
@@ -247,6 +247,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         return false;
     }
+
     private class FluidConnection {
         private final Direction direction;
         private PipeEndpointType type;
@@ -266,6 +267,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         private boolean canExtract() {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
+
         SavedPipeConfig getConfig() {
             return new SavedPipeConfig(
                     type,
@@ -276,8 +278,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
                     Collections.nCopies(ItemPipeInterface.SLOTS, ItemStack.EMPTY).stream().toList(), // equivalent to a completely clear filter
                     ItemStack.EMPTY);
         }
-        public void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config){
-            if(config == null) {
+
+        public void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config) {
+            if (config == null) {
                 return;
             }
             boolean remesh = config.connectionType() != type;
@@ -288,14 +291,13 @@ public class FluidNetworkNode extends PipeNetworkNode {
                 FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getNode();
                 networkAmount += fluidNode.amount;
             }
-            if(networkAmount == 0){
+            if (networkAmount == 0) {
                 ((FluidNetworkData) network.data).fluid = config.fluid();
             }
             pipe.setChanged();
-            if(remesh) {
+            if (remesh) {
                 pipe.sync();
             }
-
         }
 
         private class ScreenHandlerFactory implements PipeMenuProvider {

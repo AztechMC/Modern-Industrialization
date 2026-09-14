@@ -30,7 +30,6 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
-
 import net.minecraft.world.item.ItemStack;
 
 public record SavedPipeConfig(

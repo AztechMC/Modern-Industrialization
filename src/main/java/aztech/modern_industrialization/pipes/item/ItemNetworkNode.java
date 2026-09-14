@@ -369,7 +369,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             pipe.setChanged();
-            if(remesh) {
+            if (remesh) {
                 pipe.sync();
             }
         }

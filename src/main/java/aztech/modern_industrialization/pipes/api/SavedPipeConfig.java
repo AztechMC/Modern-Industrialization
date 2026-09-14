@@ -24,14 +24,12 @@
 
 package aztech.modern_industrialization.pipes.api;
 
-import aztech.modern_industrialization.fluid.MIFluidType;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import aztech.modern_industrialization.pipes.item.ItemPipeInterface;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.world.item.ItemStack;
 

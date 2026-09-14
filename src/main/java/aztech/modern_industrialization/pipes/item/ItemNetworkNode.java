@@ -35,9 +35,11 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TransferHelper;
 import com.mojang.serialization.Codec;
@@ -312,13 +314,14 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
-        SavedItemPipeConfig getConfig() {
+        SavedPipeConfig getConfig() {
             List<ItemStack> filters = new ArrayList<>();
             for (ItemStack itemStack : stacks) {
                 filters.add(itemStack.copy());
             }
-            return new SavedItemPipeConfig(
+            return new SavedPipeConfig(
                     type,
+                    FluidVariant.blank(),
                     whitelist,
                     insertPriority,
                     extractPriority,
@@ -326,7 +329,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     upgradeStack.copy());
         }
 
-        void applyConfig(PipeBlockEntity pipe, @Nullable SavedItemPipeConfig config, Player player) {
+        void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player) {
             if (config == null) {
                 return;
             }
@@ -366,9 +369,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             pipe.setChanged();
-            if (remesh) {
-                pipe.sync();
-            }
+            pipe.sync();
+
         }
 
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {

@@ -26,7 +26,7 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.items.SteamDrillFuel;
-import aztech.modern_industrialization.pipes.item.SavedItemPipeConfig;
+import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.MIExtraCodecs;
@@ -54,8 +54,8 @@ public final class MIComponents {
             builder -> builder.persistent(Codec.BOOL));
     public static final Supplier<DataComponentType<Integer>> REMAINING_DISINTEGRATIONS = COMPONENTS.registerComponentType("remaining_disintegrations",
             builder -> builder.persistent(ExtraCodecs.POSITIVE_INT));
-    public static final Supplier<DataComponentType<SavedItemPipeConfig>> SAVED_CONFIG = COMPONENTS.registerComponentType("saved_config",
-            builder -> builder.persistent(SavedItemPipeConfig.CODEC));
+    public static final Supplier<DataComponentType<SavedPipeConfig>> SAVED_CONFIG = COMPONENTS.registerComponentType("saved_config",
+            builder -> builder.persistent(SavedPipeConfig.CODEC));
     public static final Supplier<DataComponentType<Boolean>> SILK_TOUCH = COMPONENTS.registerComponentType("silk_touch",
             builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
     public static final Supplier<DataComponentType<SteamDrillFuel>> STEAM_DRILL_FUEL = COMPONENTS.registerComponentType("steam_drill_fuel",

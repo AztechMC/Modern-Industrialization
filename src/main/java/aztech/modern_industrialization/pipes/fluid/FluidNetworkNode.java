@@ -27,6 +27,9 @@ package aztech.modern_industrialization.pipes.fluid;
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIComponents;
+import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -34,6 +37,8 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
+import aztech.modern_industrialization.pipes.item.ItemPipeInterface;
+import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.IOFluidHandler;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -47,9 +52,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -160,7 +167,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new FluidConnection(direction, BLOCK_IN, 0));
+            var conn = new FluidConnection(direction, BLOCK_IN, 0);
+            connections.add(conn);
+            var offhandItem = player.getOffhandItem();
+            if(MIItem.CONFIG_CARD.is(offhandItem)){
+                conn.applyConfig(pipe, offhandItem.get(MIComponents.SAVED_CONFIG));
+            }
         }
     }
 
@@ -211,6 +223,30 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return null;
     }
 
+    @Override
+    public boolean customUse(PipeBlockEntity pipe, Player player, InteractionHand hand, @Nullable Direction hitDirection) {
+        for (FluidNetworkNode.FluidConnection conn : connections) {
+            if (conn.direction != hitDirection) {
+                continue;
+            }
+
+            var stack = player.getItemInHand(hand);
+            if (!MIItem.CONFIG_CARD.is(stack)) {
+                return false;
+            }
+
+            if (player.isShiftKeyDown()) {
+                stack.remove(MIComponents.CAMOUFLAGE);
+                stack.set(MIComponents.SAVED_CONFIG, conn.getConfig());
+                player.displayClientMessage(MIText.ConfigCardSet.text(), true);
+            } else if (stack.has(MIComponents.SAVED_CONFIG)) {
+                conn.applyConfig(pipe, stack.get(MIComponents.SAVED_CONFIG));
+                player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
+            }
+            return true;
+        }
+        return false;
+    }
     private class FluidConnection {
         private final Direction direction;
         private PipeEndpointType type;
@@ -229,6 +265,37 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         private boolean canExtract() {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
+        }
+        SavedPipeConfig getConfig() {
+            return new SavedPipeConfig(
+                    type,
+                    cachedFluid,
+                    true,
+                    priority,
+                    0,
+                    Collections.nCopies(ItemPipeInterface.SLOTS, ItemStack.EMPTY).stream().toList(), // equivalent to a completely clear filter
+                    ItemStack.EMPTY);
+        }
+        public void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config){
+            if(config == null) {
+                return;
+            }
+            boolean remesh = config.connectionType() != type;
+            type = config.connectionType();
+            priority = config.insertPriority();
+            long networkAmount = 0;
+            for (var entry : network.iterateTickingNodes()) {
+                FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getNode();
+                networkAmount += fluidNode.amount;
+            }
+            if(networkAmount == 0){
+                ((FluidNetworkData) network.data).fluid = config.fluid();
+            }
+            pipe.setChanged();
+            if(remesh) {
+                pipe.sync();
+            }
+
         }
 
         private class ScreenHandlerFactory implements PipeMenuProvider {

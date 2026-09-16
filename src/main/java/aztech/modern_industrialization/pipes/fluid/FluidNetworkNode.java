@@ -29,7 +29,7 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.pipes.api.NetworkNodeConnection;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -171,7 +171,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
             connections.add(conn);
             var offhandItem = player.getOffhandItem();
             if (MIItem.CONFIG_CARD.is(offhandItem)) {
-                conn.applyConfig(pipe, offhandItem.get(MIComponents.SAVED_CONFIG));
+                conn.applyConfig(pipe, offhandItem.get(MIComponents.SAVED_CONFIG), player);
             }
         }
     }
@@ -205,14 +205,6 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
-    private PipeEndpointType decodeConnectionType(int i) {
-        return i == 0 ? BLOCK_IN : i == 1 ? BLOCK_IN_OUT : BLOCK_OUT;
-    }
-
-    private int encodeConnectionType(PipeEndpointType connection) {
-        return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
-    }
-
     @Override
     public PipeMenuProvider getConnectionGui(Direction guiDirection, PipeScreenHandlerHelper helper) {
         for (FluidConnection connection : connections) {
@@ -235,20 +227,13 @@ public class FluidNetworkNode extends PipeNetworkNode {
                 return false;
             }
 
-            if (player.isShiftKeyDown()) {
-                stack.remove(MIComponents.CAMOUFLAGE);
-                stack.set(MIComponents.SAVED_CONFIG, conn.getConfig());
-                player.displayClientMessage(MIText.ConfigCardSet.text(), true);
-            } else if (stack.has(MIComponents.SAVED_CONFIG)) {
-                conn.applyConfig(pipe, stack.get(MIComponents.SAVED_CONFIG));
-                player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
-            }
+            conn.useConfigCard(pipe, stack, player);
             return true;
         }
         return false;
     }
 
-    private class FluidConnection {
+    private class FluidConnection implements NetworkNodeConnection {
         private final Direction direction;
         private PipeEndpointType type;
         private int priority;
@@ -268,30 +253,25 @@ public class FluidNetworkNode extends PipeNetworkNode {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
 
-        SavedPipeConfig getConfig() {
+        public SavedPipeConfig getConfig() {
             return new SavedPipeConfig(
                     type,
-                    cachedFluid,
                     true,
                     priority,
                     0,
                     Collections.nCopies(ItemPipeInterface.SLOTS, ItemStack.EMPTY).stream().toList(), // equivalent to a completely clear filter
-                    ItemStack.EMPTY);
+                    ItemStack.EMPTY,
+                    cachedFluid);
         }
 
-        public void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config) {
+        public void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player) {
             if (config == null) {
                 return;
             }
             boolean remesh = config.connectionType() != type;
             type = config.connectionType();
             priority = config.insertPriority();
-            long networkAmount = 0;
-            for (var entry : network.iterateTickingNodes()) {
-                FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getNode();
-                networkAmount += fluidNode.amount;
-            }
-            if (networkAmount == 0) {
+            if (((FluidNetwork) network).isEmpty(false)) {
                 ((FluidNetworkData) network.data).fluid = config.fluid();
             }
             pipe.setChanged();

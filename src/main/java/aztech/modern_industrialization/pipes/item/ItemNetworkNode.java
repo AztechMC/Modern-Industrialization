@@ -28,9 +28,9 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.config.MIServerConfig;
+import aztech.modern_industrialization.pipes.api.NetworkNodeConnection;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -42,8 +42,6 @@ import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TransferHelper;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -184,23 +182,6 @@ public class ItemNetworkNode extends PipeNetworkNode {
         inactiveTicks = tag.getInt("inactiveTicks");
     }
 
-    public static PipeEndpointType decodeConnectionType(int i) {
-        return i == 0 ? BLOCK_IN : i == 1 ? BLOCK_IN_OUT : BLOCK_OUT;
-    }
-
-    public static int encodeConnectionType(PipeEndpointType connection) {
-        return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
-    }
-
-    public static final Codec<PipeEndpointType> CONNECTION_TYPE_CODEC = Codec.INT.comapFlatMap(
-            i -> switch (i) {
-                case 0 -> DataResult.success(BLOCK_IN);
-                case 1 -> DataResult.success(BLOCK_IN_OUT);
-                case 2 -> DataResult.success(BLOCK_OUT);
-                default -> DataResult.error(() -> "Unknown item pipe connection type: " + i);
-            },
-            ItemNetworkNode::encodeConnectionType);
-
     @Override
     public PipeMenuProvider getConnectionGui(Direction guiDirection, PipeScreenHandlerHelper helper) {
         for (ItemConnection connection : connections) {
@@ -232,21 +213,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
             if (!MIItem.CONFIG_CARD.is(stack)) {
                 return false;
             }
-
-            if (player.isShiftKeyDown()) {
-                stack.remove(MIComponents.CAMOUFLAGE);
-                stack.set(MIComponents.SAVED_CONFIG, conn.getConfig());
-                player.displayClientMessage(MIText.ConfigCardSet.text(), true);
-            } else if (stack.has(MIComponents.SAVED_CONFIG)) {
-                conn.applyConfig(pipe, stack.get(MIComponents.SAVED_CONFIG), player);
-                player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
-            }
+            conn.useConfigCard(pipe, stack, player);
             return true;
         }
         return false;
     }
 
-    class ItemConnection {
+    class ItemConnection implements NetworkNodeConnection {
         final Direction direction;
         private PipeEndpointType type;
         boolean whitelist = true;
@@ -314,22 +287,22 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
-        SavedPipeConfig getConfig() {
+        public SavedPipeConfig getConfig() {
             List<ItemStack> filters = new ArrayList<>();
             for (ItemStack itemStack : stacks) {
                 filters.add(itemStack.copy());
             }
             return new SavedPipeConfig(
                     type,
-                    FluidVariant.blank(),
                     whitelist,
                     insertPriority,
                     extractPriority,
                     filters,
-                    upgradeStack.copy());
+                    upgradeStack.copy(),
+                    FluidVariant.blank());
         }
 
-        void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player) {
+        public void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player) {
             if (config == null) {
                 return;
             }

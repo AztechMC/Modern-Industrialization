@@ -25,8 +25,11 @@
 package aztech.modern_industrialization.pipes.api;
 
 import aztech.modern_industrialization.MIComponents;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
@@ -35,6 +38,8 @@ public interface NetworkNodeConnection {
     SavedPipeConfig getConfig();
 
     void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player);
+
+    Direction getDirection();
 
     default void useConfigCard(PipeBlockEntity pipe, ItemStack stack, Player player) {
         if (player.isShiftKeyDown()) {
@@ -45,5 +50,21 @@ public interface NetworkNodeConnection {
             applyConfig(pipe, stack.get(MIComponents.SAVED_CONFIG), player);
             player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
         }
+    }
+
+    static boolean use(Iterable<? extends NetworkNodeConnection> connections, PipeBlockEntity pipe, Player player, InteractionHand hand, @Nullable Direction hitDirection) {
+        for (NetworkNodeConnection conn : connections) {
+            if (conn.getDirection() != hitDirection) {
+                continue;
+            }
+
+            var stack = player.getItemInHand(hand);
+            if (!MIItem.CONFIG_CARD.is(stack)) {
+                return false;
+            }
+            conn.useConfigCard(pipe, stack, player);
+            return true;
+        }
+        return false;
     }
 }

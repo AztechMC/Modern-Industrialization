@@ -204,19 +204,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public boolean customUse(PipeBlockEntity pipe, Player player, InteractionHand hand, @Nullable Direction hitDirection) {
-        for (ItemConnection conn : connections) {
-            if (conn.direction != hitDirection) {
-                continue;
-            }
-
-            var stack = player.getItemInHand(hand);
-            if (!MIItem.CONFIG_CARD.is(stack)) {
-                return false;
-            }
-            conn.useConfigCard(pipe, stack, player);
-            return true;
-        }
-        return false;
+        return NetworkNodeConnection.use(connections, pipe, player, hand, hitDirection);
     }
 
     class ItemConnection implements NetworkNodeConnection {
@@ -345,6 +333,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
             if (remesh) {
                 pipe.sync();
             }
+        }
+
+        @Override
+        public Direction getDirection() {
+            return direction;
         }
 
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {

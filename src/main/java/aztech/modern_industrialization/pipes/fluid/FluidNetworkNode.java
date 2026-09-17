@@ -266,7 +266,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
                 pipe.sync();
             }
         }
-
+        @Override
         public Direction getDirection() {
             return direction;
         }

@@ -30,6 +30,7 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.pipes.api.NetworkNodeConnection;
+import aztech.modern_industrialization.pipes.api.PipeConfigType;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -243,6 +244,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         public SavedPipeConfig getConfig() {
             return new SavedPipeConfig(
                     type,
+                    PipeConfigType.FLUID,
                     true,
                     priority,
                     0,
@@ -270,6 +272,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
         @Override
         public Direction getDirection() {
             return direction;
+        }
+        @Override
+        public PipeConfigType getConfigType(){
+            return PipeConfigType.FLUID;
         }
 
         private class ScreenHandlerFactory implements PipeMenuProvider {

@@ -40,7 +40,7 @@ public interface NetworkNodeConnection {
     void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player);
 
     Direction getDirection();
-
+    PipeConfigType getConfigType();
     default void useConfigCard(PipeBlockEntity pipe, ItemStack stack, Player player) {
         if (player.isShiftKeyDown()) {
             stack.remove(MIComponents.CAMOUFLAGE);
@@ -60,6 +60,10 @@ public interface NetworkNodeConnection {
 
             var stack = player.getItemInHand(hand);
             if (!MIItem.CONFIG_CARD.is(stack)) {
+                return false;
+            }
+            SavedPipeConfig config = stack.get(MIComponents.SAVED_CONFIG);
+            if(!config.configType().equals(conn.getConfigType())){
                 return false;
             }
             conn.useConfigCard(pipe, stack, player);

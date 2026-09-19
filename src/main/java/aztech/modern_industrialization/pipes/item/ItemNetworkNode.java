@@ -31,6 +31,7 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.pipes.api.NetworkNodeConnection;
+import aztech.modern_industrialization.pipes.api.PipeConfigType;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -282,6 +283,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
             return new SavedPipeConfig(
                     type,
+                    PipeConfigType.ITEM,
                     whitelist,
                     insertPriority,
                     extractPriority,
@@ -339,7 +341,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
         public Direction getDirection() {
             return direction;
         }
-
+        @Override
+        public PipeConfigType getConfigType(){
+            return PipeConfigType.ITEM;
+        }
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {
             return TransferHelper.extractMatching(player.getInventory(), what::matches, maxAmount, false).getCount();
         }

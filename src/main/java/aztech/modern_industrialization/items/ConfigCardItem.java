@@ -118,12 +118,12 @@ public class ConfigCardItem extends Item {
                     }
                 }
                 case FLUID -> {
-                    String fluidName = "Empty";
-                    if(!savedConfig.fluid().isBlank()){
-                        fluidName = savedConfig.fluid().getFluid().getFluidType().getDescription().getString();
 
+                    if (!savedConfig.fluid().isBlank()) {
+                        yield MIText.ConfigCardConfiguredNoFluid.text();
                     }
-                    yield MIText.ConfigCardConfiguredFluid.text(fluidName);
+                    yield MIText.ConfigCardConfiguredFluid.text(
+                            savedConfig.fluid().getFluid().getFluidType().getDescription().getString());
 
                 }
             };

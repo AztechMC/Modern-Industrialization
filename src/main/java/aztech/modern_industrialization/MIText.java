@@ -73,6 +73,7 @@ public enum MIText {
     ConfigCardConfiguredItems("Configured (%d items)"),
     ConfigCardConfiguredNoItems("Configured (no items)"),
     ConfigCardConfiguredFluid("Configured (%d)"),
+    ConfigCardConfiguredNoFluid("Configured (Empty)"),
     ConfigCardHelpCamouflage1("Camouflage application:"),
     ConfigCardHelpCamouflage2("- Press %s + %s on a block in the world to select it as camouflage."),
     ConfigCardHelpCamouflage3("- Use %s on a pipe to update its camouflage."),

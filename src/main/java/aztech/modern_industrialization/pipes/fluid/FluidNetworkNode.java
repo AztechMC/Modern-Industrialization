@@ -39,7 +39,6 @@ import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
-import aztech.modern_industrialization.pipes.item.ItemPipeInterface;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.IOFluidHandler;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -248,7 +247,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
                     true,
                     priority,
                     0,
-                    Collections.nCopies(ItemPipeInterface.SLOTS, ItemStack.EMPTY).stream().toList(), // equivalent to a completely clear filter
+                    new ArrayList<>(),
                     ItemStack.EMPTY,
                     cachedFluid);
         }

@@ -50,10 +50,10 @@ public interface NetworkNodeConnection {
             player.displayClientMessage(MIText.ConfigCardSet.text(), true);
         } else if (stack.has(MIComponents.SAVED_CONFIG)) {
             SavedPipeConfig config = stack.get(MIComponents.SAVED_CONFIG);
-            if(config.configType().equals(conn.getConfigType())) {
+            if (config.configType().equals(conn.getConfigType())) {
                 applyConfig(pipe, config, player);
                 player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
-            } else{
+            } else {
                 player.displayClientMessage(MIText.ConfigCardWrongType.text(), true);
             }
         }

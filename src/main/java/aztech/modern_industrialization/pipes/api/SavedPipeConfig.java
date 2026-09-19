@@ -46,7 +46,7 @@ public record SavedPipeConfig(
             Codec.BOOL.fieldOf("whitelist").forGetter(SavedPipeConfig::whitelist),
             Codec.INT.fieldOf("insertPriority").forGetter(SavedPipeConfig::insertPriority),
             Codec.INT.fieldOf("extractPriority").forGetter(SavedPipeConfig::extractPriority),
-            ItemStack.OPTIONAL_CODEC.listOf(ItemPipeInterface.SLOTS, ItemPipeInterface.SLOTS).fieldOf("filter")
+            ItemStack.OPTIONAL_CODEC.listOf(0, ItemPipeInterface.SLOTS).fieldOf("filter")
                     .forGetter(SavedPipeConfig::filter),
             ItemStack.OPTIONAL_CODEC.fieldOf("upgrade").forGetter(SavedPipeConfig::upgrade),
             FluidVariant.CODEC.fieldOf("fluid").forGetter(SavedPipeConfig::fluid)).apply(instance, SavedPipeConfig::new));

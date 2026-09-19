@@ -47,5 +47,5 @@ public record SavedPipeConfig(
             ItemStack.OPTIONAL_CODEC.listOf(ItemPipeInterface.SLOTS, ItemPipeInterface.SLOTS).fieldOf("filter")
                     .forGetter(SavedPipeConfig::filter),
             ItemStack.OPTIONAL_CODEC.fieldOf("upgrade").forGetter(SavedPipeConfig::upgrade),
-            FluidVariant.CODEC.fieldOf("fluid").forGetter(SavedPipeConfig::fluid)).apply(instance, SavedPipeConfig::new));;
+            FluidVariant.CODEC.fieldOf("fluid").forGetter(SavedPipeConfig::fluid)).apply(instance, SavedPipeConfig::new));
 }

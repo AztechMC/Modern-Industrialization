@@ -7,13 +7,17 @@ public enum PipeConfigType {
     NONE(0),
     ITEM(1),
     FLUID(2);
+
     private int id;
-    PipeConfigType(int id){
+
+    PipeConfigType(int id) {
         this.id = id;
     }
+
     public int getId() {
         return id;
     }
+
     public static PipeConfigType decodeConnectionType(int i) {
         return i == 0 ? NONE : i == 1 ? ITEM : FLUID;
     }
@@ -21,6 +25,7 @@ public enum PipeConfigType {
     public static int encodeConnectionType(PipeConfigType config) {
         return config == NONE ? 0 : config == ITEM ? 1 : 2;
     }
+
     public static final Codec<PipeConfigType> CODEC = Codec.INT.comapFlatMap(
             i -> switch (i) {
                 case 0 -> DataResult.success(NONE);
@@ -29,5 +34,4 @@ public enum PipeConfigType {
                 default -> DataResult.error(() -> "Unknown pipe connection type: " + i);
             },
             PipeConfigType::encodeConnectionType);
-
-    }
+}

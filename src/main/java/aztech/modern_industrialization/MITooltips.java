@@ -417,9 +417,9 @@ public class MITooltips {
                             .arg(MIText.KeyMouseScroll.text().withStyle(NUMBER_TEXT), COMPONENT)
                             .build(),
                     Component.empty(),
-                    line(MIText.ConfigCardHelpItems1).build(),
-                    line(MIText.ConfigCardHelpItems2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
-                    line(MIText.ConfigCardHelpItems3).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpPipes1).build(),
+                    line(MIText.ConfigCardHelpPipes2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpPipes3).arg("use", KEYBIND_PARSER).build(),
                     line(MIText.ConfigCardHelpClear).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
 
     public static final TooltipAttachment MACHINE_CASING_VOLTAGE = TooltipAttachment.of(

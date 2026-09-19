@@ -273,8 +273,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
         public Direction getDirection() {
             return direction;
         }
+
         @Override
-        public PipeConfigType getConfigType(){
+        public PipeConfigType getConfigType() {
             return PipeConfigType.FLUID;
         }
 

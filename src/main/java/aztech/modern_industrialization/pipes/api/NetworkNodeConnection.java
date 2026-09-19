@@ -40,15 +40,22 @@ public interface NetworkNodeConnection {
     void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player);
 
     Direction getDirection();
+
     PipeConfigType getConfigType();
-    default void useConfigCard(PipeBlockEntity pipe, ItemStack stack, Player player) {
+
+    default void useConfigCard(NetworkNodeConnection conn, PipeBlockEntity pipe, ItemStack stack, Player player) {
         if (player.isShiftKeyDown()) {
             stack.remove(MIComponents.CAMOUFLAGE);
             stack.set(MIComponents.SAVED_CONFIG, getConfig());
             player.displayClientMessage(MIText.ConfigCardSet.text(), true);
         } else if (stack.has(MIComponents.SAVED_CONFIG)) {
-            applyConfig(pipe, stack.get(MIComponents.SAVED_CONFIG), player);
-            player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
+            SavedPipeConfig config = stack.get(MIComponents.SAVED_CONFIG);
+            if(config.configType().equals(conn.getConfigType())) {
+                applyConfig(pipe, config, player);
+                player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
+            } else{
+                player.displayClientMessage(MIText.ConfigCardWrongType.text(), true);
+            }
         }
     }
 
@@ -62,11 +69,7 @@ public interface NetworkNodeConnection {
             if (!MIItem.CONFIG_CARD.is(stack)) {
                 return false;
             }
-            SavedPipeConfig config = stack.get(MIComponents.SAVED_CONFIG);
-            if(!config.configType().equals(conn.getConfigType())){
-                return false;
-            }
-            conn.useConfigCard(pipe, stack, player);
+            conn.useConfigCard(conn, pipe, stack, player);
             return true;
         }
         return false;

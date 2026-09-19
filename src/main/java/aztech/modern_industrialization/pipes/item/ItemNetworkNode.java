@@ -341,10 +341,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
         public Direction getDirection() {
             return direction;
         }
+
         @Override
-        public PipeConfigType getConfigType(){
+        public PipeConfigType getConfigType() {
             return PipeConfigType.ITEM;
         }
+
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {
             return TransferHelper.extractMatching(player.getInventory(), what::matches, maxAmount, false).getCount();
         }

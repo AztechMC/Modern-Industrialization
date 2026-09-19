@@ -27,6 +27,7 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.pipes.api.PipeConfigType;
 import aztech.modern_industrialization.pipes.impl.CamouflageHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
 import java.util.List;
@@ -102,16 +103,30 @@ public class ConfigCardItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
         var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
         if (savedConfig != null) {
             var filterSize = savedConfig.filter().size();
             MutableComponent component;
-            if (filterSize == 0) {
-                component = MIText.ConfigCardConfiguredNoItems.text();
-            } else {
-                component = MIText.ConfigCardConfiguredItems.text(Component.literal("" + filterSize).setStyle(MITooltips.NUMBER_TEXT));
-            }
+            component = switch (savedConfig.configType()) {
+                case NONE -> Component.literal("");
+                case PipeConfigType.ITEM -> {
+                    if (filterSize == 0) {
+                        yield MIText.ConfigCardConfiguredNoItems.text();
+                    } else {
+                        yield MIText.ConfigCardConfiguredItems.text(Component.literal("" + filterSize).setStyle(MITooltips.NUMBER_TEXT));
+                    }
+                }
+                case FLUID -> {
+                    String fluidName = "Empty";
+                    if(!savedConfig.fluid().isBlank()){
+                        fluidName = savedConfig.fluid().getFluid().getFluidType().getDescription().getString();
+
+                    }
+                    yield MIText.ConfigCardConfiguredFluid.text(fluidName);
+
+                }
+            };
             tooltipComponents.add(component.withStyle(MITooltips.DEFAULT_STYLE));
         }
 
@@ -134,7 +149,7 @@ public class ConfigCardItem extends Item {
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
-        if (savedConfig != null) {
+        if (savedConfig != null && savedConfig.configType() == PipeConfigType.ITEM) {
             var stacks = savedConfig.filter();
             return stacks.isEmpty() ? Optional.empty() : Optional.of(new TooltipData(stacks));
         }

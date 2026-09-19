@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 
 public record SavedPipeConfig(
         PipeEndpointType connectionType,
+        PipeConfigType configType,
         boolean whitelist,
         int insertPriority,
         int extractPriority,
@@ -41,6 +42,7 @@ public record SavedPipeConfig(
         FluidVariant fluid) {
     public static final Codec<SavedPipeConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             PipeEndpointType.CODEC.fieldOf("connectionType").forGetter(SavedPipeConfig::connectionType),
+            PipeConfigType.CODEC.fieldOf("configType").forGetter(SavedPipeConfig::configType),
             Codec.BOOL.fieldOf("whitelist").forGetter(SavedPipeConfig::whitelist),
             Codec.INT.fieldOf("insertPriority").forGetter(SavedPipeConfig::insertPriority),
             Codec.INT.fieldOf("extractPriority").forGetter(SavedPipeConfig::extractPriority),

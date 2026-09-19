@@ -224,9 +224,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             this.type = type;
             this.insertPriority = insertPriority;
             this.extractPriority = extractPriority;
-            for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                stacks[i] = ItemStack.EMPTY;
-            }
+            Arrays.fill(stacks, ItemStack.EMPTY);
         }
 
         private void refreshStacksCache() {

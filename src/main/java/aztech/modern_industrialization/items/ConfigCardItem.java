@@ -118,13 +118,11 @@ public class ConfigCardItem extends Item {
                     }
                 }
                 case FLUID -> {
-
-                    if (!savedConfig.fluid().isBlank()) {
+                    if (savedConfig.fluid().isBlank()) {
                         yield MIText.ConfigCardConfiguredNoFluid.text();
                     }
                     yield MIText.ConfigCardConfiguredFluid.text(
                             savedConfig.fluid().getFluid().getFluidType().getDescription().getString());
-
                 }
             };
             tooltipComponents.add(component.withStyle(MITooltips.DEFAULT_STYLE));

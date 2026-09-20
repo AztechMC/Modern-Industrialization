@@ -30,7 +30,7 @@ import aztech.modern_industrialization.client.machines.gui.ClientComponentRender
 import aztech.modern_industrialization.client.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.guicomponents.FuelData;
-import aztech.modern_industrialization.machines.guicomponents.GeneratorMultiblockGui;
+import aztech.modern_industrialization.machines.guicomponents.SteamBoilerMultiblockGui;
 import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -38,18 +38,35 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
 
-public class GeneratorMultiblockGuiClient extends GuiComponentClient<Unit, GeneratorMultiblockGui.Data> {
-    public GeneratorMultiblockGuiClient(Unit params, GeneratorMultiblockGui.Data data) {
+public class SteamBoilerMultiblockGuiClient extends GuiComponentClient<Unit, SteamBoilerMultiblockGui.Data> {
+    public SteamBoilerMultiblockGuiClient(Unit params, SteamBoilerMultiblockGui.Data data) {
         super(params, data);
-    }
-
-    public boolean isShapeValid() {
-        return data.isShapeValid();
     }
 
     @Override
     public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
         return new Renderer();
+    }
+
+    private static String formatAmount(long amount) {
+        var amountText = TextHelper.getAmount(amount);
+        return amountText.digit() + amountText.unit();
+    }
+
+    private static String formatAmount(double amount) {
+        if (amount == Math.rint(amount)) {
+            return formatAmount((long) amount);
+        }
+        return String.format("%.1f", amount);
+    }
+
+    private static Component steamPerUnitText(FuelData fuel, String steamAmount) {
+        if (fuel.efficiency().isEmpty()) {
+            var text = fuel.isFluid() ? MIText.SteamBoilerSteamPerFluidNoEfficiency : MIText.SteamBoilerSteamPerItemNoEfficiency;
+            return text.text(steamAmount);
+        }
+        var text = fuel.isFluid() ? MIText.SteamBoilerSteamPerFluid : MIText.SteamBoilerSteamPerItem;
+        return text.text(steamAmount, MITooltips.MULTIPLIER_PARSER.parse(fuel.efficiency().get()));
     }
 
     public class Renderer extends CraftingMultiblockGuiClient.BaseScreenRenderer implements ClientComponentRenderer {
@@ -62,31 +79,22 @@ public class GeneratorMultiblockGuiClient extends GuiComponentClient<Unit, Gener
             if (data.isShapeValid()) {
                 deltaY += 11;
 
-                drawClippedLine(guiGraphics, font, MIText.GeneratorCurrentEu.text(TextHelper.getEuTextTick(data.currentEuGeneration())), x + 10,
-                        y + deltaY);
+                drawClippedLine(guiGraphics, font, MIText.SteamBoilerSteamProduction.text(formatAmount(data.steamProduction())), x + 10, y + deltaY);
                 deltaY += 11;
-                drawClippedLine(guiGraphics, font, MIText.GeneratorMaxEu.text(TextHelper.getEuTextTick(data.maxEuGeneration())), x + 10, y + deltaY);
+                drawClippedLine(guiGraphics, font, MIText.SteamBoilerMaxSteamProduction.text(formatAmount(data.maxSteamProduction())), x + 10,
+                        y + deltaY);
                 deltaY += 11;
 
                 if (data.fuel().isPresent()) {
                     var fuel = data.fuel().get();
                     drawClippedLine(guiGraphics, font, MIText.MachineFuel.text(fuel.name()), x + 10, y + deltaY);
                     deltaY += 11;
-                    drawClippedLine(guiGraphics, font, fuelValueText(fuel), x + 10, y + deltaY);
+                    var steamAmount = formatAmount((double) fuel.euPerUnit() / data.euPerSteamMb());
+                    drawClippedLine(guiGraphics, font, steamPerUnitText(fuel, steamAmount), x + 10, y + deltaY);
                 } else {
                     drawClippedLine(guiGraphics, font, MIText.MachineNoFuel.text(), x + 10, y + deltaY);
                 }
             }
-        }
-
-        private Component fuelValueText(FuelData fuel) {
-            var euPerUnit = TextHelper.getEuText(fuel.euPerUnit());
-            if (fuel.efficiency().isEmpty()) {
-                var text = fuel.isFluid() ? MIText.GeneratorFuelPerMbNoEfficiency : MIText.GeneratorFuelPerItemNoEfficiency;
-                return text.text(euPerUnit);
-            }
-            var text = fuel.isFluid() ? MIText.GeneratorFuelPerMb : MIText.GeneratorFuelPerItem;
-            return text.text(euPerUnit, MITooltips.MULTIPLIER_PARSER.parse(fuel.efficiency().get()));
         }
     }
 }

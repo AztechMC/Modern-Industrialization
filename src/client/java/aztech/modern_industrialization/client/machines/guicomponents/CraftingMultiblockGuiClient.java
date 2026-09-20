@@ -38,7 +38,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
 
@@ -58,6 +61,15 @@ public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, Crafti
 
     public static class BaseScreenRenderer {
         private static final ResourceLocation TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
+
+        protected static void drawClippedLine(GuiGraphics graphics, Font font, Component text, int x, int y) {
+            int maxWidth = CraftingMultiblockGui.W - 10;
+            FormattedText line = text;
+            if (font.width(text) > maxWidth) {
+                line = FormattedText.composite(font.substrByWidth(text, maxWidth - font.width(CommonComponents.ELLIPSIS)), CommonComponents.ELLIPSIS);
+            }
+            graphics.drawString(font, Language.getInstance().getVisualOrder(line), x, y, 0xFFFFFF, false);
+        }
 
         protected static int drawWordWrap(GuiGraphics graphics, Font font, Component text, int x, int y, int lineHeight, int color, boolean dropShadow) {
             int lineWidth = CraftingMultiblockGui.W - 10;

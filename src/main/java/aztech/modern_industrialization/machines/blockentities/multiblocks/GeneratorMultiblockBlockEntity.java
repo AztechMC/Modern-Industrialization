@@ -61,7 +61,8 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
         this.registerComponents(activeShape, isActiveComponent, fluidConsumer, redstoneControl);
         registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
-        registerGuiComponent(new GeneratorMultiblockGui(() -> shapeValid.shapeValid, () -> lastEuProduction, fluidConsumer.maxEuProduction));
+        registerGuiComponent(
+                new GeneratorMultiblockGui(() -> shapeValid.shapeValid, () -> lastEuProduction, fluidConsumer.maxEuProduction, fluidConsumer));
     }
 
     private boolean allowNormalOperation = false;
@@ -112,9 +113,11 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
                     insertEnergy(euProduced, Simulation.ACT);
                     isActiveComponent.updateActive(euProduced != 0, this);
                 } else {
+                    fluidConsumer.clearFuel();
                     isActiveComponent.updateActive(false, this);
                 }
             } else {
+                fluidConsumer.clearFuel();
                 isActiveComponent.updateActive(false, this);
             }
             setChanged();

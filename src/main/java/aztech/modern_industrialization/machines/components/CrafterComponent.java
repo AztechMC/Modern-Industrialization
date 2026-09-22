@@ -644,7 +644,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
                     ItemVariant key = stack.getResource();
-                    if (key.equals(output.variant()) || key.isBlank()) {
+                    if (stack.isResourceAllowedByLock(output.variant()) &&
+                            (key.equals(output.variant()) || key.isBlank())) {
                         // If simulating or chanced output or is the first try, respect the adjusted capacity.
                         // If putting the output on the second try, don't respect the adjusted capacity in case it was
                         // reduced during the processing.

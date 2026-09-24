@@ -275,19 +275,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         public SavedPipeConfig getConfig() {
-            List<ItemStack> filters = new ArrayList<>();
-            for (ItemStack itemStack : stacks) {
-                if (itemStack.isEmpty()) {
-                    continue;
-                }
-                filters.add(itemStack.copy());
-            }
             return new SavedPipeConfig(
                     PipeConfigType.ITEM, type,
                     whitelist,
                     insertPriority,
                     extractPriority,
-                    filters,
+                    Arrays.asList(stacks),
                     upgradeStack.copy(),
                     FluidVariant.blank());
         }
@@ -308,6 +301,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     stacks[i].setCount(1);
                 }
             }
+
             refreshStacksCache();
 
             ItemStack requestedUpgrade = config.upgrade().copy();

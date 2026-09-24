@@ -30,10 +30,10 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.pipes.api.PipeConfigType;
 import aztech.modern_industrialization.pipes.impl.CamouflageHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -56,6 +56,21 @@ public class ConfigCardItem extends Item {
         super(properties.stacksTo(1));
     }
 
+    public static boolean setCamouflage(Player player, InteractionHand usedHand, BlockState hitState) {
+        hitState = PipeBlock.guaranteeNotWaterlogged(hitState);
+        if (CamouflageHelper.isReasonableCamouflage(hitState)) {
+            player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
+            player.getItemInHand(usedHand).set(MIComponents.CAMOUFLAGE, hitState);
+            player.displayClientMessage(MITooltips.line(MIText.ConfigCardSetCamouflage, Style.EMPTY).arg(hitState, MITooltips.BLOCK_STATE_PARSER).build(), true);
+            return true;
+        }
+        return false;
+    }
+
+    public static BlockState readCamouflage(ItemStack stack) {
+        return stack.getOrDefault(MIComponents.CAMOUFLAGE, Blocks.AIR.defaultBlockState());
+    }
+
     @Override
     public InteractionResult useOn(UseOnContext c) {
         var player = c.getPlayer();
@@ -64,8 +79,7 @@ public class ConfigCardItem extends Item {
             var usedHand = c.getHand();
 
             if (hitState.getBlock() instanceof PipeBlock pipe) {
-                var pipeUseResult = pipe.useItemOn(c.getItemInHand(), c.getLevel().getBlockState(c.getClickedPos()), c.getLevel(), c.getClickedPos(),
-                        c.getPlayer(), c.getHand(), new BlockHitResult(c.getClickLocation(), c.getClickedFace(), c.getClickedPos(), c.isInside()));
+                var pipeUseResult = pipe.useItemOn(c.getItemInHand(), c.getLevel().getBlockState(c.getClickedPos()), c.getLevel(), c.getClickedPos(), c.getPlayer(), c.getHand(), new BlockHitResult(c.getClickLocation(), c.getClickedFace(), c.getClickedPos(), c.isInside()));
                 if (pipeUseResult.consumesAction()) {
                     return pipeUseResult.result();
                 }
@@ -77,18 +91,6 @@ public class ConfigCardItem extends Item {
             }
         }
         return InteractionResult.PASS;
-    }
-
-    public static boolean setCamouflage(Player player, InteractionHand usedHand, BlockState hitState) {
-        hitState = PipeBlock.guaranteeNotWaterlogged(hitState);
-        if (CamouflageHelper.isReasonableCamouflage(hitState)) {
-            player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
-            player.getItemInHand(usedHand).set(MIComponents.CAMOUFLAGE, hitState);
-            player.displayClientMessage(
-                    MITooltips.line(MIText.ConfigCardSetCamouflage, Style.EMPTY).arg(hitState, MITooltips.BLOCK_STATE_PARSER).build(), true);
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -107,36 +109,39 @@ public class ConfigCardItem extends Item {
         var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
         if (savedConfig != null) {
             var filterSize = savedConfig.filter().size();
-            MutableComponent component;
-            component = switch (savedConfig.configType()) {
-                case NONE -> Component.literal("");
+            switch (savedConfig.configType()) {
+                case NONE -> {}
                 case PipeConfigType.ITEM -> {
                     if (filterSize == 0) {
-                        yield MIText.ConfigCardConfiguredNoItems.text();
+                        tooltipComponents.add(MIText.ConfigCardConfiguredNoItems.text()
+                                .withStyle(MITooltips.DEFAULT_STYLE));
                     } else {
-                        yield MIText.ConfigCardConfiguredItems.text(Component.literal("" + filterSize).setStyle(MITooltips.NUMBER_TEXT));
+                        tooltipComponents.add(MIText.ConfigCardConfiguredItems.text(
+                                Component.literal("" + filterSize)
+                                        .setStyle(MITooltips.NUMBER_TEXT)
+                                        .withStyle(MITooltips.DEFAULT_STYLE)));
                     }
                 }
-                case FLUID -> {
+                case PipeConfigType.FLUID -> {
                     if (savedConfig.fluid().isBlank()) {
-                        yield MIText.ConfigCardConfiguredNoFluid.text();
+                        tooltipComponents.add(MIText.ConfigCardConfiguredNoFluid.text()
+                                .withStyle(MITooltips.DEFAULT_STYLE));
+
+                    } else {
+                        tooltipComponents.add(MIText.ConfigCardConfiguredFluid.text(
+                                FluidVariantAttributes.getName(savedConfig.fluid()))
+                                .setStyle(MITooltips.NUMBER_TEXT)
+                                .withStyle(MITooltips.DEFAULT_STYLE));
                     }
-                    yield MIText.ConfigCardConfiguredFluid.text(
-                            savedConfig.fluid().getFluid().getFluidType().getDescription().getString());
                 }
-            };
-            tooltipComponents.add(component.withStyle(MITooltips.DEFAULT_STYLE));
+            }
+            ;
         }
 
         var camouflage = readCamouflage(stack);
         if (!camouflage.isAir()) {
-            tooltipComponents
-                    .add(MITooltips.line(MIText.ConfigCardConfiguredCamouflage, Style.EMPTY).arg(camouflage, MITooltips.BLOCK_STATE_PARSER).build());
+            tooltipComponents.add(MITooltips.line(MIText.ConfigCardConfiguredCamouflage, Style.EMPTY).arg(camouflage, MITooltips.BLOCK_STATE_PARSER).build());
         }
-    }
-
-    public static BlockState readCamouflage(ItemStack stack) {
-        return stack.getOrDefault(MIComponents.CAMOUFLAGE, Blocks.AIR.defaultBlockState());
     }
 
     @Override

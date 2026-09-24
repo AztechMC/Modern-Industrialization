@@ -28,6 +28,7 @@ import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.pipes.api.PipeConfigType;
+import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.pipes.impl.CamouflageHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
@@ -104,37 +105,40 @@ public class ConfigCardItem extends Item {
         return super.use(level, player, usedHand);
     }
 
+    private void addItemFilterTooltip(SavedPipeConfig savedConfig, List<Component> tooltipComponents) {
+        var filterSize = savedConfig.filter().size();
+        if (filterSize == 0) {
+            tooltipComponents.add(MIText.ConfigCardConfiguredNoItems.text()
+                    .withStyle(MITooltips.DEFAULT_STYLE));
+        } else {
+            tooltipComponents.add(MIText.ConfigCardConfiguredItems.text(
+                    Component.literal("" + filterSize)
+                            .setStyle(MITooltips.NUMBER_TEXT)
+                            .withStyle(MITooltips.DEFAULT_STYLE)));
+        }
+    }
+
+    private void addFluidFilterTooltip(SavedPipeConfig savedConfig, List<Component> tooltipComponents) {
+        if (savedConfig.fluid().isBlank()) {
+            tooltipComponents.add(MIText.ConfigCardConfiguredNoFluid.text()
+                    .withStyle(MITooltips.DEFAULT_STYLE));
+
+        } else {
+            tooltipComponents.add(MIText.ConfigCardConfiguredFluid.text(
+                    FluidVariantAttributes.getName(savedConfig.fluid()))
+                    .setStyle(MITooltips.NUMBER_TEXT)
+                    .withStyle(MITooltips.DEFAULT_STYLE));
+        }
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
         var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
         if (savedConfig != null) {
-            var filterSize = savedConfig.filter().size();
             switch (savedConfig.configType()) {
-                case NONE -> {
-                }
-                case PipeConfigType.ITEM -> {
-                    if (filterSize == 0) {
-                        tooltipComponents.add(MIText.ConfigCardConfiguredNoItems.text()
-                                .withStyle(MITooltips.DEFAULT_STYLE));
-                    } else {
-                        tooltipComponents.add(MIText.ConfigCardConfiguredItems.text(
-                                Component.literal("" + filterSize)
-                                        .setStyle(MITooltips.NUMBER_TEXT)
-                                        .withStyle(MITooltips.DEFAULT_STYLE)));
-                    }
-                }
-                case PipeConfigType.FLUID -> {
-                    if (savedConfig.fluid().isBlank()) {
-                        tooltipComponents.add(MIText.ConfigCardConfiguredNoFluid.text()
-                                .withStyle(MITooltips.DEFAULT_STYLE));
-
-                    } else {
-                        tooltipComponents.add(MIText.ConfigCardConfiguredFluid.text(
-                                        FluidVariantAttributes.getName(savedConfig.fluid()))
-                                .setStyle(MITooltips.NUMBER_TEXT)
-                                .withStyle(MITooltips.DEFAULT_STYLE));
-                    }
-                }
+                case NONE -> {}
+                case PipeConfigType.ITEM -> addItemFilterTooltip(savedConfig, tooltipComponents);
+                case PipeConfigType.FLUID -> addFluidFilterTooltip(savedConfig, tooltipComponents);
             }
         }
 

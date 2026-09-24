@@ -1142,7 +1142,6 @@
   "text.modern_industrialization.CurrentEuRecipe": "현재 레시피: %s",
   "text.modern_industrialization.DieselToolFuelHelp1": "- 탱크에 %s를 눌러 연료를 채우거나 비우세요. 모든 유체 연료를 사용할 수 있습니다.",
   "text.modern_industrialization.DieselToolFuelHelp2": "- 도구의 속도는 연료의 EU/mb에 따라 결정됩니다.",
-  "text.modern_industrialization.DoubleFluidFuelEfficiency": "효율 두 배! (사용된 연료 당 EU x2)",
   "text.modern_industrialization.EbfMaxEu": "기본 레시피 %d EU/t 까지의 전기용광로 레시피를 허용",
   "text.modern_industrialization.EfficiencyDefaultMessage": "오버클럭 할 여유 레시피가 없습니다",
   "text.modern_industrialization.EfficiencyEu": "현재 소모: %d EU/t",

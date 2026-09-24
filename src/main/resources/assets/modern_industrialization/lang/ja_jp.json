@@ -1548,7 +1548,6 @@
   "text.modern_industrialization.DirectEnergy": "捕獲一回あたりの直接エネルギー",
   "text.modern_industrialization.DirectHeatByDesintegration": "捕獲一回あたりの直接熱",
   "text.modern_industrialization.Disabled": "無効",
-  "text.modern_industrialization.DoubleFluidFuelEfficiency": "効率二倍！(燃料消費あたりのEU x2)",
   "text.modern_industrialization.DurabilityCost": "耐久コスト：%d",
   "text.modern_industrialization.EbfMaxEu": "%d EU/tまでのEBFレシピを許可",
   "text.modern_industrialization.Efficiency": "効率",

@@ -140,7 +140,7 @@ public abstract sealed class MachineComponentProvider<S, C>
         @Override
         public List<ViewGroup<ItemStack>> getGroups(Accessor<?> accessor) {
             var itemCollector = new ItemCollector<>(new MachineItemIterator());
-            return itemCollector.update(accessor.getTarget(), accessor.getLevel().getGameTime());
+            return itemCollector.update(accessor);
         }
 
         @Override

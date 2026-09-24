@@ -86,7 +86,7 @@ public enum MIText {
     ConfigCardNoCamouflageInInventory("No %s in inventory"),
     ConfigCardSet("Copied pipe settings to Config Card"),
     ConfigCardSetCamouflage("Copied %s camouflage to Config Card"),
-    ConfigCardWrongType("Unable to apply saved config to targeted pipe because they are not of the same type."),
+    ConfigCardWrongType("Saved config is not for this kind of pipe."),
     ConfigurableSlotCapacity("Capacity: %s. Adjust with mouse scroll."),
     ConsumesTheFollowing("Consumes the following for: "),
     ContinuousOperation("Maximum efficiency reached only under continuous operation"),

@@ -283,8 +283,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 filters.add(itemStack.copy());
             }
             return new SavedPipeConfig(
-                    type,
-                    PipeConfigType.ITEM,
+                    PipeConfigType.ITEM, type,
                     whitelist,
                     insertPriority,
                     extractPriority,

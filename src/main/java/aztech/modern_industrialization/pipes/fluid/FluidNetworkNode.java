@@ -242,8 +242,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         public SavedPipeConfig getConfig() {
             return new SavedPipeConfig(
-                    type,
-                    PipeConfigType.FLUID,
+                    PipeConfigType.FLUID, type,
                     true,
                     priority,
                     0,

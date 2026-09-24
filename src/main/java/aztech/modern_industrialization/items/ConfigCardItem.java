@@ -110,7 +110,8 @@ public class ConfigCardItem extends Item {
         if (savedConfig != null) {
             var filterSize = savedConfig.filter().size();
             switch (savedConfig.configType()) {
-                case NONE -> {}
+                case NONE -> {
+                }
                 case PipeConfigType.ITEM -> {
                     if (filterSize == 0) {
                         tooltipComponents.add(MIText.ConfigCardConfiguredNoItems.text()
@@ -129,13 +130,12 @@ public class ConfigCardItem extends Item {
 
                     } else {
                         tooltipComponents.add(MIText.ConfigCardConfiguredFluid.text(
-                                FluidVariantAttributes.getName(savedConfig.fluid()))
+                                        FluidVariantAttributes.getName(savedConfig.fluid()))
                                 .setStyle(MITooltips.NUMBER_TEXT)
                                 .withStyle(MITooltips.DEFAULT_STYLE));
                     }
                 }
             }
-            ;
         }
 
         var camouflage = readCamouflage(stack);

@@ -655,7 +655,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (ins > 0) {
                             if (key.isBlank()) {
-                                if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
+                                if (stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) {
                                     stack.setAmount(ins);
                                     stack.setKey(output.variant());
                                 } else {

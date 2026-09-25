@@ -95,7 +95,11 @@ public class LytMachineItemSlot extends LytBlock implements InteractiveElement {
         var x = bounds.x();
         var y = bounds.y();
 
-        MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, x, y, 18, 18, 0, 0, 18, 18);
+        if (probability == 1) {
+            MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, x, y, 18, 18, 0, 0, 18, 18);
+        } else {
+            MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, x, y, 18, 18, 36, 0, 18, 18);
+        }
 
         var stack = getDisplayedStack();
         if (!stack.isEmpty()) {

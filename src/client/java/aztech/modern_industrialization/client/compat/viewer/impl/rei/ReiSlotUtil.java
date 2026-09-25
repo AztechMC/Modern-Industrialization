@@ -24,10 +24,10 @@
 
 package aztech.modern_industrialization.client.compat.viewer.impl.rei;
 
-import aztech.modern_industrialization.client.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
 import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.primitives.Ints;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class ReiSlotUtil {
 
     public static EntryStack<?> createFluidEntryStack(FluidVariant fluid, long amount, float probability, boolean input) {
         @Nullable
-        Component probabilityText = ViewerUtil.getProbabilityTooltip(probability, input);
+        Component probabilityText = TextHelper.getProbabilityTooltip(probability, input);
         return EntryStacks.of(FluidStackHooksForge.fromForge(fluid.toStack(Ints.saturatedCast(amount))))
                 .setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
                     List<Component> tooltip = new ArrayList<>();
@@ -69,7 +69,7 @@ public class ReiSlotUtil {
 
     public static Function<EntryStack<?>, List<Component>> getProbabilitySetting(float probability, boolean input) {
         @Nullable
-        Component tooltip = ViewerUtil.getProbabilityTooltip(probability, input);
+        Component tooltip = TextHelper.getProbabilityTooltip(probability, input);
         return es -> tooltip == null ? List.of() : List.of(tooltip);
     }
 }

@@ -24,12 +24,8 @@
 
 package aztech.modern_industrialization.client.compat.viewer.usage;
 
-import static aztech.modern_industrialization.MITooltips.EU_PER_TICK_PARSER;
-
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.client.machines.guicomponents.EnergyBarClient;
@@ -37,41 +33,27 @@ import aztech.modern_industrialization.client.machines.guicomponents.ProgressBar
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.TextHelper;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Consumer;
+
 public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>> {
     public static MachineCategory create(MachineCategoryParams params) {
-        int x = 1000, X = 0;
-        int y = 1000, Y = 0;
-        for (SlotPositions positions : new SlotPositions[] { params.itemInputs, params.itemOutputs, params.fluidInputs, params.fluidOutputs }) {
-            for (int i = 0; i < positions.size(); ++i) {
-                x = Math.min(x, positions.getX(i));
-                X = Math.max(X, positions.getX(i) + 16);
-                y = Math.min(y, positions.getY(i));
-                Y = Math.max(Y, positions.getY(i) + 16);
-            }
-        }
-
-        int width = Math.max(X - x + 15, 120);
-        int height = Y - y + 25; // Room for text above
-
+        var dimensions = params.calculateDimensions();
+        int width = Math.max(dimensions.width() + 15, 120);
+        int height = dimensions.height() + 25; // Room for text above
         return new MachineCategory(params, width, height);
     }
 
@@ -223,32 +205,8 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 MIText.BaseDurationSeconds.text(getSeconds(recipe)),
                 width - 5, 5, TextAlign.RIGHT, false, true, null);
 
-        // Draw steel hatch or upgrades
-        boolean steelHatchRequired = params.steamMode.steam && params.isMultiblock && recipe.eu > MachineTier.BRONZE.getMaxEu();
-        int upgradeEuRequired = recipe.eu - (params.isMultiblock ? MachineTier.MULTIBLOCK : MachineTier.LV).getMaxEu();
-        // Ugly fusion reactor workaround
-        if (upgradeEuRequired > 0 && id.getPath().equals("fusion_reactor")) {
-            upgradeEuRequired = 0;
-        }
-        // Conditions
-        boolean conditionsRequired = recipe.conditions.size() > 0;
-        if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
-            List<ItemStack> displayedItems = new ArrayList<>();
-            if (steelHatchRequired) {
-                displayedItems.add(BuiltInRegistries.ITEM.get(MI.id("steel_item_input_hatch")).getDefaultInstance());
-            }
-            if (upgradeEuRequired > 0) {
-                displayedItems.add(MIItem.BASIC_UPGRADE.stack());
-            }
-            for (var condition : recipe.conditions) {
-                ItemStack displayedItem = condition.icon();
-                if (!displayedItem.isEmpty()) {
-                    displayedItems.add(displayedItem);
-                }
-            }
-            if (displayedItems.isEmpty()) {
-                displayedItems.add(MIItem.WRENCH.stack());
-            }
+        if (params.includeRecipeConditionDisplay(recipe)) {
+            List<ItemStack> displayedItems = params.getRecipeConditionDisplayItems(recipe);
 
             double x = width / 2f - 3;
             double y = 3.75;
@@ -267,25 +225,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
             });
         }
         // Tooltips
-        List<Component> tooltips = new ArrayList<>();
-        if (params.steamMode != SteamMode.NEITHER) {
-            tooltips.add(MIText.BaseEuTotal.text(TextHelper.getEuText((long) recipe.duration * recipe.eu)));
-        }
-        if (params.steamMode.steam) {
-            tooltips.add((params.steamMode.electric ? MIText.AcceptsSteamToo : MIText.AcceptsSteam).text().withStyle(ChatFormatting.GRAY));
-            if (steelHatchRequired) {
-                tooltips.add(MIText.RequiresSteelHatch0.text().setStyle(Style.EMPTY.withUnderlined(true)));
-                tooltips.add(MIText.RequiresSteelHatch1.text().withStyle(ChatFormatting.GRAY));
-            }
-        }
-        if (upgradeEuRequired > 0) {
-            tooltips.add(new MITooltips.Line(MIText.RequiresUpgrades).arg(upgradeEuRequired, EU_PER_TICK_PARSER).build());
-        }
-        if (conditionsRequired) {
-            for (var condition : recipe.conditions) {
-                condition.appendDescription(tooltips);
-            }
-        }
+        List<Component> tooltips = params.getRecipeTooltip(recipe);
         if (!tooltips.isEmpty()) {
             widgets.tooltip(3, 3, width - 6, 13, tooltips);
         }

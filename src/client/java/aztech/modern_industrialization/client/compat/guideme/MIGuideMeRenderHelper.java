@@ -22,36 +22,25 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.client.compat.viewer.impl;
+package aztech.modern_industrialization.client.compat.guideme;
 
-import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.util.TextHelper;
-import java.text.DecimalFormat;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import org.jspecify.annotations.Nullable;
+import guideme.color.ConstantColor;
+import guideme.document.LytRect;
+import guideme.render.RenderContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 
-public class ViewerUtil {
-    private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
-
-    @Nullable
-    public static Component getProbabilityTooltip(float probability, boolean input) {
-        if (probability == 1) {
-            return null;
-        } else {
-            MutableComponent text;
-            if (probability == 0) {
-                text = MIText.NotConsumed.text();
-            } else {
-                if (input) {
-                    text = MIText.ChanceConsumption.text(PROBABILITY_FORMAT.format(probability * 100));
-                } else {
-                    text = MIText.ChanceProduction.text(PROBABILITY_FORMAT.format(probability * 100));
-                }
-
-            }
-            text.setStyle(TextHelper.YELLOW);
-            return text;
-        }
+public class MIGuideMeRenderHelper {
+    // Unfortunately GuideME does not provide a method that takes in UVs in int form
+    public static void fillTexturedRect(RenderContext context, ResourceLocation textureLocation, int x, int y, int width, int height, int uOffset, int vOffset, int uWidth, int uHeight, int textureWidth, int textureHeight) {
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(textureLocation);
+        context.fillTexturedRect(
+                new LytRect(x, y, width, height),
+                texture,
+                ConstantColor.WHITE, ConstantColor.WHITE, ConstantColor.WHITE, ConstantColor.WHITE,
+                uOffset / (float) textureWidth,
+                vOffset / (float) textureHeight,
+                (uOffset + uWidth) / (float) textureWidth,
+                (vOffset + uHeight) / (float) textureHeight);
     }
 }

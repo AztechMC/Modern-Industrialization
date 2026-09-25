@@ -75,7 +75,7 @@ public class LytMachineItemSlot extends LytBlock implements InteractiveElement {
 
     public LytMachineItemSlot(boolean input) {
         this.stacks = new ItemStack[0];
-        this.probability = 0;
+        this.probability = 1;
         this.input = input;
     }
 

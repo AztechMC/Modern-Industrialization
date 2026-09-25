@@ -24,6 +24,8 @@
 
 package aztech.modern_industrialization.client.compat.guideme.recipe.item;
 
+import aztech.modern_industrialization.client.compat.guideme.MIGuideMeRenderHelper;
+import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import guideme.document.LytRect;
@@ -31,7 +33,6 @@ import guideme.document.block.LytBlock;
 import guideme.document.interaction.GuideTooltip;
 import guideme.document.interaction.InteractiveElement;
 import guideme.layout.LayoutContext;
-import guideme.render.GuiAssets;
 import guideme.render.RenderContext;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -72,6 +73,12 @@ public class LytMachineItemSlot extends LytBlock implements InteractiveElement {
         this(output.variant(), output.amount(), output.probability(), false);
     }
 
+    public LytMachineItemSlot(boolean input) {
+        this.stacks = new ItemStack[0];
+        this.probability = 0;
+        this.input = input;
+    }
+
     @Override
     protected LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
         return new LytRect(x, y, OUTER_SIZE, OUTER_SIZE);
@@ -88,7 +95,7 @@ public class LytMachineItemSlot extends LytBlock implements InteractiveElement {
         var x = bounds.x();
         var y = bounds.y();
 
-        context.fillIcon(bounds, GuiAssets.SLOT);
+        MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, x, y, 18, 18, 0, 0, 18, 18);
 
         var stack = getDisplayedStack();
         if (!stack.isEmpty()) {

@@ -43,4 +43,8 @@ public class MIGuideMeRenderHelper {
                 (uOffset + uWidth) / (float) textureWidth,
                 (vOffset + uHeight) / (float) textureHeight);
     }
+
+    public static void fillTexturedRect(RenderContext context, ResourceLocation textureLocation, int x, int y, int width, int height, int uOffset, int vOffset, int uWidth, int uHeight) {
+        fillTexturedRect(context, textureLocation, x, y, width, height, uOffset, vOffset, uWidth, uHeight, 256, 256);
+    }
 }

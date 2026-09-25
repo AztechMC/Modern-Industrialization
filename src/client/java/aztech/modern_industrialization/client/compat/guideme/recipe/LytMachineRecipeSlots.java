@@ -33,11 +33,10 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import guideme.document.LytRect;
 import guideme.document.block.LytBlock;
 import guideme.document.block.LytBox;
-import guideme.document.block.LytSlot;
 import guideme.layout.LayoutContext;
 import guideme.render.RenderContext;
 import java.util.function.Function;
-import net.minecraft.world.item.crafting.Ingredient;
+import java.util.function.Supplier;
 
 public class LytMachineRecipeSlots extends LytBox {
     private final MachineCategoryParams params;
@@ -65,31 +64,35 @@ public class LytMachineRecipeSlots extends LytBox {
         this.itemInputs = appendSlots(
                 recipe.itemInputs.size(),
                 params.itemInputs,
-                (index) -> new LytMachineItemSlot(recipe.itemInputs.get(index)));
+                (index) -> new LytMachineItemSlot(recipe.itemInputs.get(index)),
+                () -> new LytMachineItemSlot(true));
 
         this.fluidInputs = appendSlots(
                 recipe.fluidInputs.size(),
                 params.fluidInputs,
-                (index) -> new LytMachineFluidSlot(recipe.fluidInputs.get(index)));
+                (index) -> new LytMachineFluidSlot(recipe.fluidInputs.get(index)),
+                () -> new LytMachineFluidSlot(true));
 
         this.itemOutputs = appendSlots(
                 recipe.itemOutputs.size(),
                 params.itemOutputs,
-                (index) -> new LytMachineItemSlot(recipe.itemOutputs.get(index)));
+                (index) -> new LytMachineItemSlot(recipe.itemOutputs.get(index)),
+                () -> new LytMachineItemSlot(false));
 
         this.fluidOutputs = appendSlots(
                 recipe.fluidOutputs.size(),
                 params.fluidOutputs,
-                (index) -> new LytMachineFluidSlot(recipe.fluidOutputs.get(index)));
+                (index) -> new LytMachineFluidSlot(recipe.fluidOutputs.get(index)),
+                () -> new LytMachineFluidSlot(false));
     }
 
-    private LytBlock[] appendSlots(int recipePartCount, SlotPositions slotPositions, Function<Integer, LytBlock> blockFactory) {
+    private LytBlock[] appendSlots(int recipePartCount, SlotPositions slotPositions, Function<Integer, LytBlock> slotFactory, Supplier<LytBlock> emptySlotSupplier) {
         LytBlock[] items = new LytBlock[slotPositions.size()];
         for (int index = 0; index < slotPositions.size(); index++) {
             if (recipePartCount > index) {
-                append(items[index] = blockFactory.apply(index));
+                append(items[index] = slotFactory.apply(index));
             } else {
-                append(items[index] = new LytSlot(Ingredient.EMPTY));
+                append(items[index] = emptySlotSupplier.get());
             }
         }
         return items;

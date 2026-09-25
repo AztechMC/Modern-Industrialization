@@ -24,6 +24,8 @@
 
 package aztech.modern_industrialization.client.compat.guideme.recipe.fluid;
 
+import aztech.modern_industrialization.client.compat.guideme.MIGuideMeRenderHelper;
+import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import guideme.document.LytRect;
@@ -31,7 +33,6 @@ import guideme.document.block.LytBlock;
 import guideme.document.interaction.GuideTooltip;
 import guideme.document.interaction.InteractiveElement;
 import guideme.layout.LayoutContext;
-import guideme.render.GuiAssets;
 import guideme.render.RenderContext;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +74,13 @@ public class LytMachineFluidSlot extends LytBlock implements InteractiveElement 
         this(output.fluid(), output.amount(), output.probability(), false);
     }
 
+    public LytMachineFluidSlot(boolean input) {
+        this.fluids = List.of();
+        this.amount = 0;
+        this.probability = 1;
+        this.input = input;
+    }
+
     @Override
     protected LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
         return new LytRect(x, y, OUTER_SIZE, OUTER_SIZE);
@@ -89,7 +97,7 @@ public class LytMachineFluidSlot extends LytBlock implements InteractiveElement 
         var x = bounds.x();
         var y = bounds.y();
 
-        context.fillIcon(bounds, GuiAssets.SLOT);
+        MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, x, y, 18, 18, 18, 0, 18, 18);
 
         var fluid = getDisplayedFluid();
         if (fluid != null) {

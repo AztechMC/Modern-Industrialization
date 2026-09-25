@@ -56,9 +56,9 @@ public class LytMachineRecipeHeaderEuCostImage extends LytBlock {
     public void render(RenderContext context) {
         var bounds = getBounds();
         switch (steamMode) {
-            case BOTH -> MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, bounds.x(), bounds.y(), 9, 9, 80, 18, 20, 20, 256, 256);
+            case BOTH -> MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, bounds.x(), bounds.y(), 9, 9, 80, 18, 20, 20);
             case STEAM_ONLY -> MIGuideMeRenderHelper.fillTexturedRect(context, MI.id("textures/item/steam_bucket.png"), bounds.x(), bounds.y(), 9, 9, 0, 0, 16, 16, 16, 16);
-            case ELECTRIC_ONLY -> MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, bounds.x() + 1, bounds.y(), 7, 9, 243, 0, 13, 18, 256, 256);
+            case ELECTRIC_ONLY -> MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, bounds.x() + 1, bounds.y(), 7, 9, 243, 0, 13, 18);
         }
     }
 }

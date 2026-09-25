@@ -24,6 +24,8 @@
 
 package aztech.modern_industrialization.compat.rei.machines;
 
+import static aztech.modern_industrialization.MITooltips.EU_PER_TICK_PARSER;
+
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
@@ -34,18 +36,15 @@ import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.TextHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-
-import static aztech.modern_industrialization.MITooltips.EU_PER_TICK_PARSER;
 
 public class MachineCategoryParams {
     public final String englishName;

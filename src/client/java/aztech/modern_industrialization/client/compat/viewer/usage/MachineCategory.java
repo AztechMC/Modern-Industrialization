@@ -36,6 +36,9 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.TextHelper;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -44,10 +47,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
 
 public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>> {
     public static MachineCategory create(MachineCategoryParams params) {

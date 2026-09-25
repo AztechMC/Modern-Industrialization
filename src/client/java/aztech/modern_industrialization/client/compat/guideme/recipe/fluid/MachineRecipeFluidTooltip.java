@@ -31,15 +31,14 @@ import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import guideme.document.interaction.GuideTooltip;
 import guideme.siteexport.ResourceExporter;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MachineRecipeFluidTooltip implements GuideTooltip {
     private final FluidVariant fluid;

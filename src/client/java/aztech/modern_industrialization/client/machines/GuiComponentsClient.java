@@ -38,6 +38,7 @@ import aztech.modern_industrialization.client.machines.guicomponents.RecipeEffic
 import aztech.modern_industrialization.client.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.client.machines.guicomponents.ShapeSelectionClient;
 import aztech.modern_industrialization.client.machines.guicomponents.SlotPanelClient;
+import aztech.modern_industrialization.client.machines.guicomponents.SteamBoilerMultiblockGuiClient;
 import aztech.modern_industrialization.client.machines.guicomponents.TemperatureBarClient;
 import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
@@ -53,6 +54,7 @@ import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBa
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
+import aztech.modern_industrialization.machines.guicomponents.SteamBoilerMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,6 +93,7 @@ public final class GuiComponentsClient {
         register(ReiSlotLocking.TYPE, ReiSlotLockingClient::new);
         register(ShapeSelection.TYPE, ShapeSelectionClient::new);
         register(SlotPanel.TYPE, SlotPanelClient::new);
+        register(SteamBoilerMultiblockGui.TYPE, SteamBoilerMultiblockGuiClient::new);
         register(TemperatureBar.TYPE, TemperatureBarClient::new);
     }
 

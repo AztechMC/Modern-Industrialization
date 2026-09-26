@@ -35,10 +35,17 @@ import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import org.jspecify.annotations.Nullable;
 
-public class FuelBurningComponent implements MachineComponent {
+public class FuelBurningComponent implements MachineComponent, FuelInfoProvider {
     /**
      * How many EUs worth of heat can be produced every tick at most.
      */
@@ -69,6 +76,10 @@ public class FuelBurningComponent implements MachineComponent {
      * Total EU of the currently burning item. If 0 it means that we are burning fluid instead.
      */
     private long burningItemTotalEu;
+    @Nullable
+    private Item burningItem;
+    @Nullable
+    private Fluid burningFluid;
 
     public FuelBurningComponent(TemperatureComponent temperature, long maxEuProduction, long euPerDegree, double burningItemEuMultiplier) {
         this.temperature = temperature;
@@ -96,6 +107,41 @@ public class FuelBurningComponent implements MachineComponent {
     public void clearActiveFuel() {
         burningEuBuffer = 0;
         burningItemTotalEu = 0;
+        burningItem = null;
+        burningFluid = null;
+    }
+
+    @Override
+    @Nullable
+    public Component getBurningFuelName() {
+        if (burningItem != null) {
+            return burningItem.getDefaultInstance().getHoverName();
+        } else if (burningFluid != null) {
+            return burningFluid.getFluidType().getDescription();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isBurningFluid() {
+        return burningFluid != null;
+    }
+
+    @Override
+    public long getBurningFuelEuPerUnit() {
+        if (burningItem != null) {
+            return burningItemTotalEu;
+        } else if (burningFluid != null) {
+            return FluidFuel.getEu(burningFluid);
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public double getBurningFuelEfficiency() {
+        return burningItem != null ? burningItemEuMultiplier : 1;
     }
 
     public double getBurningProgress() {
@@ -119,6 +165,11 @@ public class FuelBurningComponent implements MachineComponent {
             temperature.decreaseTemperature(1);
         }
 
+        if (burningEuBuffer == 0) {
+            burningItem = null;
+            burningFluid = null;
+        }
+
         if (!canConsumeNewFuel) {
             return;
         }
@@ -135,6 +186,8 @@ public class FuelBurningComponent implements MachineComponent {
                         long fuelTotalEu = (long) (fuelTime * EU_PER_BURN_TICK * burningItemEuMultiplier);
                         burningEuBuffer += fuelTotalEu;
                         burningItemTotalEu = fuelTotalEu;
+                        burningItem = fuel.getItem();
+                        burningFluid = null;
                         ItemStackHelper.consumeFuel(stack, false);
                         continue outer;
                     }
@@ -153,6 +206,8 @@ public class FuelBurningComponent implements MachineComponent {
                         long mbConsumedMax = (5 * 20 * maxEuProduction - burningEuBuffer) / euPerMb;
                         long mbConsumed = Math.min(mbConsumedMax, stack.getAmount());
                         if (mbConsumed > 0) {
+                            burningFluid = stack.getResource().getFluid();
+                            burningItem = null;
                             stack.decrement(mbConsumed);
                             burningEuBuffer += mbConsumed * euPerMb;
                             burningItemTotalEu = 0;
@@ -171,12 +226,34 @@ public class FuelBurningComponent implements MachineComponent {
         if (burningItemTotalEu != 0) {
             tag.putLong("burningItemTotalEu", burningItemTotalEu);
         }
+        if (burningItem != null) {
+            tag.putString("burningItem", BuiltInRegistries.ITEM.getKey(burningItem).toString());
+        }
+        if (burningFluid != null) {
+            tag.putString("burningFluid", BuiltInRegistries.FLUID.getKey(burningFluid).toString());
+        }
     }
 
     @Override
     public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         burningEuBuffer = tag.getLong("burningEuBuffer");
         burningItemTotalEu = tag.getLong("burningItemTotalEu");
+
+        burningItem = null;
+        burningFluid = null;
+        var itemId = ResourceLocation.tryParse(tag.getString("burningItem"));
+        var fluidId = ResourceLocation.tryParse(tag.getString("burningFluid"));
+        if (tag.contains("burningItem") && itemId != null) {
+            var item = BuiltInRegistries.ITEM.get(itemId);
+            if (item != Items.AIR) {
+                burningItem = item;
+            }
+        } else if (tag.contains("burningFluid") && fluidId != null) {
+            var fluid = BuiltInRegistries.FLUID.get(fluidId);
+            if (fluid != Fluids.EMPTY) {
+                burningFluid = fluid;
+            }
+        }
     }
 
     public List<Component> getTooltips(boolean acceptsFluid) {

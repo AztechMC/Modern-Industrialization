@@ -25,30 +25,31 @@
 package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.machines.components.FuelInfoProvider;
+import aztech.modern_industrialization.machines.components.FuelBurningComponent;
+import aztech.modern_industrialization.machines.components.SteamHeaterComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import java.util.Optional;
-import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
 
-public class GeneratorMultiblockGui implements GuiComponentServer<Unit, GeneratorMultiblockGui.Data> {
-    public static final Type<Unit, Data> TYPE = new Type<>(MI.id("generator_multiblock_gui"), StreamCodec.unit(Unit.INSTANCE), Data.STREAM_CODEC);
+public class SteamBoilerMultiblockGui implements GuiComponentServer<Unit, SteamBoilerMultiblockGui.Data> {
+    public static final Type<Unit, Data> TYPE = new Type<>(MI.id("steam_boiler_multiblock_gui"), StreamCodec.unit(Unit.INSTANCE),
+            Data.STREAM_CODEC);
 
     private final Supplier<Boolean> isShapeValid;
-    private final LongSupplier currentEuGeneration;
-    private final long maxEuGeneration;
-    private final FuelInfoProvider fuelInfo;
+    private final SteamHeaterComponent steamHeater;
+    private final FuelBurningComponent fuelBurning;
+    private final int euPerSteamMb;
 
-    public GeneratorMultiblockGui(Supplier<Boolean> isShapeValid, LongSupplier currentEuGeneration, long maxEuGeneration,
-            FuelInfoProvider fuelInfo) {
+    public SteamBoilerMultiblockGui(Supplier<Boolean> isShapeValid, SteamHeaterComponent steamHeater, FuelBurningComponent fuelBurning,
+            int euPerSteamMb) {
         this.isShapeValid = isShapeValid;
-        this.currentEuGeneration = currentEuGeneration;
-        this.maxEuGeneration = maxEuGeneration;
-        this.fuelInfo = fuelInfo;
+        this.steamHeater = steamHeater;
+        this.fuelBurning = fuelBurning;
+        this.euPerSteamMb = euPerSteamMb;
     }
 
     @Override
@@ -58,7 +59,8 @@ public class GeneratorMultiblockGui implements GuiComponentServer<Unit, Generato
 
     @Override
     public Data extractData() {
-        return new Data(isShapeValid.get(), currentEuGeneration.getAsLong(), maxEuGeneration, fuelInfo.getFuelData());
+        return new Data(isShapeValid.get(), steamHeater.getLastSteamProduced(), steamHeater.maxEuProduction / euPerSteamMb, euPerSteamMb,
+                fuelBurning.getFuelData());
     }
 
     @Override
@@ -66,14 +68,16 @@ public class GeneratorMultiblockGui implements GuiComponentServer<Unit, Generato
         return TYPE;
     }
 
-    public record Data(boolean isShapeValid, long currentEuGeneration, long maxEuGeneration, Optional<FuelData> fuel) {
+    public record Data(boolean isShapeValid, long steamProduction, long maxSteamProduction, int euPerSteamMb, Optional<FuelData> fuel) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.BOOL,
                 Data::isShapeValid,
                 ByteBufCodecs.VAR_LONG,
-                Data::currentEuGeneration,
+                Data::steamProduction,
                 ByteBufCodecs.VAR_LONG,
-                Data::maxEuGeneration,
+                Data::maxSteamProduction,
+                ByteBufCodecs.VAR_INT,
+                Data::euPerSteamMb,
                 ByteBufCodecs.optional(FuelData.STREAM_CODEC),
                 Data::fuel,
                 Data::new);

@@ -33,6 +33,7 @@ import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
+import aztech.modern_industrialization.machines.guicomponents.SteamBoilerMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
@@ -60,7 +61,8 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     public final boolean highPressure;
 
     public SteamBoilerMultiblockBlockEntity(BEP bep, ShapeTemplate shapeTemplate, String name, long maxEuProduction, boolean highPressure) {
-        super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(false, false, false));
+        super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(222).build(),
+                new OrientationComponent.Params(false, false, false));
 
         this.highPressure = highPressure;
 
@@ -75,9 +77,10 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
         this.registerComponents(isActiveComponent, steamHeater, fuelBurning, redstoneControl);
 
-        ProgressBar.Params PROGRESS_BAR = new ProgressBar.Params(82, 30, "furnace", 14, 14, true);
-        TemperatureBar.Params TEMPERATURE_BAR = new TemperatureBar.Params(42, 55, 2500);
+        ProgressBar.Params PROGRESS_BAR = new ProgressBar.Params(152, 106, "furnace", 14, 14, true);
+        TemperatureBar.Params TEMPERATURE_BAR = new TemperatureBar.Params(42, 112, 2500);
 
+        registerGuiComponent(new SteamBoilerMultiblockGui(() -> shapeValid.shapeValid, steamHeater, fuelBurning, highPressure ? 8 : 1));
         registerGuiComponent(new ProgressBar(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
         registerGuiComponent(new TemperatureBar(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
         registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));

@@ -62,6 +62,8 @@ public class SteamHeaterComponent extends TemperatureComponent {
      */
     private final Reference2LongMap<Fluid> steamBuffer = new Reference2LongOpenHashMap<>();
 
+    private long lastSteamProduced = 0;
+
     public SteamHeaterComponent(double temperatureMax, long maxEuProduction, long euPerDegree) {
         this(maxEuProduction, maxEuProduction, euPerDegree, true, false, false);
     }
@@ -78,6 +80,8 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
     // return eu produced
     public double tick(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs) {
+        lastSteamProduced = 0;
+
         double euProducedLowPressure = 0;
         if (acceptLowPressure) {
             euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM.asFluid(), 1);
@@ -107,6 +111,7 @@ public class SteamHeaterComponent extends TemperatureComponent {
     }
 
     public void tickDisabled() {
+        lastSteamProduced = 0;
         this.decreaseTemperature(INPUT_ENERGY_RATIO_FOR_STARTUP * this.maxEuProduction / this.euPerDegree);
     }
 
@@ -138,6 +143,9 @@ public class SteamHeaterComponent extends TemperatureComponent {
                     // Produce steam
                     long producedSteam = output.insertAllSlot(steamKey, Math.min(steamProduction, steamBuffer.getLong(steam)), tx);
                     steamBuffer.mergeLong(steam, -producedSteam, Long::sum);
+                    if (producedSteam > 0) {
+                        lastSteamProduced = producedSteam;
+                    }
 
                     double euProduced = producedSteam * euPerSteamMb;
                     decreaseTemperature(euProduced / euPerDegree);
@@ -147,6 +155,10 @@ public class SteamHeaterComponent extends TemperatureComponent {
             }
         }
         return 0;
+    }
+
+    public long getLastSteamProduced() {
+        return lastSteamProduced;
     }
 
     @Override

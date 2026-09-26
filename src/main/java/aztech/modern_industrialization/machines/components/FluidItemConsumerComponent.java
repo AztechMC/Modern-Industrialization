@@ -41,12 +41,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A component that turns fluids and/or item into energy.
  */
-public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
+public class FluidItemConsumerComponent implements MachineComponent.ServerOnly, FuelInfoProvider {
     protected long euBuffer = 0;
     /**
      * The maximum EU that can be produced by one production operation, to limit the
@@ -60,6 +63,11 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
     public final EUProductionMap<Fluid> fluidEUProductionMap;
 
     private final boolean hideEfficiencyTooltip;
+
+    @Nullable
+    private Item currentItem;
+    @Nullable
+    private Fluid currentFluid;
 
     public FluidItemConsumerComponent(long maxEuProduction,
             double euMultiplier,
@@ -103,11 +111,83 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
     @Override
     public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("euBuffer", euBuffer);
+        if (currentItem != null) {
+            tag.putString("currentItem", BuiltInRegistries.ITEM.getKey(currentItem).toString());
+        }
+        if (currentFluid != null) {
+            tag.putString("currentFluid", BuiltInRegistries.FLUID.getKey(currentFluid).toString());
+        }
     }
 
     @Override
     public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         euBuffer = tag.getLong("euBuffer");
+
+        currentItem = null;
+        currentFluid = null;
+        if (tag.contains("currentItem")) {
+            var itemId = ResourceLocation.tryParse(tag.getString("currentItem"));
+            if (itemId != null && BuiltInRegistries.ITEM.get(itemId) != Items.AIR) {
+                currentItem = BuiltInRegistries.ITEM.get(itemId);
+            }
+        } else if (tag.contains("currentFluid")) {
+            var fluidId = ResourceLocation.tryParse(tag.getString("currentFluid"));
+            if (fluidId != null && BuiltInRegistries.FLUID.get(fluidId) != Fluids.EMPTY) {
+                currentFluid = BuiltInRegistries.FLUID.get(fluidId);
+            }
+        }
+    }
+
+    @Override
+    @Nullable
+    public Component getBurningFuelName() {
+        if (currentItem != null) {
+            return currentItem.getDefaultInstance().getHoverName();
+        } else if (currentFluid != null) {
+            return currentFluid.getFluidType().getDescription();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isBurningFluid() {
+        return currentFluid != null;
+    }
+
+    @Override
+    public long getBurningFuelEuPerUnit() {
+        if (currentItem != null) {
+            return (long) (itemEUProductionMap.getEuProduction(currentItem) * euMultiplier);
+        } else if (currentFluid != null) {
+            return (long) (fluidEUProductionMap.getEuProduction(currentFluid) * euMultiplier);
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public double getBurningFuelEfficiency() {
+        return euMultiplier;
+    }
+
+    public void clearFuel() {
+        currentItem = null;
+        currentFluid = null;
+    }
+
+    private boolean hasAnyFuel(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableItemStack> itemInputs) {
+        for (ConfigurableFluidStack stack : fluidInputs) {
+            if (stack.getAmount() > 0 && fluidEUProductionMap.accept(stack.getResource().getFluid())) {
+                return true;
+            }
+        }
+        for (ConfigurableItemStack stack : itemInputs) {
+            if (stack.getAmount() > 0 && itemEUProductionMap.accept(stack.getResource().getItem())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public long getEuProduction(List<ConfigurableFluidStack> fluidInputs,
@@ -116,6 +196,9 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
         long maxEuProduced = Math.min(maxEnergyInsertable, maxEuProduction);
 
         if (maxEuProduced == 0) {
+            if (!hasAnyFuel(fluidInputs, itemInputs)) {
+                clearFuel();
+            }
             return 0;
         }
 
@@ -136,6 +219,8 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
                 long fuelEu = (long) (fluidEUProductionMap.getEuProduction(fluid) * euMultiplier);
                 long usedDroplets = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount());
                 euProduced += usedDroplets * fuelEu;
+                currentFluid = fluid;
+                currentItem = null;
                 stack.decrement(usedDroplets);
 
                 if (euProduced >= maxEuProduced) {
@@ -152,6 +237,8 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
                     long fuelEU = (long) (itemEUProductionMap.getEuProduction(fuel) * euMultiplier);
                     long usedItem = Math.min((maxEuProduced - euProduced + fuelEU - 1) / fuelEU, stack.getAmount());
                     euProduced += fuelEU * usedItem;
+                    currentItem = fuel;
+                    currentFluid = null;
 
                     if (itemEUProductionMap.isStandardFuels()) {
                         ItemStackHelper.consumeFuel(stack, false);
@@ -165,6 +252,11 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
                     }
                 }
             }
+        }
+
+        if (euProduced == 0 && euBuffer == 0) {
+            currentItem = null;
+            currentFluid = null;
         }
 
         return euProduced;

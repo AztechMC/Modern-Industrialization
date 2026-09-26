@@ -24,6 +24,8 @@
 
 package aztech.modern_industrialization.pipes.api;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -60,6 +62,23 @@ public enum PipeEndpointType {
     PipeEndpointType(int id) {
         this.id = id;
     }
+
+    public static PipeEndpointType decodeConnectionType(int i) {
+        return i == 0 ? BLOCK_IN : i == 1 ? BLOCK_IN_OUT : BLOCK_OUT;
+    }
+
+    public static int encodeConnectionType(PipeEndpointType connection) {
+        return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
+    }
+
+    public static final Codec<PipeEndpointType> CODEC = Codec.INT.comapFlatMap(
+            i -> switch (i) {
+                case 0 -> DataResult.success(BLOCK_IN);
+                case 1 -> DataResult.success(BLOCK_IN_OUT);
+                case 2 -> DataResult.success(BLOCK_OUT);
+                default -> DataResult.error(() -> "Unknown pipe connection type: " + i);
+            },
+            PipeEndpointType::encodeConnectionType);
 
     public int getId() {
         return id;

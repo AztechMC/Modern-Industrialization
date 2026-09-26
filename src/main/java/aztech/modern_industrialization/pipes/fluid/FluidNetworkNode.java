@@ -27,10 +27,15 @@ package aztech.modern_industrialization.pipes.fluid;
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIComponents;
+import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.pipes.api.NetworkNodeConnection;
+import aztech.modern_industrialization.pipes.api.PipeConfigType;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
@@ -47,9 +52,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -160,7 +167,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new FluidConnection(direction, BLOCK_IN, 0));
+            var conn = new FluidConnection(direction, BLOCK_IN, 0);
+            connections.add(conn);
+            var offhandItem = player.getOffhandItem();
+            if (MIItem.CONFIG_CARD.is(offhandItem)) {
+                conn.applyConfig(pipe, offhandItem.get(MIComponents.SAVED_CONFIG), player);
+            }
         }
     }
 
@@ -193,14 +205,6 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
-    private PipeEndpointType decodeConnectionType(int i) {
-        return i == 0 ? BLOCK_IN : i == 1 ? BLOCK_IN_OUT : BLOCK_OUT;
-    }
-
-    private int encodeConnectionType(PipeEndpointType connection) {
-        return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
-    }
-
     @Override
     public PipeMenuProvider getConnectionGui(Direction guiDirection, PipeScreenHandlerHelper helper) {
         for (FluidConnection connection : connections) {
@@ -211,7 +215,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return null;
     }
 
-    private class FluidConnection {
+    @Override
+    public boolean customUse(PipeBlockEntity pipe, Player player, InteractionHand hand, @Nullable Direction hitDirection) {
+        return NetworkNodeConnection.use(connections, pipe, player, hand, hitDirection);
+    }
+
+    private class FluidConnection implements NetworkNodeConnection {
         private final Direction direction;
         private PipeEndpointType type;
         private int priority;
@@ -229,6 +238,43 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         private boolean canExtract() {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
+        }
+
+        public SavedPipeConfig getConfig() {
+            return new SavedPipeConfig(
+                    PipeConfigType.FLUID, type,
+                    true,
+                    priority,
+                    0,
+                    new ArrayList<>(),
+                    ItemStack.EMPTY,
+                    cachedFluid);
+        }
+
+        public void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player) {
+            if (config == null) {
+                return;
+            }
+            boolean remesh = config.connectionType() != type;
+            type = config.connectionType();
+            priority = config.insertPriority();
+            if (((FluidNetwork) network).isEmpty(false)) {
+                ((FluidNetworkData) network.data).fluid = config.fluid();
+            }
+            pipe.setChanged();
+            if (remesh) {
+                pipe.sync();
+            }
+        }
+
+        @Override
+        public Direction getDirection() {
+            return direction;
+        }
+
+        @Override
+        public PipeConfigType getConfigType() {
+            return PipeConfigType.FLUID;
         }
 
         private class ScreenHandlerFactory implements PipeMenuProvider {

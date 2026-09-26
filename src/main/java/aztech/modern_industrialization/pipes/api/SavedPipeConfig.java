@@ -22,27 +22,32 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.pipes.item;
+package aztech.modern_industrialization.pipes.api;
 
-import aztech.modern_industrialization.pipes.api.PipeEndpointType;
+import aztech.modern_industrialization.pipes.item.ItemPipeInterface;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import net.minecraft.world.item.ItemStack;
 
-public record SavedItemPipeConfig(
+public record SavedPipeConfig(
+        PipeConfigType configType,
         PipeEndpointType connectionType,
         boolean whitelist,
         int insertPriority,
         int extractPriority,
         List<ItemStack> filter,
-        ItemStack upgrade) {
-    public static final Codec<SavedItemPipeConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ItemNetworkNode.CONNECTION_TYPE_CODEC.fieldOf("connectionType").forGetter(SavedItemPipeConfig::connectionType),
-            Codec.BOOL.fieldOf("whitelist").forGetter(SavedItemPipeConfig::whitelist),
-            Codec.INT.fieldOf("insertPriority").forGetter(SavedItemPipeConfig::insertPriority),
-            Codec.INT.fieldOf("extractPriority").forGetter(SavedItemPipeConfig::extractPriority),
-            ItemStack.OPTIONAL_CODEC.listOf(ItemPipeInterface.SLOTS, ItemPipeInterface.SLOTS).fieldOf("filter")
-                    .forGetter(SavedItemPipeConfig::filter),
-            ItemStack.OPTIONAL_CODEC.fieldOf("upgrade").forGetter(SavedItemPipeConfig::upgrade)).apply(instance, SavedItemPipeConfig::new));
+        ItemStack upgrade,
+        FluidVariant fluid) {
+    public static final Codec<SavedPipeConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            PipeConfigType.CODEC.fieldOf("configType").forGetter(SavedPipeConfig::configType),
+            PipeEndpointType.CODEC.fieldOf("connectionType").forGetter(SavedPipeConfig::connectionType),
+            Codec.BOOL.fieldOf("whitelist").forGetter(SavedPipeConfig::whitelist),
+            Codec.INT.fieldOf("insertPriority").forGetter(SavedPipeConfig::insertPriority),
+            Codec.INT.fieldOf("extractPriority").forGetter(SavedPipeConfig::extractPriority),
+            ItemStack.OPTIONAL_CODEC.listOf(0, ItemPipeInterface.SLOTS).fieldOf("filter")
+                    .forGetter(SavedPipeConfig::filter),
+            ItemStack.OPTIONAL_CODEC.fieldOf("upgrade").forGetter(SavedPipeConfig::upgrade),
+            FluidVariant.CODEC.fieldOf("fluid").forGetter(SavedPipeConfig::fluid)).apply(instance, SavedPipeConfig::new));
 }

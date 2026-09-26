@@ -37,8 +37,6 @@ import net.minecraft.world.item.ItemStack;
 public class LytMachineRecipeHeaderConditionItemImage extends LytBlock implements ExportableResourceProvider {
     private final List<ItemStack> displayedItems;
 
-    private float scale = 1;
-
     public LytMachineRecipeHeaderConditionItemImage(List<ItemStack> displayedItems) {
         this.displayedItems = displayedItems;
     }

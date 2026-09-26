@@ -27,11 +27,11 @@ package aztech.modern_industrialization.client.compat.viewer.impl.jei;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.IngredientCount;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
-import aztech.modern_industrialization.client.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import aztech.modern_industrialization.util.TextHelper;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -140,7 +140,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
                     private static void addProbability(IRecipeSlotBuilder slot, float probability) {
                         slot.addRichTooltipCallback((recipeSlotView, tooltip) -> {
                             var input = recipeSlotView.getRole() == RecipeIngredientRole.INPUT;
-                            var probabilityLine = ViewerUtil.getProbabilityTooltip(probability, input);
+                            var probabilityLine = TextHelper.getProbabilityTooltip(probability, input);
                             if (probabilityLine != null) {
                                 tooltip.add(probabilityLine);
                             }

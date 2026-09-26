@@ -22,36 +22,31 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.client.compat.viewer.impl;
+package aztech.modern_industrialization.client.compat.guideme.recipe.item;
 
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
-import java.text.DecimalFormat;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import org.jspecify.annotations.Nullable;
+import guideme.document.interaction.ItemTooltip;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.world.item.ItemStack;
 
-public class ViewerUtil {
-    private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
+public class MachineRecipeItemTooltip extends ItemTooltip {
+    private final float probability;
+    private final boolean input;
 
-    @Nullable
-    public static Component getProbabilityTooltip(float probability, boolean input) {
-        if (probability == 1) {
-            return null;
-        } else {
-            MutableComponent text;
-            if (probability == 0) {
-                text = MIText.NotConsumed.text();
-            } else {
-                if (input) {
-                    text = MIText.ChanceConsumption.text(PROBABILITY_FORMAT.format(probability * 100));
-                } else {
-                    text = MIText.ChanceProduction.text(PROBABILITY_FORMAT.format(probability * 100));
-                }
+    public MachineRecipeItemTooltip(ItemStack stack, float probability, boolean input) {
+        super(stack);
+        this.probability = probability;
+        this.input = input;
+    }
 
-            }
-            text.setStyle(TextHelper.YELLOW);
-            return text;
+    @Override
+    public List<ClientTooltipComponent> getLines() {
+        List<ClientTooltipComponent> lines = new ArrayList<>(super.getLines());
+        if (probability != 1) {
+            lines.add(ClientTooltipComponent.create(TextHelper.getProbabilityTooltip(probability, input).getVisualOrderText()));
         }
+        return lines;
     }
 }

@@ -39,6 +39,10 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforgespi.language.IModInfo;
 
 public class MachineRecipeFluidTooltip implements GuideTooltip {
     private final FluidVariant fluid;
@@ -63,17 +67,29 @@ public class MachineRecipeFluidTooltip implements GuideTooltip {
     @Override
     public List<ClientTooltipComponent> getLines() {
         List<Component> lines = new ArrayList<>();
+
         lines.add(FluidVariantAttributes.getName(fluid));
+
         if (Minecraft.getInstance().options.advancedItemTooltips) {
             lines.add(Component.literal(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString()).withStyle(ChatFormatting.DARK_GRAY));
         }
+
         if (amount > 1) {
             lines.add(FluidHelper.getFluidAmount(amount).withStyle(MITooltips.DEFAULT_STYLE));
         }
-        // TODO mod name?
+
+        var modDisplayName = ModList.get()
+                .getModContainerById(NeoForgeRegistries.FLUID_TYPES.getKey(fluid.getFluid().getFluidType()).getNamespace())
+                .map(ModContainer::getModInfo)
+                .map(IModInfo::getDisplayName);
+        if (modDisplayName.isPresent()) {
+            lines.add(Component.literal(modDisplayName.orElse("")).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
+        }
+
         if (probability != 1) {
             lines.add(TextHelper.getProbabilityTooltip(probability, input));
         }
+
         return lines.stream()
                 .map(Component::getVisualOrderText)
                 .map(ClientTooltipComponent::create)

@@ -1632,7 +1632,7 @@
   "text.modern_industrialization.ConfigCardConfiguredCamouflage": "Configured (%s camouflage)",
   "text.modern_industrialization.ConfigCardConfiguredFluid": "Configured (%d)",
   "text.modern_industrialization.ConfigCardConfiguredItems": "Configured (%d items)",
-  "text.modern_industrialization.ConfigCardConfiguredNoFluid": "Configured (Empty)",
+  "text.modern_industrialization.ConfigCardConfiguredNoFluid": "Configured (no fluid)",
   "text.modern_industrialization.ConfigCardConfiguredNoItems": "Configured (no items)",
   "text.modern_industrialization.ConfigCardHelpCamouflage1": "Camouflage application:",
   "text.modern_industrialization.ConfigCardHelpCamouflage2": "- Press %s + %s on a block in the world to select it as camouflage.",

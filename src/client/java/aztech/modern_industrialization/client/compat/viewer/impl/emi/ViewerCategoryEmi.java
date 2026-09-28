@@ -201,9 +201,8 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         private void processProbability(float probability) {
             if (probability == 0) {
                 markCatalyst();
-            } else {
-                ing.setChance(probability);
             }
+            ing.setChance(probability);
         }
 
         @Override

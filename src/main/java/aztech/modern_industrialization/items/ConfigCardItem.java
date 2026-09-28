@@ -113,8 +113,8 @@ public class ConfigCardItem extends Item {
         } else {
             tooltipComponents.add(MIText.ConfigCardConfiguredItems.text(
                     Component.literal("" + filterSize)
-                            .setStyle(MITooltips.NUMBER_TEXT)
-                            .withStyle(MITooltips.DEFAULT_STYLE)));
+                            .setStyle(MITooltips.NUMBER_TEXT))
+                    .withStyle(MITooltips.DEFAULT_STYLE));
         }
     }
 
@@ -125,8 +125,9 @@ public class ConfigCardItem extends Item {
 
         } else {
             tooltipComponents.add(MIText.ConfigCardConfiguredFluid.text(
-                    FluidVariantAttributes.getName(savedConfig.fluid()))
-                    .setStyle(MITooltips.NUMBER_TEXT)
+                    FluidVariantAttributes.getName(savedConfig.fluid())
+                            .plainCopy()
+                            .setStyle(MITooltips.NUMBER_TEXT))
                     .withStyle(MITooltips.DEFAULT_STYLE));
         }
     }
@@ -136,7 +137,6 @@ public class ConfigCardItem extends Item {
         var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
         if (savedConfig != null) {
             switch (savedConfig.configType()) {
-                case NONE -> {}
                 case PipeConfigType.ITEM -> addItemFilterTooltip(savedConfig, tooltipComponents);
                 case PipeConfigType.FLUID -> addFluidFilterTooltip(savedConfig, tooltipComponents);
             }

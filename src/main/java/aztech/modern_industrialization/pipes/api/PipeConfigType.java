@@ -37,6 +37,7 @@ public enum PipeConfigType implements StringRepresentable {
     PipeConfigType(String id) {
         this.id = id;
     }
+
     @Override
     public String getSerializedName() {
         return id;

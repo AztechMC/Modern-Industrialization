@@ -28,9 +28,9 @@ import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 
 public enum PipeConfigType implements StringRepresentable {
-    NONE("NONE"),
-    ITEM("ITEM"),
-    FLUID("FLUID");
+    NONE("none"),
+    ITEM("item"),
+    FLUID("fluid");
 
     private final String id;
 

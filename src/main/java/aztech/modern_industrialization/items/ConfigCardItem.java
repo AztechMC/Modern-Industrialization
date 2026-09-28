@@ -106,13 +106,14 @@ public class ConfigCardItem extends Item {
     }
 
     private void addItemFilterTooltip(SavedPipeConfig savedConfig, List<Component> tooltipComponents) {
-        var filterSize = savedConfig.filter().size();
-        if (filterSize == 0) {
+        var filterSlots = savedConfig.filter();
+        var setFilters = filterSlots.stream().filter(filterStack -> !filterStack.isEmpty()).toList();
+        if (setFilters.isEmpty()) {
             tooltipComponents.add(MIText.ConfigCardConfiguredNoItems.text()
                     .withStyle(MITooltips.DEFAULT_STYLE));
         } else {
             tooltipComponents.add(MIText.ConfigCardConfiguredItems.text(
-                    Component.literal("" + filterSize)
+                    Component.literal("" + setFilters.size())
                             .setStyle(MITooltips.NUMBER_TEXT))
                     .withStyle(MITooltips.DEFAULT_STYLE));
         }
@@ -156,9 +157,11 @@ public class ConfigCardItem extends Item {
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
+
         if (savedConfig != null && savedConfig.configType() == PipeConfigType.ITEM) {
-            var stacks = savedConfig.filter();
-            return stacks.isEmpty() ? Optional.empty() : Optional.of(new TooltipData(stacks));
+            var filterSlots = savedConfig.filter();
+            var setFilters = filterSlots.stream().filter(filterStack -> !filterStack.isEmpty()).toList();
+            return setFilters.isEmpty() ? Optional.empty() : Optional.of(new TooltipData(setFilters));
         }
 
         var camouflage = readCamouflage(stack);

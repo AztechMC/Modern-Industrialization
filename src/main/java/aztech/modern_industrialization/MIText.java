@@ -176,6 +176,7 @@ public enum MIText {
     MaxEuProduction("Can produce up to %s"),
     MaxEuProductionSteam("Can produce up to %s worth of %s"),
     MaxTemp("Max Temperature: %d °C"),
+    MeWire("Carries %s ME channels in the same way Fluix ME Cables do. Can be placed among other pipes and cables from Modern Industrialization (up to a max of 3 per block). Cannot directly connect to subparts."),
     MiningArea("Mining Area: %s"),
     MiningArea1x1("1x1"),
     MiningArea3x3("3x3"),

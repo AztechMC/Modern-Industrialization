@@ -30,7 +30,7 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.config.MIStartupConfig;
+import aztech.modern_industrialization.compat.ae2.MIAEProxy;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
@@ -90,15 +90,7 @@ public class MIPipes {
             registerItemPipeType(color);
         }
 
-        if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
-            try {
-                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
-                        .getMethod("onInitializePipes")
-                        .invoke(null);
-            } catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        MIAEProxy.INSTANCE.initialize();
     }
 
     public static final BiConsumer<Item, ItemModelProvider> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {

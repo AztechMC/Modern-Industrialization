@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.blocks.OreBlock;
+import aztech.modern_industrialization.compat.ae2.MIAEProxy;
 import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.items.PortableStorageUnit;
@@ -244,12 +245,19 @@ public class MITooltips {
 
     public static final TooltipAttachment CABLES = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe.type)) {
-                    var tier = MIPipes.ELECTRICITY_PIPE_TIER.get(pipe.type);
-                    return Optional.of(new Line(MIText.EuCable).arg(tier.shortEnglishName()).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build());
-                } else {
-                    return Optional.empty();
+                if (item instanceof PipeItem pipe) {
+                    if (MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe.type)) {
+                        var tier = MIPipes.ELECTRICITY_PIPE_TIER.get(pipe.type);
+                        return Optional.of(new Line(MIText.EuCable).arg(tier.shortEnglishName()).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build());
+                    } else if (MIAEProxy.INSTANCE.isMeWireType(pipe.type)) {
+                        int channels = MIAEProxy.INSTANCE.getChannelCount();
+                        if (channels == 0) {
+                            return Optional.of(new Line(MIText.MeWire).arg(Component.literal("\u221E").withStyle(HIGHLIGHT_STYLE), COMPONENT).build());
+                        }
+                        return Optional.of(new Line(MIText.MeWire).arg(channels).build());
+                    }
                 }
+                return Optional.empty();
             });
 
     public static final TooltipAttachment COILS = TooltipAttachment.of(

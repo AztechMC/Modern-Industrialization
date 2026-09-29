@@ -58,7 +58,9 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
             }
 
             var stack = stacks.get(slot);
-            if (!stack.pipesInsert) {
+            if (!stack.pipesInsert ||
+            // If there is no space for inserting into this slot, skip any further checks.
+                    stack.getAmount() >= stack.getCapacity()) {
                 return item;
             }
 

@@ -250,7 +250,7 @@ public class MITooltips {
                         var tier = MIPipes.ELECTRICITY_PIPE_TIER.get(pipe.type);
                         return Optional.of(new Line(MIText.EuCable).arg(tier.shortEnglishName()).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build());
                     } else if (MIAEProxy.INSTANCE.isMeWireType(pipe.type)) {
-                        int channels = MIAEProxy.INSTANCE.getChannelCount();
+                        int channels = MIAEProxy.INSTANCE.getMeWireChannelCount();
                         if (channels == 0) {
                             return Optional.of(new Line(MIText.MeWire).arg(Component.literal("\u221E").withStyle(HIGHLIGHT_STYLE), COMPONENT).build());
                         }

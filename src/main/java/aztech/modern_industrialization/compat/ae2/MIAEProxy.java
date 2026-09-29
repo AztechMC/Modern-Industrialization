@@ -49,7 +49,7 @@ public class MIAEProxy {
         return false;
     }
 
-    public int getChannelCount() {
+    public int getMeWireChannelCount() {
         throw new UnsupportedOperationException();
     }
 }

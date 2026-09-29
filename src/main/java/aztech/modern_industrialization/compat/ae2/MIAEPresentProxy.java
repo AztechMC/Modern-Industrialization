@@ -46,7 +46,7 @@ class MIAEPresentProxy extends MIAEProxy {
     }
 
     @Override
-    public int getChannelCount() {
+    public int getMeWireChannelCount() {
         return 8 * AEConfig.instance().getChannelMode().getCableCapacityFactor();
     }
 }

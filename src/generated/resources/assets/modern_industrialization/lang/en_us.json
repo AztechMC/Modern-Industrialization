@@ -1736,7 +1736,7 @@
   "text.modern_industrialization.MaxEuProduction": "Can produce up to %s",
   "text.modern_industrialization.MaxEuProductionSteam": "Can produce up to %s worth of %s",
   "text.modern_industrialization.MaxTemp": "Max Temperature: %d °C",
-  "text.modern_industrialization.MeWire": "Carries %s ME channels in the same way Fluix ME Cables do. Can be placed among other pipes and cables from Modern Industrialization (up to a max of 3 per block). Cannot directly connect to subparts.",
+  "text.modern_industrialization.MeWire": "Carries %s ME channels like Fluix ME Cables. Shares blocks with Modern Industrialization pipes and cables (max of 3). Cannot connect to subparts.",
   "text.modern_industrialization.MiningArea": "Mining Area: %s",
   "text.modern_industrialization.MiningArea1x1": "1x1",
   "text.modern_industrialization.MiningArea3x3": "3x3",

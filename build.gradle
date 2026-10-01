@@ -28,6 +28,11 @@ java {
 }
 
 repositories {
+    mavenCentral {
+        content {
+            includeGroup "org.appliedenergistics"
+        }
+    }
     // for KJS
     maven {
         url "https://www.cursemaven.com"
@@ -189,7 +194,8 @@ configurations {
 dependencies {
     api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
     api "org.jspecify:jspecify:${project.jspecify_version}"
-    implementation "org.appliedenergistics:guideme:${project.guideme_version}"
+    compileOnly "org.appliedenergistics:guideme:${project.guideme_version}:api"
+    runtimeOnly "org.appliedenergistics:guideme:${project.guideme_version}"
 
     compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
     if (project.runtime_itemlist_mod == "jei") {

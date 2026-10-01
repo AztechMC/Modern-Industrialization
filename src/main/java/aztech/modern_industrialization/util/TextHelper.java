@@ -25,11 +25,13 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIText;
+import java.text.DecimalFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import org.jspecify.annotations.Nullable;
 
 public class TextHelper {
     public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
@@ -177,5 +179,28 @@ public class TextHelper {
             text.setStyle(TextHelper.NUMBER_TEXT);
         }
         return text;
+    }
+
+    private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
+
+    @Nullable
+    public static Component getProbabilityTooltip(float probability, boolean input) {
+        if (probability == 1) {
+            return null;
+        } else {
+            MutableComponent text;
+            if (probability == 0) {
+                text = MIText.NotConsumed.text();
+            } else {
+                if (input) {
+                    text = MIText.ChanceConsumption.text(PROBABILITY_FORMAT.format(probability * 100));
+                } else {
+                    text = MIText.ChanceProduction.text(PROBABILITY_FORMAT.format(probability * 100));
+                }
+
+            }
+            text.setStyle(YELLOW);
+            return text;
+        }
     }
 }

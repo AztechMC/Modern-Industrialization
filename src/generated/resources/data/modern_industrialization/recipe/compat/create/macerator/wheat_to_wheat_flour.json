@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:macerator",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:wheat"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "create:wheat_flour"
+    },
+    {
+      "amount": 2,
+      "item": "create:wheat_flour",
+      "probability": 0.25
+    },
+    {
+      "amount": 1,
+      "item": "minecraft:wheat_seeds",
+      "probability": 0.25
+    }
+  ]
+}

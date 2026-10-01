@@ -22,29 +22,7 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.machines.recipe;
+@NullMarked
+package aztech.modern_industrialization.datagen.recipe.compat;
 
-import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.recipe.json.MIRecipeBuilder;
-import net.minecraft.data.recipes.RecipeOutput;
-
-public class MachineRecipeBuilder extends MIRecipeJson<MachineRecipeBuilder> implements MIRecipeBuilder {
-    public MachineRecipeBuilder(MachineRecipeType machineRecipeType, int eu, int duration) {
-        super(machineRecipeType, eu, duration);
-    }
-
-    public MachineRecipeBuilder(MIRecipeJson<?> otherWithSameData) {
-        super(otherWithSameData);
-    }
-
-    @Override
-    public void offerTo(RecipeOutput recipeOutput, String path) {
-        var id = MI.id(path);
-        try {
-            recipeOutput.accept(id, recipe, null);
-        } catch (Exception ex) {
-            MI.LOGGER.error("Failed to generate recipe {}", id);
-            throw new RuntimeException(ex);
-        }
-    }
-}
+import org.jspecify.annotations.NullMarked;

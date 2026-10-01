@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:andesite"
+    },
+    {
+      "amount": 1,
+      "tag": "c:nuggets/iron"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "create:andesite_alloy"
+    }
+  ]
+}

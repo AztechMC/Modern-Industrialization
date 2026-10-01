@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:unpacker",
+  "duration": 200,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:ingots/zinc"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 9,
+      "item": "create:zinc_nugget"
+    }
+  ]
+}

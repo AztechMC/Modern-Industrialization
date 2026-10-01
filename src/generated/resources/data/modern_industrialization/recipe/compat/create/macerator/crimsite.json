@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:macerator",
+  "duration": 100,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "create:stone_types/crimsite"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:iron_dust",
+      "probability": 0.4
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:iron_tiny_dust",
+      "probability": 0.4
+    }
+  ]
+}

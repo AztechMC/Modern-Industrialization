@@ -32,7 +32,6 @@ import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.loot.MIGiftLoot;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.CompatRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.DyeRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.HatchRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.HeatExchangerRecipesProvider;
@@ -41,6 +40,8 @@ import aztech.modern_industrialization.datagen.recipe.PetrochemRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.UpgradeProvider;
 import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.compat.AE2CompatRecipes;
+import aztech.modern_industrialization.datagen.recipe.compat.CreateCompatRecipes;
 import aztech.modern_industrialization.datagen.structure.EmptyTestStructureGenerator;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIFluidTagProvider;
@@ -76,7 +77,8 @@ public class MIDatagenServer {
         aggregate.addProvider(DyeRecipesProvider::new);
         aggregate.addProvider(AssemblerRecipesProvider::new);
         if (!runtimeDatagen) {
-            aggregate.addProvider(CompatRecipesProvider::new);
+            aggregate.addProvider(AE2CompatRecipes::new);
+            aggregate.addProvider(CreateCompatRecipes::new);
         }
         aggregate.addProvider(UpgradeProvider::new);
         aggregate.addProvider(VanillaCompatRecipesProvider::new);

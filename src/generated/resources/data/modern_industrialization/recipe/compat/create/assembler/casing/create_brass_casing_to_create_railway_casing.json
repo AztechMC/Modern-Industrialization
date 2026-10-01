@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:assembler",
+  "duration": 100,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "create:brass_casing"
+    },
+    {
+      "amount": 1,
+      "item": "create:sturdy_sheet"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "create:railway_casing"
+    }
+  ]
+}

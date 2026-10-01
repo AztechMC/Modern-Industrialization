@@ -238,8 +238,9 @@ public abstract class MachineBlockEntity extends FastBlockEntity
                 component.readClientNbt(tag, registries);
             }
             if (forceChunkRemesh) {
-                WorldHelper.forceChunkRemesh(level, worldPosition);
+                // Rebuilds must see the pending model-data refresh.
                 requestModelDataUpdate();
+                WorldHelper.forceChunkRemesh(level, worldPosition);
             }
         }
     }

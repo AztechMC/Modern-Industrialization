@@ -44,14 +44,14 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforgespi.language.IModInfo;
 
-public class MachineRecipeFluidTooltip implements GuideTooltip {
+public class MIGuideFluidTooltip implements GuideTooltip {
     private final FluidVariant fluid;
     private final ItemStack icon;
     private final long amount;
     private final float probability;
     private final boolean input;
 
-    public MachineRecipeFluidTooltip(FluidVariant fluid, long amount, float probability, boolean input) {
+    public MIGuideFluidTooltip(FluidVariant fluid, long amount, float probability, boolean input) {
         this.fluid = fluid;
         this.icon = fluid.getFluid().getFluidType().getBucket(fluid.toStack(1));
         this.amount = amount;

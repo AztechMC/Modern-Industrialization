@@ -31,11 +31,11 @@ import java.util.List;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.item.ItemStack;
 
-public class MachineRecipeItemTooltip extends ItemTooltip {
+public class MIGuideItemTooltip extends ItemTooltip {
     private final float probability;
     private final boolean input;
 
-    public MachineRecipeItemTooltip(ItemStack stack, float probability, boolean input) {
+    public MIGuideItemTooltip(ItemStack stack, float probability, boolean input) {
         super(stack);
         this.probability = probability;
         this.input = input;

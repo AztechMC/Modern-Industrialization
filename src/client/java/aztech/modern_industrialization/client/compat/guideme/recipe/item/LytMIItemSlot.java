@@ -22,61 +22,59 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.client.compat.guideme.recipe.fluid;
+package aztech.modern_industrialization.client.compat.guideme.recipe.item;
 
 import aztech.modern_industrialization.client.compat.guideme.MIGuideMeRenderHelper;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import guideme.document.LytRect;
 import guideme.document.block.LytBlock;
 import guideme.document.interaction.GuideTooltip;
 import guideme.document.interaction.InteractiveElement;
 import guideme.layout.LayoutContext;
 import guideme.render.RenderContext;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.level.material.Fluid;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
-public class LytMachineFluidSlot extends LytBlock implements InteractiveElement {
+public class LytMIItemSlot extends LytBlock implements InteractiveElement {
     private static final int ITEM_SIZE = 16;
     private static final int PADDING = 1;
     public static final int OUTER_SIZE = ITEM_SIZE + 2 * PADDING;
     private static final int CYCLE_TIME = 2000;
 
-    private final List<Fluid> fluids;
-    private final long amount;
+    private final ItemStack[] stacks;
     private final float probability;
     private final boolean input;
 
-    private LytMachineFluidSlot(List<Fluid> fluids, long amount, float probability, boolean input) {
-        this.fluids = fluids;
-        this.amount = amount;
+    public LytMIItemSlot(Ingredient ingredient, int amount, float probability, boolean input) {
+        this.stacks = ingredient.getItems().clone();
+        for (int i = 0; i < this.stacks.length; i++) {
+            this.stacks[i] = this.stacks[i].copyWithCount(amount);
+        }
         this.probability = probability;
         this.input = input;
     }
 
-    public LytMachineFluidSlot(MachineRecipe.FluidInput input) {
-        this(input.getInputFluids(), input.amount(), input.probability(), true);
+    public LytMIItemSlot(MachineRecipe.ItemInput input) {
+        this(input.ingredient(), input.amount(), input.probability(), true);
     }
 
-    private LytMachineFluidSlot(Fluid result, long amount, float probability, boolean input) {
-        this.fluids = List.of(result);
-        this.amount = amount;
+    public LytMIItemSlot(ItemVariant item, int amount, float probability, boolean input) {
+        this.stacks = new ItemStack[] { item.toStack(amount) };
         this.probability = probability;
         this.input = input;
     }
 
-    public LytMachineFluidSlot(MachineRecipe.FluidOutput output) {
-        this(output.fluid(), output.amount(), output.probability(), false);
+    public LytMIItemSlot(MachineRecipe.ItemOutput output) {
+        this(output.variant(), output.amount(), output.probability(), false);
     }
 
-    public LytMachineFluidSlot(boolean input) {
-        this.fluids = List.of();
-        this.amount = 0;
+    public LytMIItemSlot(boolean input) {
+        this.stacks = new ItemStack[0];
         this.probability = 1;
         this.input = input;
     }
@@ -97,29 +95,32 @@ public class LytMachineFluidSlot extends LytBlock implements InteractiveElement 
         var x = bounds.x();
         var y = bounds.y();
 
-        MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, x, y, 18, 18, 18, 0, 18, 18);
+        if (probability == 1) {
+            MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, x, y, 18, 18, 0, 0, 18, 18);
+        } else {
+            MIGuideMeRenderHelper.fillTexturedRect(context, MachineScreen.SLOT_ATLAS, x, y, 18, 18, 36, 0, 18, 18);
+        }
 
-        var fluid = getDisplayedFluid();
-        if (fluid != null) {
-            context.renderFluid(fluid, x + PADDING, y + PADDING, 1, ITEM_SIZE, ITEM_SIZE);
+        var stack = getDisplayedStack();
+        if (!stack.isEmpty()) {
+            context.renderItem(stack, x + PADDING, y + PADDING, 1, ITEM_SIZE, ITEM_SIZE);
         }
     }
 
     @Override
     public Optional<GuideTooltip> getTooltip(float x, float y) {
-        var fluid = getDisplayedFluid();
-        if (fluid == null) {
+        var stack = getDisplayedStack();
+        if (stack.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(new MachineRecipeFluidTooltip(FluidVariant.of(fluid), amount, probability, input));
+        return Optional.of(new MIGuideItemTooltip(stack, probability, input));
     }
 
-    @Nullable
-    private Fluid getDisplayedFluid() {
-        if (fluids.isEmpty()) {
-            return null;
+    private ItemStack getDisplayedStack() {
+        if (stacks.length == 0) {
+            return ItemStack.EMPTY;
         }
         var cycle = System.nanoTime() / TimeUnit.MILLISECONDS.toNanos(CYCLE_TIME);
-        return fluids.get((int) (cycle % fluids.size()));
+        return stacks[(int) (cycle % stacks.length)];
     }
 }

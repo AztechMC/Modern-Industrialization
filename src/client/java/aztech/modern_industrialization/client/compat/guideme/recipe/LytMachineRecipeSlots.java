@@ -25,8 +25,8 @@
 package aztech.modern_industrialization.client.compat.guideme.recipe;
 
 import aztech.modern_industrialization.client.compat.guideme.MIGuideMeRenderHelper;
-import aztech.modern_industrialization.client.compat.guideme.recipe.fluid.LytMachineFluidSlot;
-import aztech.modern_industrialization.client.compat.guideme.recipe.item.LytMachineItemSlot;
+import aztech.modern_industrialization.client.compat.guideme.recipe.fluid.LytMIFluidSlot;
+import aztech.modern_industrialization.client.compat.guideme.recipe.item.LytMIItemSlot;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -64,26 +64,26 @@ public class LytMachineRecipeSlots extends LytBox {
         this.itemInputs = appendSlots(
                 recipe.itemInputs.size(),
                 params.itemInputs,
-                (index) -> new LytMachineItemSlot(recipe.itemInputs.get(index)),
-                () -> new LytMachineItemSlot(true));
+                (index) -> new LytMIItemSlot(recipe.itemInputs.get(index)),
+                () -> new LytMIItemSlot(true));
 
         this.fluidInputs = appendSlots(
                 recipe.fluidInputs.size(),
                 params.fluidInputs,
-                (index) -> new LytMachineFluidSlot(recipe.fluidInputs.get(index)),
-                () -> new LytMachineFluidSlot(true));
+                (index) -> new LytMIFluidSlot(recipe.fluidInputs.get(index)),
+                () -> new LytMIFluidSlot(true));
 
         this.itemOutputs = appendSlots(
                 recipe.itemOutputs.size(),
                 params.itemOutputs,
-                (index) -> new LytMachineItemSlot(recipe.itemOutputs.get(index)),
-                () -> new LytMachineItemSlot(false));
+                (index) -> new LytMIItemSlot(recipe.itemOutputs.get(index)),
+                () -> new LytMIItemSlot(false));
 
         this.fluidOutputs = appendSlots(
                 recipe.fluidOutputs.size(),
                 params.fluidOutputs,
-                (index) -> new LytMachineFluidSlot(recipe.fluidOutputs.get(index)),
-                () -> new LytMachineFluidSlot(false));
+                (index) -> new LytMIFluidSlot(recipe.fluidOutputs.get(index)),
+                () -> new LytMIFluidSlot(false));
     }
 
     private LytBlock[] appendSlots(int recipePartCount, SlotPositions slotPositions, Function<Integer, LytBlock> slotFactory, Supplier<LytBlock> emptySlotSupplier) {

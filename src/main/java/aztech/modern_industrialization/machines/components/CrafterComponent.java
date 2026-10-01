@@ -871,15 +871,11 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
 
         // LOCK ITEMS
-        if (recipe.value().itemInputs.size() > 0 || recipe.value().itemOutputs.size() > 0) {
-            lockAll(this.inventory.getItemInputs());
-            lockAll(this.inventory.getItemOutputs());
-        }
+        lockAll(this.inventory.getItemInputs());
+        lockAll(this.inventory.getItemOutputs());
         // LOCK FLUIDS
-        if (recipe.value().fluidInputs.size() > 0 || recipe.value().fluidOutputs.size() > 0) {
-            lockAll(this.inventory.getFluidInputs());
-            lockAll(this.inventory.getFluidOutputs());
-        }
+        lockAll(this.inventory.getFluidInputs());
+        lockAll(this.inventory.getFluidOutputs());
     }
 
     private static void lockAll(List<? extends AbstractConfigurableStack<?, ?>> stacks) {

@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    { "type": "neoforge:mod_loaded", "modid": "create" }
+  ],
+  "type": "modern_industrialization:quarry",
+  "eu": 128,
+  "duration": 600,
+  "item_inputs": {
+    "item": "create:mechanical_arm",
+    "amount": 1,
+    "probability": 0.05
+  },
+  "item_outputs": [
+    {
+      "item": "create:asurine",
+      "amount": 1,
+      "probability": 0.5
+    },
+    {
+      "item": "create:crimsite",
+      "amount": 1,
+      "probability": 0.5
+    },
+    {
+      "item": "create:ochrum",
+      "amount": 1,
+      "probability": 0.5
+    },
+    {
+      "item": "create:veridium",
+      "amount": 1,
+      "probability": 0.5
+    }
+  ]
+}

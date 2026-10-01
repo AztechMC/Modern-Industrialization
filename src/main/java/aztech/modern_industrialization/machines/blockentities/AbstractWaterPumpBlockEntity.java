@@ -31,6 +31,7 @@ import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.Tickable;
@@ -49,9 +50,10 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
     private static final int OPERATION_TICKS = 100;
 
     public AbstractWaterPumpBlockEntity(BEP bep, String blockName) {
-        super(bep, new MachineGuiParameters.Builder(blockName, false).build(), new OrientationComponent.Params(true, false, false));
+        super(bep, new MachineGuiParameters.Builder(blockName, false).build(), new OrientationComponent.Params(true, false, true));
 
         isActiveComponent = new IsActiveComponent();
+        registerGuiComponent(new AutoExtract(orientation));
         registerGuiComponent(new ProgressBar(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
         this.registerComponents(isActiveComponent, new MachineComponent() {
             @Override
@@ -92,7 +94,9 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
                     pumpingTicks = 0;
                 }
             }
-            getInventory().autoExtractFluids(level, worldPosition, orientation.outputDirection);
+            if (orientation.extractFluids) {
+                getInventory().autoExtractFluids(level, worldPosition, orientation.outputDirection);
+            }
             setChanged();
         }
     }

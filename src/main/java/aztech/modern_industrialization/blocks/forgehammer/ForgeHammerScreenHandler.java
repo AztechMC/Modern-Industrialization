@@ -391,7 +391,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                     continue;
                 }
                 if (ItemStack.isSameItemSameComponents(matchingStack, stack) ||
-                        recipe.ingredient().test(stack)) {
+                        (matchingStack.isEmpty() && recipe.ingredient().test(stack))) {
                     if (matchingStack.isEmpty()) {
                         matchingStack = stack.copy();
                         targetStackSize = Math.min(recipeAmount, matchingStack.getMaxStackSize());

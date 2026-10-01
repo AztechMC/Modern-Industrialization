@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "modern_industrialization:ae_compat_loaded"
+    }
+  ],
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 125,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "ae2:covered_dense_cable"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "ae2:fluix_covered_dense_cable"
+    }
+  ]
+}

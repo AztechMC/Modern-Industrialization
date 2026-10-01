@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "modern_industrialization:ae_compat_loaded"
+    }
+  ],
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "ae2:smart_dense_cable"
+    },
+    {
+      "amount": 1,
+      "tag": "c:dyes/gray"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "ae2:gray_smart_dense_cable"
+    }
+  ]
+}

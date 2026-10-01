@@ -64,6 +64,8 @@ public class CreateCompatRecipes extends CompatRecipesProvider {
                 .addItemInput("#c:nuggets/zinc", 1)
                 .addItemOutput("create:andesite_alloy", 1));
 
+        addMiRecipe(MIMachineRecipeTypes.COMPRESSOR, "#c:ingots/brass", "create:brass_sheet", 1, 2, 100);
+
         addCompatRecipe("macerator/wheat_to_wheat_flour", new MachineRecipeBuilder(MIMachineRecipeTypes.MACERATOR, 2, 100)
                 .addItemInput("minecraft:wheat", 1)
                 .addItemOutput("create:wheat_flour", 1)

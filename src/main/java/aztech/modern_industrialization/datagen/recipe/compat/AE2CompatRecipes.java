@@ -108,6 +108,14 @@ public class AE2CompatRecipes extends CompatRecipesProvider {
             addCompatRecipe("dyes/" + color.getName() + "/craft/me_wire_1",
                     new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_me_wire", 1, "pd")
                             .addInput('d', "#c:dyes/" + color.getName()).addInput('p', "#modern_industrialization:me_wires"));
+
+            // AE cables
+            for (String name : new String[] { "glass", "covered", "smart", "covered_dense", "smart_dense" }) {
+                addCompatRecipe("dyes/" + color.getName() + "/mixer/" + name + "_cables_8", new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
+                        .addItemInput("#ae2:" + name + "_cable", 8)
+                        .addItemInput("#c:dyes/" + color.getName(), 1)
+                        .addItemOutput("ae2:" + color.getName() + "_" + name + "_cable", 8));
+            }
         }
 
         // decolor 8 me wires
@@ -128,5 +136,13 @@ public class AE2CompatRecipes extends CompatRecipesProvider {
                 .addInput('q', "ae2:quartz_fiber");
         addCompatRecipe("craft/me_wire_direct", meWiresDirect);
         addCompatRecipe("assembler/me_wire_direct", meWiresDirect.exportToAssembler());
+
+        // decolor AE cables
+        for (String name : new String[] { "glass", "covered", "smart", "covered_dense", "smart_dense" }) {
+            addCompatRecipe("dyes/decolor/mixer/" + name + "_cables_8", new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .addItemInput("#ae2:" + name + "_cable", 8)
+                    .addFluidInput(Fluids.WATER, 125)
+                    .addItemOutput("ae2:fluix_" + name + "_cable", 8));
+        }
     }
 }

@@ -48,6 +48,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 
 public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     private final DataSlot selectedRecipe;
@@ -63,6 +64,9 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     private long lastSoundTime = 0;
 
     private ItemStack inputStackCache = ItemStack.EMPTY, toolStackCache = ItemStack.EMPTY;
+
+    @Nullable
+    private RecipeHolder<ForgeHammerRecipe> lastCraftedRecipe;
 
     public ForgeHammerScreenHandler(int syncId, Inventory playerInventory) {
         this(syncId, playerInventory, ContainerLevelAccess.NULL);
@@ -180,6 +184,11 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         return availableRecipes;
     }
 
+    @Nullable
+    public RecipeHolder<ForgeHammerRecipe> getLastCraftedRecipe() {
+        return lastCraftedRecipe;
+    }
+
     public int getAvailableRecipeCount() {
         return availableRecipes.size();
     }
@@ -268,6 +277,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
 
     private void onCraft() {
         RecipeHolder<ForgeHammerRecipe> current = this.availableRecipes.get(this.selectedRecipe.get());
+        lastCraftedRecipe = current;
         this.input.getItem().shrink(current.value().count());
         if (!tool.getItem().isEmpty()) {
             if (!world.isClientSide()) {

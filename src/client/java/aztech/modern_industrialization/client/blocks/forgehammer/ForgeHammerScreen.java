@@ -28,6 +28,8 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.client.util.RenderHelper;
+import aztech.modern_industrialization.network.machines.ForgeHammerMoveRecipePacket;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -68,6 +70,22 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == InputConstants.KEY_SPACE) {
+            var lastRecipe = handler.getLastCraftedRecipe();
+            if (lastRecipe != null) {
+                new ForgeHammerMoveRecipePacket(
+                        handler.containerId,
+                        lastRecipe.id(),
+                        0,
+                        64).sendToServer();
+                return true;
+            }
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

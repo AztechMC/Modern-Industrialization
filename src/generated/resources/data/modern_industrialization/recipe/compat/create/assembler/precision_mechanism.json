@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:assembler",
+  "duration": 500,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:plates/gold"
+    },
+    {
+      "amount": 5,
+      "item": "create:cogwheel"
+    },
+    {
+      "amount": 5,
+      "item": "create:large_cogwheel"
+    },
+    {
+      "amount": 5,
+      "item": "modern_industrialization:iron_bolt"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "create:precision_mechanism",
+      "probability": 0.8
+    }
+  ]
+}

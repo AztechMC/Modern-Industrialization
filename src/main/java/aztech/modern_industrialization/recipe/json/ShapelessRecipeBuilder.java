@@ -26,7 +26,10 @@ package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.MI;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,6 +44,10 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
 
     public ShapelessRecipeBuilder(ItemLike pResult, int pCount) {
         this(new ItemStack(pResult, pCount));
+    }
+
+    public ShapelessRecipeBuilder(String result, int count) {
+        this(BuiltInRegistries.ITEM.get(ResourceLocation.parse(result)), count);
     }
 
     public ShapelessRecipeBuilder(ItemStack result) {
@@ -106,6 +113,20 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
         }
 
         return this;
+    }
+
+    public ShapelessRecipeBuilder requires(String maybeTag, int quantity) {
+        Ingredient input;
+        if (maybeTag.startsWith("#")) {
+            input = Ingredient.of(ItemTags.create(ResourceLocation.parse(maybeTag.substring(1))));
+        } else {
+            input = Ingredient.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(maybeTag)));
+        }
+        return requires(input, quantity);
+    }
+
+    public ShapelessRecipeBuilder requires(String maybeTag) {
+        return requires(maybeTag, 1);
     }
 
     public ShapelessRecipe buildRecipe() {

@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:macerator",
+  "duration": 100,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "create:stone_types/asurine"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "create:crushed_raw_zinc",
+      "probability": 0.3
+    },
+    {
+      "amount": 1,
+      "item": "create:zinc_nugget",
+      "probability": 0.3
+    }
+  ]
+}

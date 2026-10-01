@@ -98,6 +98,22 @@ repositories {
             includeGroup "earth.terrarium.athena"
         }
     }
+    maven {
+        url "https://maven.createmod.net/"
+        content {
+            includeGroup "com.simibubi.create"
+            includeGroup "net.createmod.ponder"
+            includeGroup "dev.engine-room.flywheel"
+            includeGroup "dev.engine-room.vanillin"
+        }
+    }
+    // For Create
+    maven {
+        url "https://maven.ithundxr.dev/snapshots"
+        content {
+            includeGroup "com.tterrag.registrate"
+        }
+    }
 }
 
 sourceSets {
@@ -234,6 +250,14 @@ dependencies {
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
 
     compileOnly "com.almostreliable.mods:almostunified-neoforge:${project.minecraft_version}-${project.au_version}:api"
+
+    runtimeOnly ("com.simibubi.create:create-1.21.1:${project.create_version}") {
+        exclude group: "cc.tweaked"
+        exclude group: "top.theillusivec4.curios"
+        exclude group: "info.journeymap"
+        exclude group: "maven.modrinth", module: "journeymap"
+        exclude group: "maven.modrinth", module: "farmers-delight"
+    }
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

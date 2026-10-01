@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:macerator",
+  "duration": 200,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:ores/zinc"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 3,
+      "item": "create:raw_zinc"
+    }
+  ]
+}

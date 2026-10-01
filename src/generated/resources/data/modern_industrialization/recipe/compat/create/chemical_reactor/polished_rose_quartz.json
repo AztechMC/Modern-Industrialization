@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 100,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "create:rose_quartz"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:wax"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "create:polished_rose_quartz"
+    }
+  ]
+}

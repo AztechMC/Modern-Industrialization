@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "r": {
+      "item": "modern_industrialization:rubber_sheet"
+    }
+  },
+  "pattern": [
+    "rrr",
+    "rrr"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create:belt_connector"
+  }
+}

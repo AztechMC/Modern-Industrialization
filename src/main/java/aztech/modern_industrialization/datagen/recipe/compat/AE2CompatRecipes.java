@@ -22,48 +22,28 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.datagen.recipe;
+package aztech.modern_industrialization.datagen.recipe.compat;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
-import aztech.modern_industrialization.recipe.json.MIRecipeBuilder;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import java.util.Map;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
-public class CompatRecipesProvider extends MIRecipesProvider {
-    private RecipeOutput consumer;
-    private String currentCompatModid;
-    private ICondition[] conditions = null;
-
-    public CompatRecipesProvider(PackOutput packOutput) {
-        super(packOutput);
+public class AE2CompatRecipes extends CompatRecipesProvider {
+    public AE2CompatRecipes(PackOutput packOutput) {
+        super(packOutput, "ae2");
     }
 
     @Override
-    public void buildRecipes(RecipeOutput consumer) {
-        this.consumer = consumer;
-
-        startCompat("ae2");
-        generateAe2Compat();
-    }
-
-    private void startCompat(String modid) {
-        currentCompatModid = modid;
-        conditions = new ICondition[] { new ModLoadedCondition(modid) };
-    }
-
-    private void generateAe2Compat() {
+    protected void generate() {
         addMiRecipe(MIMachineRecipeTypes.ELECTROLYZER, "ae2:certus_quartz_crystal", "ae2:charged_certus_quartz_crystal", 1, 8, 60);
 
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "#c:gems/certus_quartz", "ae2:certus_quartz_dust", 1, 2, 100);
@@ -148,19 +128,5 @@ public class CompatRecipesProvider extends MIRecipesProvider {
                 .addInput('q', "ae2:quartz_fiber");
         addCompatRecipe("craft/me_wire_direct", meWiresDirect);
         addCompatRecipe("assembler/me_wire_direct", meWiresDirect.exportToAssembler());
-    }
-
-    private void addMiRecipe(MachineRecipeType machine, String input, String output, int outputAmount) {
-        addMiRecipe(machine, input, output, outputAmount, 2, 200);
-    }
-
-    private void addMiRecipe(MachineRecipeType machine, String input, String output, int outputAmount, int eu, int duration) {
-        String id = "%s/%s_to_%s".formatted(machine.getPath(), input.replace('#', '_').replace(':', '_').replace('/', '_'), output.replace(':', '_'));
-        addCompatRecipe(id, new MachineRecipeBuilder(machine, eu, duration).addItemInput(input, 1).addItemOutput(output, outputAmount));
-    }
-
-    private void addCompatRecipe(String id, MIRecipeBuilder recipeJson) {
-        id = "compat/%s/%s".formatted(currentCompatModid, id);
-        recipeJson.offerTo(consumer.withConditions(conditions), id);
     }
 }

@@ -644,7 +644,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
                     ItemVariant key = stack.getResource();
-                    if (key.equals(output.variant()) || key.isBlank()) {
+                    if (stack.isResourceAllowedByLock(output.variant()) &&
+                            (key.equals(output.variant()) || key.isBlank())) {
                         // If simulating or chanced output or is the first try, respect the adjusted capacity.
                         // If putting the output on the second try, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
@@ -654,7 +655,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (ins > 0) {
                             if (key.isBlank()) {
-                                if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
+                                if (stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) {
                                     stack.setAmount(ins);
                                     stack.setKey(output.variant());
                                 } else {
@@ -870,15 +871,11 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
 
         // LOCK ITEMS
-        if (recipe.value().itemInputs.size() > 0 || recipe.value().itemOutputs.size() > 0) {
-            lockAll(this.inventory.getItemInputs());
-            lockAll(this.inventory.getItemOutputs());
-        }
+        lockAll(this.inventory.getItemInputs());
+        lockAll(this.inventory.getItemOutputs());
         // LOCK FLUIDS
-        if (recipe.value().fluidInputs.size() > 0 || recipe.value().fluidOutputs.size() > 0) {
-            lockAll(this.inventory.getFluidInputs());
-            lockAll(this.inventory.getFluidOutputs());
-        }
+        lockAll(this.inventory.getFluidInputs());
+        lockAll(this.inventory.getFluidOutputs());
     }
 
     private static void lockAll(List<? extends AbstractConfigurableStack<?, ?>> stacks) {

@@ -225,7 +225,7 @@ public class FluidNetwork extends PipeNetwork {
         return null;
     }
 
-    private boolean isEmpty(boolean onlyFluid) {
+    public boolean isEmpty(boolean onlyFluid) {
         if (((FluidNetworkData) data).fluid.isBlank())
             return true;
         if (onlyFluid)

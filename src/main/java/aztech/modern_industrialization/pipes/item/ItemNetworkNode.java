@@ -28,20 +28,21 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.config.MIServerConfig;
+import aztech.modern_industrialization.pipes.api.NetworkNodeConnection;
+import aztech.modern_industrialization.pipes.api.PipeConfigType;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TransferHelper;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -182,23 +183,6 @@ public class ItemNetworkNode extends PipeNetworkNode {
         inactiveTicks = tag.getInt("inactiveTicks");
     }
 
-    public static PipeEndpointType decodeConnectionType(int i) {
-        return i == 0 ? BLOCK_IN : i == 1 ? BLOCK_IN_OUT : BLOCK_OUT;
-    }
-
-    public static int encodeConnectionType(PipeEndpointType connection) {
-        return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
-    }
-
-    public static final Codec<PipeEndpointType> CONNECTION_TYPE_CODEC = Codec.INT.comapFlatMap(
-            i -> switch (i) {
-                case 0 -> DataResult.success(BLOCK_IN);
-                case 1 -> DataResult.success(BLOCK_IN_OUT);
-                case 2 -> DataResult.success(BLOCK_OUT);
-                default -> DataResult.error(() -> "Unknown item pipe connection type: " + i);
-            },
-            ItemNetworkNode::encodeConnectionType);
-
     @Override
     public PipeMenuProvider getConnectionGui(Direction guiDirection, PipeScreenHandlerHelper helper) {
         for (ItemConnection connection : connections) {
@@ -221,30 +205,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public boolean customUse(PipeBlockEntity pipe, Player player, InteractionHand hand, @Nullable Direction hitDirection) {
-        for (ItemConnection conn : connections) {
-            if (conn.direction != hitDirection) {
-                continue;
-            }
-
-            var stack = player.getItemInHand(hand);
-            if (!MIItem.CONFIG_CARD.is(stack)) {
-                return false;
-            }
-
-            if (player.isShiftKeyDown()) {
-                stack.remove(MIComponents.CAMOUFLAGE);
-                stack.set(MIComponents.SAVED_CONFIG, conn.getConfig());
-                player.displayClientMessage(MIText.ConfigCardSet.text(), true);
-            } else if (stack.has(MIComponents.SAVED_CONFIG)) {
-                conn.applyConfig(pipe, stack.get(MIComponents.SAVED_CONFIG), player);
-                player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
-            }
-            return true;
-        }
-        return false;
+        return NetworkNodeConnection.use(connections, pipe, player, hand, hitDirection);
     }
 
-    class ItemConnection {
+    class ItemConnection implements NetworkNodeConnection {
         final Direction direction;
         private PipeEndpointType type;
         boolean whitelist = true;
@@ -260,9 +224,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             this.type = type;
             this.insertPriority = insertPriority;
             this.extractPriority = extractPriority;
-            for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                stacks[i] = ItemStack.EMPTY;
-            }
+            Arrays.fill(stacks, ItemStack.EMPTY);
         }
 
         private void refreshStacksCache() {
@@ -312,21 +274,18 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
-        SavedItemPipeConfig getConfig() {
-            List<ItemStack> filters = new ArrayList<>();
-            for (ItemStack itemStack : stacks) {
-                filters.add(itemStack.copy());
-            }
-            return new SavedItemPipeConfig(
-                    type,
+        public SavedPipeConfig getConfig() {
+            return new SavedPipeConfig(
+                    PipeConfigType.ITEM, type,
                     whitelist,
                     insertPriority,
                     extractPriority,
-                    filters,
-                    upgradeStack.copy());
+                    Arrays.asList(stacks),
+                    upgradeStack.copy(),
+                    FluidVariant.blank());
         }
 
-        void applyConfig(PipeBlockEntity pipe, @Nullable SavedItemPipeConfig config, Player player) {
+        public void applyConfig(PipeBlockEntity pipe, @Nullable SavedPipeConfig config, Player player) {
             if (config == null) {
                 return;
             }
@@ -342,6 +301,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     stacks[i].setCount(1);
                 }
             }
+
             refreshStacksCache();
 
             ItemStack requestedUpgrade = config.upgrade().copy();
@@ -369,6 +329,16 @@ public class ItemNetworkNode extends PipeNetworkNode {
             if (remesh) {
                 pipe.sync();
             }
+        }
+
+        @Override
+        public Direction getDirection() {
+            return direction;
+        }
+
+        @Override
+        public PipeConfigType getConfigType() {
+            return PipeConfigType.ITEM;
         }
 
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {

@@ -34,6 +34,7 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -72,7 +73,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
     public BoilerMachineBlockEntity(BEP bep, boolean bronze) {
         super(bep, new MachineGuiParameters.Builder(bronze ? "bronze_boiler" : "steel_boiler", true).backgroundHeight(180).build(),
-                new OrientationComponent.Params(false, false, false));
+                new OrientationComponent.Params(true, false, true));
 
         int capacity = FluidType.BUCKET_VOLUME * (bronze ? 8 : 16);
 
@@ -89,6 +90,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         fuelBurning = new FuelBurningComponent(steamHeater, 1);
         this.isActiveComponent = new IsActiveComponent();
 
+        registerGuiComponent(new AutoExtract(orientation));
         ProgressBar.Params progressParams = new ProgressBar.Params(133, 50, "furnace", 14, 14, true);
         TemperatureBar.Params temperatureParams = new TemperatureBar.Params(42, 75, 1500);
         registerGuiComponent(new ProgressBar(progressParams, () -> (float) fuelBurning.getBurningProgress()));
@@ -118,8 +120,8 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         steamHeater.tick(Collections.singletonList(inventory.getFluidStacks().get(0)), Collections.singletonList(inventory.getFluidStacks().get(1)));
         fuelBurning.tick(Collections.singletonList(inventory.getItemStacks().get(0)), Collections.emptyList(), true);
 
-        for (Direction direction : Direction.values()) {
-            getInventory().autoExtractFluids(level, worldPosition, direction);
+        if (orientation.extractFluids) {
+            getInventory().autoExtractFluids(level, worldPosition, orientation.outputDirection);
         }
 
         isActiveComponent.updateActive(fuelBurning.isBurning(), this);

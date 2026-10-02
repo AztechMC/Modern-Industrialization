@@ -106,6 +106,7 @@ public class MachineMenuServer extends MachineMenuCommon implements MoveRecipeHa
         var machineItemInventory = this.getMachineInventory().itemStorage;
         var machineFluidInventory = this.getMachineInventory().fluidStorage;
 
+        // Handle item inputs
         itemLoop:
         for (var itemInput : recipe.itemInputs) {
             int remainingAmount = itemInput.amount() * amount;
@@ -146,6 +147,7 @@ public class MachineMenuServer extends MachineMenuCommon implements MoveRecipeHa
             }
         }
 
+        // Handle fluid inputs
         fluidLoop:
         for (var fluidInput : recipe.fluidInputs) {
             int remainingAmount = Ints.saturatedCast(fluidInput.amount() * amount);

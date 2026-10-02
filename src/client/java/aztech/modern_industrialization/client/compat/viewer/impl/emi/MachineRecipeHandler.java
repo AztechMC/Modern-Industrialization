@@ -71,6 +71,7 @@ class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
         for (var inputSource : getInputSources(screen.getMenu())) {
             var stack = inputSource.getItem();
             stacks.add(EmiStack.of(stack));
+            // Account for fluid containing items such as tanks
             var fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
             if (fluidHandler != null) {
                 for (int index = 0; index < fluidHandler.getTanks(); index++) {

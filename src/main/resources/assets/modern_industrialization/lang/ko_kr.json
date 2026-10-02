@@ -1134,8 +1134,6 @@
   "text.modern_industrialization.ConfigCardHelpCamouflage4": "- 렌치를 들고 %s + %s으로 위장을 해제하세요.",
   "text.modern_industrialization.ConfigCardHelpCamouflage5": "- %s + %s으로 위장의 투명 렌더링을 전환합니다.",
   "text.modern_industrialization.ConfigCardHelpClear": "허공에 %s + %s을 사용하여 저장된 내용을 지우세요.",
-  "text.modern_industrialization.ConfigCardHelpItems2": "- 파이프 연결 지점에서 %s + %s을 누르면 해당 설정을 카드에 저장합니다.",
-  "text.modern_industrialization.ConfigCardHelpItems3": "- 파이프 연결 지점에서 %s를 누르면 저장된 카드의 설정을 적용합니다.",
   "text.modern_industrialization.ConfigCardNoCamouflageInInventory": "%s이(가) 인벤토리에 없습니다",
   "text.modern_industrialization.ConfigCardSetCamouflage": "위장-%s을 카드에 복사함",
   "text.modern_industrialization.ConfigurableSlotCapacity": "용량: %s. 마우스 스크롤로 조절하세요.",

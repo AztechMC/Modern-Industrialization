@@ -26,6 +26,7 @@ package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIRegistries;
+import aztech.modern_industrialization.inventory.MoveRecipeHandler;
 import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.*;
@@ -50,7 +51,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public class ForgeHammerScreenHandler extends AbstractContainerMenu {
+public class ForgeHammerScreenHandler extends AbstractContainerMenu implements MoveRecipeHandler {
     private final DataSlot selectedRecipe;
     private final List<RecipeHolder<ForgeHammerRecipe>> availableRecipes;
 
@@ -368,6 +369,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         });
     }
 
+    @Override
     public void moveRecipe(ResourceLocation recipeId, int fillAction, int amount) {
         var recipeHolder = world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()).stream()
                 .filter(r -> r.id().equals(recipeId)).findFirst().orElse(null);
@@ -417,7 +419,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 return;
             }
 
-            // Put items in the output
+            // Put items in the input
             input.set(matchingStack.copyWithCount(insertedAmount));
 
             // Move hammer into gui

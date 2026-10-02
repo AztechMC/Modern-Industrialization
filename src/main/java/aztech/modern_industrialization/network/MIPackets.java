@@ -30,9 +30,9 @@ import aztech.modern_industrialization.network.armor.UpdateKeysPacket;
 import aztech.modern_industrialization.network.machines.AdjustSlotCapacityPacket;
 import aztech.modern_industrialization.network.machines.ChangeShapePacket;
 import aztech.modern_industrialization.network.machines.DoSlotDraggingPacket;
-import aztech.modern_industrialization.network.machines.ForgeHammerMoveRecipePacket;
 import aztech.modern_industrialization.network.machines.LockAllPacket;
 import aztech.modern_industrialization.network.machines.MachineComponentSyncPacket;
+import aztech.modern_industrialization.network.machines.MoveRecipePacket;
 import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
 import aztech.modern_industrialization.network.machines.SetAutoExtractPacket;
 import aztech.modern_industrialization.network.machines.SetLockingModePacket;
@@ -81,7 +81,7 @@ public class MIPackets {
         register("update_item_slot", UpdateItemSlotPacket.class, UpdateItemSlotPacket.STREAM_CODEC);
         // Machine
         register("change_shape", ChangeShapePacket.class, ChangeShapePacket.STREAM_CODEC);
-        register("forge_hammer_move_recipe", ForgeHammerMoveRecipePacket.class, ForgeHammerMoveRecipePacket.STREAM_CODEC);
+        register("move_recipe", MoveRecipePacket.class, MoveRecipePacket.STREAM_CODEC);
         register("rei_lock_slots", ReiLockSlotsPacket.class, ReiLockSlotsPacket.STREAM_CODEC);
         register("set_auto_extract", SetAutoExtractPacket.class, SetAutoExtractPacket.STREAM_CODEC);
         // Pipes

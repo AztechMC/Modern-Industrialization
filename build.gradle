@@ -251,12 +251,14 @@ dependencies {
 
     compileOnly "com.almostreliable.mods:almostunified-neoforge:${project.minecraft_version}-${project.au_version}:api"
 
-    runtimeOnly ("com.simibubi.create:create-1.21.1:${project.create_version}") {
+    localRuntimeOnly ("com.simibubi.create:create-1.21.1:${project.create_version}") {
         exclude group: "cc.tweaked"
         exclude group: "top.theillusivec4.curios"
         exclude group: "info.journeymap"
         exclude group: "maven.modrinth", module: "journeymap"
         exclude group: "maven.modrinth", module: "farmers-delight"
+        exclude group: "dev.ftb.mods"
+        exclude group: "dev.architectury"
     }
 }
 

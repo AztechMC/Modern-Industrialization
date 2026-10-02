@@ -26,13 +26,18 @@ package aztech.modern_industrialization.client.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.client.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.client.machines.guicomponents.ReiSlotLockingClient;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.network.machines.MoveRecipePacket;
 import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
+import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
+import dev.emi.emi.api.stack.EmiStack;
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -40,6 +45,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
@@ -57,6 +63,31 @@ class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
                 // Machine input only
                 .filter(s -> s instanceof ConfigurableItemStack.ConfigurableItemSlot cis && cis.getConfStack().canPlayerInsert())
                 .toList();
+    }
+
+    @Override
+    public EmiPlayerInventory getInventory(AbstractContainerScreen<MachineMenuCommon> screen) {
+        var stacks = new ArrayList<EmiStack>();
+        for (var inputSource : getInputSources(screen.getMenu())) {
+            var stack = inputSource.getItem();
+            stacks.add(EmiStack.of(stack));
+            var fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+            if (fluidHandler != null) {
+                for (int index = 0; index < fluidHandler.getTanks(); index++) {
+                    var fluidStack = fluidHandler.getFluidInTank(index);
+                    if (!fluidStack.isEmpty()) {
+                        stacks.add(EmiStack.of(fluidStack.getFluid(), fluidStack.getComponentsPatch(), fluidStack.getAmount()));
+                    }
+                }
+            }
+        }
+        for (var slot : screen.getMenu().slots) {
+            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs && cfs.getConfStack().canPlayerInsert()) {
+                var variant = cfs.getConfStack().getVariant();
+                stacks.add(EmiStack.of(variant.getFluid(), variant.getComponentsPatch(), cfs.getConfStack().getAmount()));
+            }
+        }
+        return new EmiPlayerInventory(stacks);
     }
 
     @Override
@@ -84,8 +115,16 @@ class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
         if (!canApply(handler, ((ViewerCategoryEmi<?>.ViewerRecipe) recipe).getCategory()))
             return false;
         if (Minecraft.getInstance().screen == context.getScreen()) {
-            // Let EMI move items
-            return StandardRecipeHandler.super.craft(recipe, context);
+            new MoveRecipePacket(
+                    context.getScreenHandler().containerId,
+                    recipe.getId(),
+                    switch (context.getDestination()) {
+                        case NONE -> 0;
+                        case CURSOR -> 1;
+                        case INVENTORY -> 2;
+                    },
+                    context.getAmount()).sendToServer();
+            return true;
         } else {
             return lockSlots(recipe, context.getScreen(), true);
         }

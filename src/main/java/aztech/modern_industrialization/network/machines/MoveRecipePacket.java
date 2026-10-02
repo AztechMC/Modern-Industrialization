@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.network.machines;
 
-import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
+import aztech.modern_industrialization.inventory.MoveRecipeHandler;
 import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.network.MIStreamCodecs;
 import io.netty.buffer.ByteBuf;
@@ -33,25 +33,25 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public record ForgeHammerMoveRecipePacket(int containedId, ResourceLocation recipeId, int fillAction, int amount) implements BasePacket {
-    public static final StreamCodec<ByteBuf, ForgeHammerMoveRecipePacket> STREAM_CODEC = StreamCodec.composite(
+public record MoveRecipePacket(int containedId, ResourceLocation recipeId, int fillAction, int amount) implements BasePacket {
+    public static final StreamCodec<ByteBuf, MoveRecipePacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
-            ForgeHammerMoveRecipePacket::containedId,
+            MoveRecipePacket::containedId,
             ResourceLocation.STREAM_CODEC,
-            ForgeHammerMoveRecipePacket::recipeId,
+            MoveRecipePacket::recipeId,
             MIStreamCodecs.BYTE,
-            ForgeHammerMoveRecipePacket::fillAction,
+            MoveRecipePacket::fillAction,
             ByteBufCodecs.INT,
-            ForgeHammerMoveRecipePacket::amount,
-            ForgeHammerMoveRecipePacket::new);
+            MoveRecipePacket::amount,
+            MoveRecipePacket::new);
 
     @Override
     public void handle(Context ctx) {
         ctx.assertOnServer();
 
         AbstractContainerMenu menu = ctx.getPlayer().containerMenu;
-        if (menu.containerId == containedId && menu instanceof ForgeHammerScreenHandler fh) {
-            fh.moveRecipe(recipeId, fillAction, amount);
+        if (menu.containerId == containedId && menu instanceof MoveRecipeHandler handler) {
+            handler.moveRecipe(recipeId, fillAction, amount);
         }
     }
 }

@@ -26,7 +26,7 @@ package aztech.modern_industrialization.client.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.client.compat.viewer.usage.ForgeHammerCategory;
-import aztech.modern_industrialization.network.machines.ForgeHammerMoveRecipePacket;
+import aztech.modern_industrialization.network.machines.MoveRecipePacket;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
@@ -68,7 +68,7 @@ class ForgeHammerRecipeHandler implements StandardRecipeHandler<ForgeHammerScree
 
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<ForgeHammerScreenHandler> context) {
-        new ForgeHammerMoveRecipePacket(
+        new MoveRecipePacket(
                 context.getScreenHandler().containerId,
                 recipe.getId(),
                 switch (context.getDestination()) {

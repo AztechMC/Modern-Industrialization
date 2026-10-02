@@ -48,7 +48,7 @@ public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements
     private static final int ITEM_BAR_COLOR = Mth.color(0.4F, 0.4F, 1.0F);
 
     public BarrelItem(BarrelBlock block, Properties settings) {
-        super(block, settings.stacksTo(1));
+        super(block, settings);
     }
 
     @Override

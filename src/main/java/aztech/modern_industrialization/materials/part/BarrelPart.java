@@ -99,7 +99,7 @@ public class BarrelPart implements PartKeyProvider {
                         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet.getValue(), (be, side) -> new SlotItemHandler(be));
 
                         var item = (BarrelItem) blockDefinition.asItem();
-                        event.registerItem(Capabilities.ItemHandler.ITEM, (stack, ignored) -> new ContainerItem.ItemHandler(stack, item), item);
+                        event.registerItem(Capabilities.ItemHandler.ITEM, (stack, ignored) -> stack.getCount() == 1 ? new ContainerItem.ItemHandler(stack, item) : null, item);
                     });
 
                     MICommonProxy.INSTANCE.registerPartBarrelClient(bet::getValue, partContext.get(MEAN_RGB));

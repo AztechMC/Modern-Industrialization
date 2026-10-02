@@ -82,6 +82,7 @@ class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
                 }
             }
         }
+        // Account for fluids already in the machine
         for (var slot : screen.getMenu().slots) {
             if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs && cfs.getConfStack().canPlayerInsert()) {
                 var variant = cfs.getConfStack().getVariant();

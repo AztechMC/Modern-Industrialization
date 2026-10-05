@@ -1,15 +1,13 @@
 {
   "parent": "modern_industrialization:titanium_ingot",
   "criteria": {
-    "checkInv": {
+    "buildMultiblock": {
       "conditions": {
-        "items": [
-          {
-            "items": "modern_industrialization:pressurizer"
-          }
-        ]
+        "multiblock": {
+          "id": "modern_industrialization:pressurizer"
+        }
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "modern_industrialization:built_multiblock"
     }
   },
   "display": {
@@ -26,7 +24,7 @@
   },
   "requirements": [
     [
-      "checkInv"
+      "buildMultiblock"
     ]
   ],
   "sends_telemetry_event": true

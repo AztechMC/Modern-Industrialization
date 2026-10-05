@@ -24,8 +24,11 @@
 
 package aztech.modern_industrialization.machines.multiblocks;
 
+import aztech.modern_industrialization.MIAdvancementTriggers;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -68,11 +71,19 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
 
             if (shapeMatcher.isMatchSuccessful()) {
                 shapeValid.shapeValid = true;
+                this.triggerBuiltMultiblock();
             }
 
             if (shapeValid.update()) {
                 sync(false);
             }
+        }
+    }
+
+    private void triggerBuiltMultiblock() {
+        var player = level.getServer().getPlayerList().getPlayer(placedBy.placerId);
+        if (player != null) {
+            MIAdvancementTriggers.BUILT_MULTIBLOCK.get().trigger(player, this);
         }
     }
 
@@ -104,6 +115,25 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     public abstract ShapeTemplate getActiveShape();
+
+    @Nullable
+    public final String getActiveShapeId() {
+        var activeShape = components.getNullable(ActiveShapeComponent.class);
+        if (activeShape != null) {
+            int activeShapeIndex = activeShape.getActiveShapeIndex();
+            var machineId = guiParams.blockId;
+            int shapeIndex = 0;
+            for (var shape : ReiMachineRecipes.multiblockShapes) {
+                if (shape.machine().equals(machineId)) {
+                    if (shapeIndex == activeShapeIndex) {
+                        return shape.alternative();
+                    }
+                    shapeIndex++;
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * Can be used in the guide book to show an example of a big shape.

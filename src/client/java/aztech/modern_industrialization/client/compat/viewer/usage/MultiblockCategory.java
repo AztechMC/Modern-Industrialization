@@ -27,13 +27,14 @@ package aztech.modern_industrialization.client.compat.viewer.usage;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.client.compat.viewer.abstraction.IngredientCount;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -41,6 +42,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jspecify.annotations.Nullable;
 
 public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe> {
@@ -82,28 +84,26 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
 
     protected static class Recipe {
         public final ItemStack controller;
-        public final List<IngredientCount> materials = new ArrayList<>();
+        public final List<SizedIngredient> materials = new ArrayList<>();
         public final ResourceLocation id;
 
         public Recipe(ResourceLocation controller, ShapeTemplate shapeTemplate, @Nullable String alternative, RegistryAccess registries) {
             this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
-            List<IngredientCount> materials = new ArrayList<>();
+            Map<Ingredient, Integer> materialCounts = new HashMap<>();
 
-            outer:
             for (var entry : shapeTemplate.simpleMembers.entrySet()) {
                 var previewState = entry.getValue().getItemPreviewState(registries);
                 if (!previewState.isEmpty()) {
-                    for (var materialStack : materials) {
-                        if (materialStack.ingredient.equals(previewState)) {
-                            materialStack.count++;
-                            continue outer;
-                        }
-                    }
-                    materials.add(new IngredientCount(previewState, 1));
+                    materialCounts.merge(previewState, 1, Integer::sum);
                 }
             }
 
-            materials.sort(Comparator.comparing((IngredientCount material) -> material.count).reversed());
+            List<SizedIngredient> materials = materialCounts.entrySet().stream()
+                    .map((entry) -> new SizedIngredient(entry.getKey(), entry.getValue()))
+                    .sorted(Comparator
+                            .comparing(SizedIngredient::count)
+                            .reversed())
+                    .toList();
             this.materials.addAll(materials);
             this.id = ResourceLocation.fromNamespaceAndPath(controller.getNamespace(),
                     "/" + controller.getPath() + "/" + materials.size() + (alternative == null ? "" : "/" + alternative));

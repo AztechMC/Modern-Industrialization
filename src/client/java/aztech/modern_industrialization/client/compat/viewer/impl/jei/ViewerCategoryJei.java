@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.client.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.client.compat.viewer.abstraction.IngredientCount;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -56,6 +55,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jspecify.annotations.Nullable;
@@ -108,11 +108,9 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
+            public void scrollableSlots(int cols, int rows, List<SizedIngredient> ingredients) {
                 for (var ingredient : ingredients) {
-                    builder.addInputSlot().addItemStacks(Arrays.stream(ingredient.ingredient.getItems())
-                            .map((stack) -> stack.copyWithCount(ingredient.count))
-                            .toList());
+                    builder.addInputSlot().addItemStacks(Arrays.asList(ingredient.getItems()));
                 }
             }
 
@@ -224,7 +222,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             public void invisibleOutput(Ingredient ingredient, int count) {}
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
+            public void scrollableSlots(int cols, int rows, List<SizedIngredient> ingredients) {
                 var slots = builder.getRecipeSlots().getSlots(RecipeIngredientRole.INPUT);
                 var scrollWidget = builder.addScrollGridWidget(slots, cols, rows);
                 scrollWidget.setPosition(0, 0, getWidth(), getHeight(), HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM);
@@ -272,7 +270,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {}
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {}
+            public void scrollableSlots(int cols, int rows, List<SizedIngredient> ingredients) {}
         });
 
         guiGraphics.pose().popPose();
@@ -313,7 +311,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {}
+            public void scrollableSlots(int cols, int rows, List<SizedIngredient> ingredients) {}
         });
     }
 

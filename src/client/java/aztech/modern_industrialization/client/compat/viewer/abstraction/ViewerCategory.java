@@ -39,6 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jspecify.annotations.Nullable;
 
@@ -107,7 +108,7 @@ public abstract class ViewerCategory<D> {
 
         void invisibleOutput(Ingredient ingredient, int count);
 
-        void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients);
+        void scrollableSlots(int cols, int rows, List<SizedIngredient> ingredients);
     }
 
     public interface SlotBuilder {
@@ -188,7 +189,7 @@ public abstract class ViewerCategory<D> {
 
         void tooltip(int x, int y, int w, int h, List<Component> tooltip);
 
-        void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients);
+        void scrollableSlots(int cols, int rows, List<SizedIngredient> ingredients);
     }
 
     public enum TextAlign {

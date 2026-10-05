@@ -24,7 +24,6 @@
 
 package aztech.modern_industrialization.client.compat.viewer.impl.rei;
 
-import aztech.modern_industrialization.client.compat.viewer.abstraction.IngredientCount;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -54,6 +53,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jspecify.annotations.Nullable;
 
@@ -135,7 +135,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {
+            public void scrollableSlots(int cols, int rows, List<SizedIngredient> ingredients) {
                 int x = (wrapped.width / 2) - (18 * cols) / 2 + 1;
                 int y = wrapped.height - (rows * 18) - 3;
                 int index = 0;
@@ -146,7 +146,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
                         var slot = this.inputSlot(ix, iy);
                         if (index < ingredients.size()) {
                             var ingredient = ingredients.get(index);
-                            slot.ingredient(ingredient.ingredient, ingredient.count, 1);
+                            slot.ingredient(ingredient.ingredient(), ingredient.count(), 1);
                         }
                         index++;
                     }
@@ -348,7 +348,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<IngredientCount> ingredients) {}
+            public void scrollableSlots(int cols, int rows, List<SizedIngredient> ingredients) {}
         });
 
         // Inputs and outputs

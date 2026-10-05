@@ -118,6 +118,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
 
     @Nullable
     public final String getActiveShapeId() {
+        // This is a bit of a hack, but it's the simplest way to get this information
         var activeShape = components.getNullable(ActiveShapeComponent.class);
         if (activeShape != null) {
             int activeShapeIndex = activeShape.getActiveShapeIndex();

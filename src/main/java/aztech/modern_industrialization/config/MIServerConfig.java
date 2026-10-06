@@ -37,6 +37,7 @@ public final class MIServerConfig {
     }
 
     public final ModConfigSpec.IntValue forgeEnergyPerEu;
+    public final ModConfigSpec.IntValue steamPerWater;
     public final ModConfigSpec.IntValue baseItemPipeTransfer;
     public final ModConfigSpec.BooleanValue spawnWithGuideBook;
     public final ModConfigSpec.BooleanValue respawnWithGuideBook;
@@ -49,6 +50,10 @@ public final class MIServerConfig {
                 "FE per EU",
                 "How many Forge Energy units a single EU from MI is worth.")
                 .defineInRange("forgeEnergyPerEu", 10, 1, 1000);
+        this.steamPerWater = builder.start("steamPerWater",
+                "Steam per Water",
+                "How much steam should be produced per mb of water that is boiled.")
+                .defineInRange("steamPerWater", 16, 1, 1000);
         this.baseItemPipeTransfer = builder.start("baseItemPipeTransfer",
                 "Base item pipe transfer",
                 "Base amount of items transferred by item pipes every 3 seconds.")

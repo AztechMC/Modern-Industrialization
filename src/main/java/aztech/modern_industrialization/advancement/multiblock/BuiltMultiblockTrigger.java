@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.advancement;
+package aztech.modern_industrialization.advancement.multiblock;
 
 import aztech.modern_industrialization.MIAdvancementTriggers;
 import com.mojang.serialization.Codec;
@@ -52,8 +52,8 @@ public class BuiltMultiblockTrigger extends SimpleCriterionTrigger<BuiltMultiblo
         return TriggerInstance.CODEC;
     }
 
-    public void trigger(ServerPlayer player, ResourceLocation multiblockId, @Nullable String shapeId) {
-        this.trigger(player, (instance) -> instance.matches(player, multiblockId, shapeId));
+    public void trigger(ServerPlayer player, BuiltMultiblockContext context) {
+        this.trigger(player, (instance) -> instance.matches(player, context));
     }
 
     public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<MultiblockPredicate> multiblock) implements SimpleCriterionTrigger.SimpleInstance {
@@ -63,8 +63,8 @@ public class BuiltMultiblockTrigger extends SimpleCriterionTrigger<BuiltMultiblo
                         MultiblockPredicate.CODEC.optionalFieldOf("multiblock").forGetter(TriggerInstance::multiblock))
                 .apply(instance, TriggerInstance::new));
 
-        public boolean matches(ServerPlayer player, ResourceLocation multiblockId, @Nullable String shapeId) {
-            return multiblock.map((predicate) -> predicate.matches(multiblockId, shapeId)).orElse(true);
+        public boolean matches(ServerPlayer player, BuiltMultiblockContext context) {
+            return multiblock.map((predicate) -> predicate.matches(context)).orElse(true);
         }
     }
 
@@ -75,9 +75,9 @@ public class BuiltMultiblockTrigger extends SimpleCriterionTrigger<BuiltMultiblo
                         Codec.STRING.optionalFieldOf("shape").forGetter(MultiblockPredicate::shape))
                 .apply(instance, MultiblockPredicate::new));
 
-        public boolean matches(ResourceLocation multiblockId, @Nullable String shapeId) {
-            return id.equals(multiblockId) &&
-                    shape.map((shape) -> shape.equals(shapeId)).orElse(true);
+        public boolean matches(BuiltMultiblockContext context) {
+            return id.equals(context.id()) &&
+                    shape.map((shape) -> shape.equals(context.shape())).orElse(true);
         }
     }
 }

@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIAdvancementTriggers;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.advancement.BuiltMultiblockTrigger;
+import aztech.modern_industrialization.advancement.multiblock.BuiltMultiblockTrigger;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import java.util.Optional;
 import java.util.function.Consumer;

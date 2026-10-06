@@ -24,17 +24,44 @@
 
 package aztech.modern_industrialization.compat.ftbquests;
 
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.advancement.multiblock.BuiltMultiblockContext;
+import aztech.modern_industrialization.compat.ftbquests.task.BuiltMultiblockQuestTask;
+import aztech.modern_industrialization.config.MIStartupConfig;
+import dev.ftb.mods.ftblibrary.icon.Icon;
+import dev.ftb.mods.ftblibrary.util.Lazy;
+import dev.ftb.mods.ftbquests.events.ClearFileCacheEvent;
 import dev.ftb.mods.ftbquests.item.MissingItem;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import dev.ftb.mods.ftbquests.quest.task.ItemTask;
+import dev.ftb.mods.ftbquests.quest.task.TaskTypes;
 import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
+import java.util.List;
 import java.util.UUID;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
+    private final Lazy<List<BuiltMultiblockQuestTask>> builtMultiblockTasks = Lazy.of(() -> ServerQuestFile.INSTANCE.collect(BuiltMultiblockQuestTask.class));
+
+    @Override
+    public void init() {
+        BuiltMultiblockQuestTask.TYPE = TaskTypes.register(MI.id("built_multiblock"), BuiltMultiblockQuestTask::new, () -> Icon.getIcon("modern_industrialization:item/wrench"));
+
+        ClearFileCacheEvent.EVENT.register(event -> this.invalidateCaches());
+    }
+
+    private void invalidateCaches() {
+        builtMultiblockTasks.invalidate();
+    }
+
     @Override
     public void addCompleted(UUID uuid, Item item, long amount) {
+        if (!MIStartupConfig.INSTANCE.ftbQuestsIntegration.getAsBoolean()) {
+            return;
+        }
+
         var file = ServerQuestFile.INSTANCE;
         var team = FTBTeamsAPI.api().getManager().getTeamForPlayerID(uuid).orElse(null);
         if (team == null) {
@@ -59,5 +86,21 @@ public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
                 }
             }
         }
+    }
+
+    @Override
+    public void builtMultiblock(ServerPlayer player, BuiltMultiblockContext context) {
+        var file = ServerQuestFile.INSTANCE;
+        file.getTeamData(player).ifPresent(data -> {
+            if (!data.isLocked()) {
+                file.withPlayerContext(player, () -> {
+                    for (var task : builtMultiblockTasks.get()) {
+                        if (data.canStartTasks(task.getQuest()) && task.canComplete(data) && task.matches(context)) {
+                            data.setProgress(task, 1);
+                        }
+                    }
+                });
+            }
+        });
     }
 }

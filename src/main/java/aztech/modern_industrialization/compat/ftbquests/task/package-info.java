@@ -23,6 +23,6 @@
  */
 
 @NullMarked
-package aztech.modern_industrialization.advancement;
+package aztech.modern_industrialization.compat.ftbquests.task;
 
 import org.jspecify.annotations.NullMarked;

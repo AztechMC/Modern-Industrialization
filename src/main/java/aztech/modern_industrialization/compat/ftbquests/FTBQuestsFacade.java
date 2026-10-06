@@ -24,8 +24,9 @@
 
 package aztech.modern_industrialization.compat.ftbquests;
 
-import aztech.modern_industrialization.config.MIStartupConfig;
+import aztech.modern_industrialization.advancement.multiblock.BuiltMultiblockContext;
 import java.util.UUID;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.ModList;
 
@@ -33,7 +34,7 @@ public interface FTBQuestsFacade {
     FTBQuestsFacade INSTANCE = getInstance();
 
     private static FTBQuestsFacade getInstance() {
-        if (ModList.get().isLoaded("ftbquests") && MIStartupConfig.INSTANCE.ftbQuestsIntegration.getAsBoolean()) {
+        if (ModList.get().isLoaded("ftbquests")) {
             try {
                 return Class.forName("aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacadeImpl")
                         .asSubclass(FTBQuestsFacade.class).getConstructor().newInstance();
@@ -42,8 +43,12 @@ public interface FTBQuestsFacade {
             }
         }
 
-        return (uuid, item, amount) -> {};
+        return new FTBQuestsFacade() {};
     }
 
-    void addCompleted(UUID uuid, Item item, long amount);
+    default void init() {}
+
+    default void addCompleted(UUID uuid, Item item, long amount) {}
+
+    default void builtMultiblock(ServerPlayer player, BuiltMultiblockContext context) {}
 }

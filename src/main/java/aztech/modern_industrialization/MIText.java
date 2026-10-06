@@ -59,6 +59,7 @@ public enum MIText {
     Blacklist("Blacklist mode enabled"),
     BookSubtitle("Technology For Newbies"),
     Both("Both"),
+    BuildMultiblock("Build %s"),
     ChanceConsumption("Consumption Chance: %s %%"),
     ChanceProduction("Production Chance: %s %%"),
     ClickToDisable("Click to disable"),

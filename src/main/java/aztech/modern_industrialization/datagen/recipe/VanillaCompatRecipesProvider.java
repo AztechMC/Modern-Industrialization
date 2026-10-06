@@ -108,6 +108,10 @@ public class VanillaCompatRecipesProvider extends MIRecipesProvider {
                 .addItemInput(Items.STONE, 1)
                 .addItemOutput(Items.COBBLESTONE, 1)
                 .offerTo(exporter, "vanilla_recipes/macerator/stone_to_cobblestone");
+        new MachineRecipeBuilder(MIMachineRecipeTypes.COMPRESSOR, 2, 100)
+                .addItemInput(Items.STRING, 4)
+                .addItemOutput(Items.WHITE_WOOL, 1)
+                .offerTo(exporter, "vanilla_recipes/compressor/string_to_wool");
     }
 
     private void generateCopperOxidation(RecipeOutput exporter, Item unaffected, Item exposed, Item weathered, Item oxidized) {

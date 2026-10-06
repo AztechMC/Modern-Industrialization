@@ -15,8 +15,8 @@
     "modern_industrialization:methane",
     "modern_industrialization:nitrogen",
     "modern_industrialization:oxygen",
-    "modern_industrialization:polyvinyl_chloride",
     "modern_industrialization:steam",
-    "modern_industrialization:tritium"
+    "modern_industrialization:tritium",
+    "modern_industrialization:vinyl_chloride"
   ]
 }

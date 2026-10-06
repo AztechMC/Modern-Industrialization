@@ -1151,6 +1151,8 @@
   "modern_industrialization.configuration.respawnWithGuideBook.tooltip": "Grant guidebook when a player respawns after death.",
   "modern_industrialization.configuration.spawnWithGuideBook": "Spawn with guidebook",
   "modern_industrialization.configuration.spawnWithGuideBook.tooltip": "Grant guidebook the first time a player joins the server.",
+  "modern_industrialization.configuration.steamPerWater": "Steam per Water",
+  "modern_industrialization.configuration.steamPerWater.tooltip": "How much steam should be produced per mb of water that is boiled.",
   "modern_industrialization.configuration.stonecutterToCuttingMachine": "Stonecutter cutting machine recipes",
   "modern_industrialization.configuration.stonecutterToCuttingMachine.tooltip": "Generate cutting machine recipes for all stonecutter recipes.",
   "modern_industrialization.configuration.tooltips": "Tooltips",

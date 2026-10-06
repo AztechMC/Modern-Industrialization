@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-01T19:19:30.411417394	Server Data (aggregated)
+// 1.21.1	2026-10-06T12:51:24.623750012	Server Data (aggregated)
 3ed44658dfe9569ce8f176ca3f3c3c82fe6feeaa data/modern_industrialization/recipe/alloy/mixer/battery_alloy/dust.json
 17019fa80e9403e189de444bc671ebd0e01cd445 data/modern_industrialization/recipe/alloy/mixer/battery_alloy/tiny_dust.json
 4f16b34fe53d232383c92af163f2227351f88801 data/modern_industrialization/recipe/alloy/mixer/bronze/dust.json
@@ -2553,6 +2553,7 @@ a2141b949b00ca477251043e14cddb395a9e7fa6 data/modern_industrialization/recipe/va
 24bf8ca3ac6c52badc7fcf706ff5a5e700ecfccf data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/waxing/weathered_cut_copper.json
 565179fccce60321843775dc8d493b1f15938a19 data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/waxing/weathered_cut_copper_slab.json
 9ba0f63c2c9fa71f62755c2e3d5c4203c326f174 data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/waxing/weathered_cut_copper_stairs.json
+5da96e1beedbcadc6b2e261a408a6da37874a279 data/modern_industrialization/recipe/vanilla_recipes/compressor/string_to_wool.json
 8757b88dc60d6c177a41ee9557d154273126ec47 data/modern_industrialization/recipe/vanilla_recipes/macerator/stone_to_cobblestone.json
 406f254bb990caf3f62ff14a4fc7113df6220d44 data/modern_industrialization/recipe/vanilla_recipes/oxidation/chiseled_copper.json
 82dfc1d6d8c91ab24208072431b677aac1d8d320 data/modern_industrialization/recipe/vanilla_recipes/oxidation/copper_block.json

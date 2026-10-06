@@ -1,15 +1,13 @@
 {
   "parent": "modern_industrialization:hv_steam_turbine",
   "criteria": {
-    "checkInv": {
+    "buildMultiblock": {
       "conditions": {
-        "items": [
-          {
-            "items": "modern_industrialization:large_steam_turbine"
-          }
-        ]
+        "multiblock": {
+          "id": "modern_industrialization:large_steam_turbine"
+        }
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "modern_industrialization:built_multiblock"
     }
   },
   "display": {
@@ -26,7 +24,7 @@
   },
   "requirements": [
     [
-      "checkInv"
+      "buildMultiblock"
     ]
   ],
   "sends_telemetry_event": true

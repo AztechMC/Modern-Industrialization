@@ -1,15 +1,13 @@
 {
   "parent": "modern_industrialization:steel_machine_casing",
   "criteria": {
-    "checkInv": {
+    "buildMultiblock": {
       "conditions": {
-        "items": [
-          {
-            "items": "modern_industrialization:steam_quarry"
-          }
-        ]
+        "multiblock": {
+          "id": "modern_industrialization:steam_quarry"
+        }
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "modern_industrialization:built_multiblock"
     }
   },
   "display": {
@@ -27,7 +25,7 @@
   },
   "requirements": [
     [
-      "checkInv"
+      "buildMultiblock"
     ]
   ],
   "sends_telemetry_event": true

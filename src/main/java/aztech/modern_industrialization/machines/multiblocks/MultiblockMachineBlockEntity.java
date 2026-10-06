@@ -83,7 +83,9 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     private void triggerBuiltMultiblock() {
         var player = level.getServer().getPlayerList().getPlayer(placedBy.placerId);
         if (player != null) {
-            MIAdvancementTriggers.BUILT_MULTIBLOCK.get().trigger(player, this);
+            var multiblockId = guiParams.blockId;
+            var shapeId = getActiveShapeId();
+            MIAdvancementTriggers.BUILT_MULTIBLOCK.get().trigger(player, multiblockId, shapeId);
         }
     }
 

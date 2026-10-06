@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.advancement;
 
 import aztech.modern_industrialization.MIAdvancementTriggers;
-import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
@@ -53,9 +52,7 @@ public class BuiltMultiblockTrigger extends SimpleCriterionTrigger<BuiltMultiblo
         return TriggerInstance.CODEC;
     }
 
-    public void trigger(ServerPlayer player, MultiblockMachineBlockEntity machine) {
-        var multiblockId = machine.guiParams.blockId;
-        var shapeId = machine.getActiveShapeId();
+    public void trigger(ServerPlayer player, ResourceLocation multiblockId, @Nullable String shapeId) {
         this.trigger(player, (instance) -> instance.matches(player, multiblockId, shapeId));
     }
 

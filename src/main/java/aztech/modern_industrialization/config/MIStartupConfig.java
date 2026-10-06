@@ -73,7 +73,7 @@ public final class MIStartupConfig {
                 "FTB Quests integration",
                 "Enable the FTB Quests integration, if present.")
                 .gameRestart()
-                .define("ftbQuestsIntegration", true);
+                .define("ftbQuestsIntegration", false);
         this.almostUnifiedIntegration = builder.start("almostUnifiedIntegration",
                 "Almost Unified integration",
                 "Enable the Almost Unified integration, if present.")

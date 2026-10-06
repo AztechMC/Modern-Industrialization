@@ -84,6 +84,9 @@ public final class TranslationProvider implements DataProvider {
 
         addTranslation("config.jade.plugin_modern_industrialization.overclock", "Machine Overclock");
         addTranslation("config.jade.plugin_modern_industrialization.pipe", "Pipe Information");
+
+        addTranslation("ftbquests.task.modern_industrialization.built_multiblock", "Build Multiblock");
+        addTranslation("ftbquests.task.modern_industrialization.built_multiblock.machine", "Machine");
     }
 
     private void collectTranslationEntries() {

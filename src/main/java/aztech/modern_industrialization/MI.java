@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
+import aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacade;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
@@ -277,6 +278,8 @@ public class MI {
         modBus.addListener(RegisterGameTestsEvent.class, event -> {
             event.register(MIGameTests.class);
         });
+
+        FTBQuestsFacade.INSTANCE.init();
 
         LOGGER.info("Modern Industrialization setup done!");
     }

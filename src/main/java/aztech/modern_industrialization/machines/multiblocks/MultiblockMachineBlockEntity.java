@@ -25,6 +25,8 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.MIAdvancementTriggers;
+import aztech.modern_industrialization.advancement.multiblock.BuiltMultiblockContext;
+import aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacade;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
@@ -83,9 +85,9 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     private void triggerBuiltMultiblock() {
         var player = level.getServer().getPlayerList().getPlayer(placedBy.placerId);
         if (player != null) {
-            var multiblockId = guiParams.blockId;
-            var shapeId = getActiveShapeId();
-            MIAdvancementTriggers.BUILT_MULTIBLOCK.get().trigger(player, multiblockId, shapeId);
+            var context = new BuiltMultiblockContext(guiParams.blockId, getActiveShapeId());
+            MIAdvancementTriggers.BUILT_MULTIBLOCK.get().trigger(player, context);
+            FTBQuestsFacade.INSTANCE.builtMultiblock(player, context);
         }
     }
 

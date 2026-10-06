@@ -96,7 +96,7 @@ public class MIFluids {
     public static final FluidDefinition PLANT_OIL = fluid("Plant Oil", "plant_oil", 0xff78bd1e, NEAR_OPACITY);
     public static final FluidDefinition PLATINUM_SULFURIC_SOLUTION = fluid("Platinum Sulfuric Solution", "platinum_sulfuric_solution", 0xffe69e75, MEDIUM_OPACITY);
     public static final FluidDefinition POLYETHYLENE = fluid("Polyethylene", "polyethylene", 0xff639c98, NEAR_OPACITY);
-    public static final FluidDefinition POLYVINYL_CHLORIDE = fluid("Polyvinyl Chloride", "polyvinyl_chloride", 0xfff6d3ec, true);
+    public static final FluidDefinition POLYVINYL_CHLORIDE = fluid("Polyvinyl Chloride", "polyvinyl_chloride", 0xfff6d3ec);
     public static final FluidDefinition PROPENE = fluid("Propene", "propene", 0xff98644c, NEAR_OPACITY);
     public static final FluidDefinition PURIFIED_PLATINUM_SULFURIC_SOLUTION = fluid("Purified Platinum Sulfuric Solution","purified_platinum_sulfuric_solution", 0xffedc08a, MEDIUM_OPACITY);
     public static final FluidDefinition RAW_BIODIESEL = fluid("Raw Biodiesel", "raw_biodiesel", 0xff2c8009, FULL_OPACITY);
@@ -122,7 +122,7 @@ public class MIFluids {
     public static final FluidDefinition TOLUENE = fluid("Toluene", "toluene", 0xff9ce6ed, NEAR_OPACITY);
     public static final FluidDefinition TRITIUM = fluid("Tritium", "tritium", 0xffcc1b50, true);
     public static final FluidDefinition UU_MATTER = fluid("UU Matter", "uu_matter", 0xffff00bf, FULL_OPACITY, false);
-    public static final FluidDefinition VINYL_CHLORIDE = fluid("Vinyl Chloride", "vinyl_chloride", 0xffeda7d9, MEDIUM_OPACITY);
+    public static final FluidDefinition VINYL_CHLORIDE = fluid("Vinyl Chloride", "vinyl_chloride", 0xffeda7d9, MEDIUM_OPACITY, true);
 
     static {
         KubeJSProxy.instance.fireRegisterFluidsEvent();

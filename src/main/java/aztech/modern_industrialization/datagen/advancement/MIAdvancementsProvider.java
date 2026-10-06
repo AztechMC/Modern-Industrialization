@@ -202,16 +202,16 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         var titaniumIngot = createBasic(consumer, "titanium_ingot", kanthalCoil, "Steel but Pink", "Craft a Titanium Ingot", existingFileHelper);
         var blastProofAlloyPlate = createBasic(consumer, "blastproof_alloy_plate", titaniumIngot, "Creeper Nightmare", "Craft a Blastproof Alloy Plate in the compressor", existingFileHelper);
         var implosionCompressor = createMultiblock(consumer, "implosion_compressor", blastProofAlloyPlate, AdvancementType.GOAL, "Automated Creeper", "Build an Implosion Compressor", existingFileHelper);
-        var pressurizer = createMultiblock(consumer, "pressurizer", titaniumIngot, "Under Pressure", "Build a Pressurizer to unlock for efficient Steam Process", existingFileHelper);
+        var pressurizer = createMultiblock(consumer, "pressurizer", titaniumIngot, "Under Pressure", "Build a Pressurizer to unlock for more efficient steam processing", existingFileHelper);
         var rawIridium = createBasic(consumer, "raw_iridium", titaniumIngot, "Diamond 2.0: Electric Boogaloo", "Obtain a Raw Piece of Iridium", existingFileHelper);
-        var superconductorCable = createBasic(consumer, "superconductor_cable", rawIridium, AdvancementType.GOAL, "Unlimited Power (Transfer)", "Craft a Superconductor Cable to transfer unlimited amount of energy", existingFileHelper);
+        var superconductorCable = createBasic(consumer, "superconductor_cable", rawIridium, AdvancementType.GOAL, "Unlimited Power (Transfer)", "Craft a Superconductor Cable to transfer an unlimited amount of energy", existingFileHelper);
         var gravichestplate = createBasic(consumer, "gravichestplate", superconductorCable, AdvancementType.CHALLENGE, "Gravichestplate™", "Craft a Gravichestplate to unlock creative flight", existingFileHelper);
         var nuclearReactor = createMultiblock(consumer, "nuclear_reactor", implosionCompressor, AdvancementType.CHALLENGE, "3.6 Roentgen", "Build a Nuclear Reactor and discover its overengineered mechanisms", existingFileHelper);
         var nuke = createBasic(consumer, "nuke", nuclearReactor, "I've become Death, Destroyer of Worlds", "Craft a Nuke", existingFileHelper);
         var singularity = createBasic(consumer, "singularity", nuke, "Pocket Black Hole", "Craft a Singularity", existingFileHelper);
         var mixedIngotIridium = createBasic(consumer, "mixed_ingot_iridium", implosionCompressor, "Oreo Ingot", "Craft a Mixed Ingot Iridium to craft Iridium Plates", existingFileHelper);
         var quantumCircuit = createBasic(consumer, "quantum_circuit", mixedIngotIridium, AdvancementType.GOAL, "Mobius Strip Eigenvalues", "Craft a Quantum Circuit", existingFileHelper);
-        var fusionReactor = createMultiblock(consumer, "fusion_reactor", quantumCircuit, AdvancementType.CHALLENGE, "Enslaved Star Core", "Build a Fusion Reactor to produce insane amount of energy", existingFileHelper);
+        var fusionReactor = createMultiblock(consumer, "fusion_reactor", quantumCircuit, AdvancementType.CHALLENGE, "Enslaved Star Core", "Build a Fusion Reactor to produce an insane amount of energy", existingFileHelper);
         var plasmaTurbine = createMultiblock(consumer, "plasma_turbine", fusionReactor, "Better than Nuclear Fission", "Build a Plasma Turbine to transform Helium Plasma into energy", existingFileHelper);
         var basicUpgrade = createBasic(consumer, "basic_upgrade", assembler, AdvancementType.GOAL, "Machine Speedup", "Craft a Basic Upgrade to increase the maximum speed of an electric recipe", existingFileHelper);
         var advancedUpgrade = createBasic(consumer, "advanced_upgrade", chemicalReactor, "Machine Speedup-Speedup", "Craft a Advanced Upgrade", existingFileHelper);
@@ -220,7 +220,7 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         var quantumUpgrade = createBasic(consumer, "quantum_upgrade", quantumCircuit, AdvancementType.GOAL, "Time Dilation", "Craft a Quantum Upgrade to unlock unlimited recipe speed", existingFileHelper);
         var replicator = createBasic(consumer, "replicator", quantumUpgrade, AdvancementType.CHALLENGE, "Legal Duping", "Craft a Replicator and replicate any item you want using UU Matter", existingFileHelper);
         var uuMatter = createBasic(consumer, "uu_matter_bucket", singularity, AdvancementType.GOAL, "Liquid Creative Mode", "Produce a bucket of UU Matter to start duplication in the replicator", existingFileHelper);
-        var quantumSword = createBasic(consumer, "quantum_sword", quantumUpgrade, AdvancementType.CHALLENGE, "Annihilation Operator", "Craft a Quantum Sword and disintegrate your foes (or the Wandering Trader llama's)", existingFileHelper);
+        var quantumSword = createBasic(consumer, "quantum_sword", quantumUpgrade, AdvancementType.CHALLENGE, "Annihilation Operator", "Craft a Quantum Sword and disintegrate your foes (or the Wandering Trader's llamas)", existingFileHelper);
         var quantumChestplate = createBasic(consumer, "quantum_chestplate", quantumUpgrade, AdvancementType.CHALLENGE, "Quantum Immortality™", "Craft a Quantum Chestplate to reduce the probability of taking any damage by 25% for each piece of the Quantum Armor Set", existingFileHelper);
         // @formatter:on
     }

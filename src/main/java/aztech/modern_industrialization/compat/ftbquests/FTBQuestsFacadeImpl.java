@@ -27,7 +27,7 @@ package aztech.modern_industrialization.compat.ftbquests;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.advancement.multiblock.BuiltMultiblockContext;
 import aztech.modern_industrialization.compat.ftbquests.task.BuiltMultiblockQuestTask;
-import aztech.modern_industrialization.config.MIStartupConfig;
+import aztech.modern_industrialization.config.MIServerConfig;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.events.ClearFileCacheEvent;
 import dev.ftb.mods.ftbquests.item.MissingItem;
@@ -85,7 +85,7 @@ public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
 
     @Override
     public void addCompleted(UUID uuid, Item item, long amount) {
-        if (!MIStartupConfig.INSTANCE.ftbQuestsIntegration.getAsBoolean() ||
+        if (!MIServerConfig.INSTANCE.ftbQuestsIntegration.getAsBoolean() ||
                 item instanceof MissingItem) {
             return;
         }

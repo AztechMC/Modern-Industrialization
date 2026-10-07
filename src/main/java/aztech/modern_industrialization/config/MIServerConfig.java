@@ -42,6 +42,8 @@ public final class MIServerConfig {
     public final ModConfigSpec.BooleanValue spawnWithGuideBook;
     public final ModConfigSpec.BooleanValue respawnWithGuideBook;
 
+    public final ModConfigSpec.BooleanValue ftbQuestsIntegration;
+
     public final ModConfigSpec.BooleanValue compostableToPlantOil;
     public final ModConfigSpec.BooleanValue stonecutterToCuttingMachine;
 
@@ -66,6 +68,13 @@ public final class MIServerConfig {
                 "Respawn with guidebook",
                 "Grant guidebook when a player respawns after death.")
                 .define("respawnWithGuideBook", true);
+
+        builder.pushSection("compat", "Mod Compatibility");
+        this.ftbQuestsIntegration = builder.start("ftbQuestsIntegration",
+                "FTB Quests integration",
+                "Enable the FTB Quests integration, if present.")
+                .define("ftbQuestsIntegration", true);
+        builder.popSection();
 
         builder.pushSection("recipes", "Recipes");
         this.compostableToPlantOil = builder.start("compostableToPlantOil",

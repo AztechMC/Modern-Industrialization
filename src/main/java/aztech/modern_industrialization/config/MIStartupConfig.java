@@ -44,7 +44,6 @@ public final class MIStartupConfig {
 
     public final ModConfigSpec.BooleanValue bidirectionalEnergyCompat;
     public final ModConfigSpec.BooleanValue ae2Integration;
-    public final ModConfigSpec.BooleanValue ftbQuestsIntegration;
     public final ModConfigSpec.BooleanValue almostUnifiedIntegration;
 
     public final ModConfigSpec.BooleanValue datagenOnStartup;
@@ -63,17 +62,12 @@ public final class MIStartupConfig {
                 "Enable bidirectional energy compatibility with NeoForge's energy system.",
                 "We recommend leaving this to false unless the other mods have been balanced accordingly.")
                 .gameRestart()
-                .define("bidirectionalEnergyCompat", true);
+                .define("bidirectionalEnergyCompat", false);
         this.ae2Integration = builder.start("ae2Integration",
                 "AE2 integration",
                 "Enable the Applied Energistics 2 integration, if present.")
                 .gameRestart()
                 .define("ae2Integration", true);
-        this.ftbQuestsIntegration = builder.start("ftbQuestsIntegration",
-                "FTB Quests integration",
-                "Enable the FTB Quests integration, if present.")
-                .gameRestart()
-                .define("ftbQuestsIntegration", false);
         this.almostUnifiedIntegration = builder.start("almostUnifiedIntegration",
                 "Almost Unified integration",
                 "Enable the Almost Unified integration, if present.")

@@ -1125,7 +1125,7 @@
   "modern_industrialization.configuration.forgeEnergyPerEu": "FE per EU",
   "modern_industrialization.configuration.forgeEnergyPerEu.tooltip": "How many Forge Energy units a single EU from MI is worth.",
   "modern_industrialization.configuration.ftbQuestsIntegration": "FTB Quests integration",
-  "modern_industrialization.configuration.ftbQuestsIntegration.tooltip": "Enable the FTB Quests integration, if present.",
+  "modern_industrialization.configuration.ftbQuestsIntegration.tooltip": "Enable the FTB Quests integration (if present) for machine outputs counting towards quests.",
   "modern_industrialization.configuration.fuelTooltips": "Fuel tooltips",
   "modern_industrialization.configuration.fuelTooltips.tooltip": "Add the total EU value of fuel items to their tooltips.",
   "modern_industrialization.configuration.hatchPlacementOverlay": "Hatch placement overlay",

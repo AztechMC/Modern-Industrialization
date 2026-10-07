@@ -72,7 +72,7 @@ public final class MIServerConfig {
         builder.pushSection("compat", "Mod Compatibility");
         this.ftbQuestsIntegration = builder.start("ftbQuestsIntegration",
                 "FTB Quests integration",
-                "Enable the FTB Quests integration, if present.")
+                "Enable the FTB Quests integration (if present) for machine outputs counting towards quests.")
                 .define("ftbQuestsIntegration", true);
         builder.popSection();
 

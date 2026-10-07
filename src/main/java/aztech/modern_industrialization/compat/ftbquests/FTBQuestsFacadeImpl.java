@@ -27,9 +27,8 @@ package aztech.modern_industrialization.compat.ftbquests;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.advancement.multiblock.BuiltMultiblockContext;
 import aztech.modern_industrialization.compat.ftbquests.task.BuiltMultiblockQuestTask;
-import aztech.modern_industrialization.config.MIStartupConfig;
+import aztech.modern_industrialization.config.MIServerConfig;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftblibrary.util.Lazy;
 import dev.ftb.mods.ftbquests.events.ClearFileCacheEvent;
 import dev.ftb.mods.ftbquests.item.MissingItem;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
@@ -37,13 +36,19 @@ import dev.ftb.mods.ftbquests.quest.task.ItemTask;
 import dev.ftb.mods.ftbquests.quest.task.TaskTypes;
 import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
-    private final Lazy<List<BuiltMultiblockQuestTask>> builtMultiblockTasks = Lazy.of(() -> ServerQuestFile.INSTANCE.collect(BuiltMultiblockQuestTask.class));
+    @Nullable
+    private Map<Item, List<ItemTask>> itemTasks;
+    @Nullable
+    private List<BuiltMultiblockQuestTask> builtMultiblockTasks;
 
     @Override
     public void init() {
@@ -53,12 +58,35 @@ public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
     }
 
     private void invalidateCaches() {
-        builtMultiblockTasks.invalidate();
+        itemTasks = null;
+        builtMultiblockTasks = null;
+    }
+
+    private Map<Item, List<ItemTask>> getItemTasks() {
+        if (itemTasks == null) {
+            itemTasks = ServerQuestFile.INSTANCE.collect(ItemTask.class).stream()
+                    .filter(task -> !(task.getItemStack().getItem() instanceof MissingItem) && !task.consumesResources())
+                    .collect(Collectors.groupingBy(task -> task.getItemStack().getItem()));
+        }
+        return itemTasks;
+    }
+
+    private List<ItemTask> getItemTasks(Item item) {
+        var tasks = getItemTasks().get(item);
+        return tasks == null ? List.of() : tasks;
+    }
+
+    private List<BuiltMultiblockQuestTask> getBuiltMultiblockTasks() {
+        if (builtMultiblockTasks == null) {
+            builtMultiblockTasks = ServerQuestFile.INSTANCE.collect(BuiltMultiblockQuestTask.class);
+        }
+        return builtMultiblockTasks;
     }
 
     @Override
     public void addCompleted(UUID uuid, Item item, long amount) {
-        if (!MIStartupConfig.INSTANCE.ftbQuestsIntegration.getAsBoolean()) {
+        if (!MIServerConfig.INSTANCE.ftbQuestsIntegration.getAsBoolean() ||
+                item instanceof MissingItem) {
             return;
         }
 
@@ -73,17 +101,11 @@ public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
             return;
         }
 
-        ItemStack stack = new ItemStack(item, (int) amount);
+        var stack = new ItemStack(item, (int) amount);
 
-        for (var task : file.getSubmitTasks()) {
-            if (task instanceof ItemTask itemTask && data.canStartTasks(task.getQuest())) {
-                if (data.isCompleted(task) || itemTask.getItemStack().getItem() instanceof MissingItem || item instanceof MissingItem) {
-                    continue;
-                }
-
-                if (!task.consumesResources() && itemTask.test(stack)) {
-                    data.addProgress(task, amount);
-                }
+        for (var task : getItemTasks(item)) {
+            if (data.canStartTasks(task.getQuest()) && !data.isCompleted(task) && task.test(stack)) {
+                data.addProgress(task, amount);
             }
         }
     }
@@ -94,7 +116,7 @@ public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
         file.getTeamData(player).ifPresent(data -> {
             if (!data.isLocked()) {
                 file.withPlayerContext(player, () -> {
-                    for (var task : builtMultiblockTasks.get()) {
+                    for (var task : getBuiltMultiblockTasks()) {
                         if (data.canStartTasks(task.getQuest()) && task.canComplete(data) && task.matches(context)) {
                             data.setProgress(task, 1);
                         }

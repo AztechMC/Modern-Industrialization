@@ -28,6 +28,7 @@ import aztech.modern_industrialization.advancement.multiblock.BuiltMultiblockCon
 import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModList;
 
 public interface FTBQuestsFacade {
@@ -49,6 +50,8 @@ public interface FTBQuestsFacade {
     default void init() {}
 
     default void addCompleted(UUID uuid, Item item, long amount) {}
+
+    default void addCompleted(UUID uuid, Fluid fluid, long amount) {}
 
     default void builtMultiblock(ServerPlayer player, BuiltMultiblockContext context) {}
 }

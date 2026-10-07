@@ -63,7 +63,7 @@ public final class MIStartupConfig {
                 "Enable bidirectional energy compatibility with NeoForge's energy system.",
                 "We recommend leaving this to false unless the other mods have been balanced accordingly.")
                 .gameRestart()
-                .define("bidirectionalEnergyCompat", false);
+                .define("bidirectionalEnergyCompat", true);
         this.ae2Integration = builder.start("ae2Integration",
                 "AE2 integration",
                 "Enable the Applied Energistics 2 integration, if present.")

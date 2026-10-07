@@ -123,7 +123,7 @@ public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
             return;
         }
 
-        addCompleted(uuid, fluid.getBucket(), 1);
+        addCompleted(uuid, bucketItem, 1);
     }
 
     @Override

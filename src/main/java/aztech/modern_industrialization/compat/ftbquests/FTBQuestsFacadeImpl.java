@@ -42,6 +42,8 @@ import java.util.stream.Collectors;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
 import org.jspecify.annotations.Nullable;
 
 public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
@@ -108,6 +110,20 @@ public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
                 data.addProgress(task, amount);
             }
         }
+    }
+
+    @Override
+    public void addCompleted(UUID uuid, Fluid fluid, long amount) {
+        if (!MIServerConfig.INSTANCE.ftbQuestsIntegration.getAsBoolean()) {
+            return;
+        }
+
+        var bucketItem = fluid.getBucket();
+        if (bucketItem == null || bucketItem == Items.AIR) {
+            return;
+        }
+
+        addCompleted(uuid, fluid.getBucket(), 1);
     }
 
     @Override

@@ -76,8 +76,7 @@ public class BuiltMultiblockTrigger extends SimpleCriterionTrigger<BuiltMultiblo
                 .apply(instance, MultiblockPredicate::new));
 
         public boolean matches(BuiltMultiblockContext context) {
-            return id.equals(context.id()) &&
-                    shape.map((shape) -> shape.equals(context.shape())).orElse(true);
+            return id.equals(context.id()) && (shape.isEmpty() || shape.equals(context.shape()));
         }
     }
 }

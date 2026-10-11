@@ -32,8 +32,11 @@ import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHol
 import aztech.modern_industrialization.api.machine.holder.FluidStorageComponentHolder;
 import aztech.modern_industrialization.api.machine.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -92,41 +95,55 @@ public abstract sealed class MachineComponentProvider<S, C>
         @Override
         public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
             var machine = (MachineBlockEntity) accessor.getTarget();
+            var fluidContents = new HashMap<FluidVariant, FluidContents>();
             if (machine instanceof MultiblockInventoryComponentHolder holder) {
                 var component = holder.getMultiblockInventoryComponent();
                 var inputs = component.getFluidInputs();
                 var outputs = component.getFluidOutputs();
 
                 if (!inputs.isEmpty() || !outputs.isEmpty()) {
-                    var fluidData = new ViewGroup<CompoundTag>(new ArrayList<>());
-                    addFluids(fluidData, inputs);
-                    addFluids(fluidData, outputs);
-                    return List.of(fluidData);
-                } else {
-                    return List.of();
+                    addFluids(fluidContents, inputs);
+                    addFluids(fluidContents, outputs);
                 }
             } else if (machine instanceof FluidStorageComponentHolder holder) {
                 var component = holder.getFluidStorageComponent();
 
                 if (component != null) {
                     var fluid = component.getVariant();
-                    var fluidData = new ViewGroup<CompoundTag>(new ArrayList<>());
-                    fluidData.views.add(FluidView.writeDefault(MIJadeCommonPlugin.fluidStack(fluid, component.getAmount()), component.getCapacity()));
-                    return List.of(fluidData);
-                } else {
-                    return List.of();
+                    var contents = new FluidContents();
+                    contents.amount = component.getAmount();
+                    contents.capacity = component.getCapacity();
+                    fluidContents.put(fluid, contents);
                 }
             } else {
                 var stacks = machine.getInventory().getFluidStacks();
-                var fluidData = new ViewGroup<CompoundTag>(new ArrayList<>());
-                addFluids(fluidData, stacks);
-                return List.of(fluidData);
+                addFluids(fluidContents, stacks);
             }
+            if (fluidContents.isEmpty()) {
+                return List.of();
+            }
+            var fluidData = new ViewGroup<CompoundTag>(new ArrayList<>());
+            for (var entry : fluidContents.entrySet()) {
+                fluidData.views.add(FluidView.writeDefault(MIJadeCommonPlugin.fluidStack(entry.getKey(), entry.getValue().amount), entry.getValue().capacity));
+            }
+            return List.of(fluidData);
         }
 
-        private void addFluids(ViewGroup<CompoundTag> data, List<? extends FluidAccess> stacks) {
+        public static final class FluidContents {
+            private long amount;
+            private long capacity;
+        }
+
+        private void addFluids(Map<FluidVariant, FluidContents> fluidContents, List<? extends FluidAccess> stacks) {
             for (var stack : stacks) {
-                data.views.add(FluidView.writeDefault(MIJadeCommonPlugin.fluidStack(stack.getVariant(), stack.getAmount()), stack.getCapacity()));
+                fluidContents.compute(stack.getVariant(), (key, contents) -> {
+                    if (contents == null) {
+                        contents = new FluidContents();
+                    }
+                    contents.amount += stack.getAmount();
+                    contents.capacity += stack.getCapacity();
+                    return contents;
+                });
             }
         }
 

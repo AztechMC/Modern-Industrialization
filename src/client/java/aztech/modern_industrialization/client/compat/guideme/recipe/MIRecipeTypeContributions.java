@@ -34,6 +34,7 @@ import aztech.modern_industrialization.client.compat.guideme.recipe.header.LytMa
 import aztech.modern_industrialization.client.compat.guideme.recipe.item.LytMIItemSlot;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -119,12 +120,14 @@ public class MIRecipeTypeContributions implements RecipeTypeMappingSupplier {
         header.setGap(2);
         header.setAlignItems(AlignItems.CENTER);
 
-        header.append(new LytMachineRecipeHeaderEuCostImage(params.steamMode));
+        if (params.steamMode != SteamMode.NEITHER) {
+            header.append(new LytMachineRecipeHeaderEuCostImage(params.steamMode));
 
-        var euCost = new LytParagraph();
-        euCost.setStyle(DefaultStyles.CRAFTING_RECIPE_TYPE);
-        euCost.appendText(TextHelper.getEuTextTick(recipe.eu).getString());
-        header.append(euCost);
+            var euCost = new LytParagraph();
+            euCost.setStyle(DefaultStyles.CRAFTING_RECIPE_TYPE);
+            euCost.appendText(TextHelper.getEuTextTick(recipe.eu).getString());
+            header.append(euCost);
+        }
 
         boolean includeRecipeConditionDisplay = params.includeRecipeConditionDisplay(recipe);
         if (includeRecipeConditionDisplay) {

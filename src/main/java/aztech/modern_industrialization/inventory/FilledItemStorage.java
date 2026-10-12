@@ -28,7 +28,18 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 public interface FilledItemStorage {
     static boolean isFull(IItemHandler handler) {
-        return handler instanceof FilledItemStorage filled && filled.isFull();
+        // If we have a FilledItemStorage implementation, check that since it will be faster
+        if (handler instanceof FilledItemStorage filled) {
+            return filled.isFull();
+        }
+        // Check the slots manually for fullness
+        // Beware that if a mod implements IItemHandler#getStackInSlot poorly (i.e. copies stacks each time it returns) this can do more harm than good
+        for (int index = 0; index < handler.getSlots(); index++) {
+            if (handler.getStackInSlot(index).getCount() < handler.getSlotLimit(index)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     boolean isFull();

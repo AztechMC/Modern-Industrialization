@@ -24,12 +24,10 @@
 
 package aztech.modern_industrialization.machines.recipe.condition;
 
-import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
-import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -43,7 +41,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
+
+import java.util.List;
 
 public record BiomeProcessCondition(Either<ResourceKey<Biome>, TagKey<Biome>> biome) implements MachineProcessCondition {
     static final MapCodec<BiomeProcessCondition> CODEC = NeoForgeExtraCodecs
@@ -73,15 +74,8 @@ public record BiomeProcessCondition(Either<ResourceKey<Biome>, TagKey<Biome>> bi
         biome.ifLeft(rk -> {
             list.add(MIText.RequiresBiome.text(biomeId(rk.location())));
         }).ifRight(tag -> {
-            var holderLookup = MICommonProxy.INSTANCE.getClientPlayer().registryAccess();
-            var biomeNames = holderLookup.lookupOrThrow(tag.registry()).get(tag).map(named -> {
-                return named.stream()
-                        .map(holder -> biomeId(holder.unwrapKey().orElseThrow().location()))
-                        .reduce((a, b) -> a.append(", ").append(b))
-                        .orElseThrow();
-            }).orElse(Component.literal("???"));
-
-            list.add(MIText.RequiresBiome.text(biomeNames));
+            var biomeTagName = Component.translatable(Tags.getTagTranslationKey(tag));
+            list.add(MIText.RequiresBiome.text(biomeTagName));
         });
     }
 

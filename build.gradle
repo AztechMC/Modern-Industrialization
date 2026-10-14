@@ -9,9 +9,7 @@ plugins {
     id 'me.modmuss50.mod-publish-plugin' version '2.1.0'
 }
 
-version = System.getenv("MI_VERSION")
-        ? System.getenv("MI_VERSION")
-        : "0.0.0-local"
+version = "2.5.10"
 group = "aztech"
 base {
     archivesName = "Modern-Industrialization"
@@ -297,6 +295,9 @@ jar {
     from sourceSets.client.output
 }
 
+
+import me.modmuss50.mpp.ReleaseType
+
 import java.util.regex.Matcher
 
 abstract class GeneratePackageInfos extends DefaultTask {
@@ -421,8 +422,6 @@ if (version.toLowerCase().contains("alpha")) {
     releaseChannel = "beta"
     changelogContents = "This is a beta release. It is expected to be mostly stable, but in any case please report any issue you may find.\n\n" + changelogContents
 }
-
-import me.modmuss50.mpp.ReleaseType
 
 publishMods {
     file = tasks.named("jar").flatMap { it.archiveFile }

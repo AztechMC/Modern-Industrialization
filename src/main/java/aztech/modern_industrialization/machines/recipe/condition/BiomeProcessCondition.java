@@ -28,6 +28,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
+import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -43,8 +44,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
-
-import java.util.List;
 
 public record BiomeProcessCondition(Either<ResourceKey<Biome>, TagKey<Biome>> biome) implements MachineProcessCondition {
     static final MapCodec<BiomeProcessCondition> CODEC = NeoForgeExtraCodecs

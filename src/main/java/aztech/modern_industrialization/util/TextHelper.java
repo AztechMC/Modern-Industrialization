@@ -25,8 +25,14 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -202,5 +208,17 @@ public class TextHelper {
             text.setStyle(YELLOW);
             return text;
         }
+    }
+
+    public static List<Component> getMultiblockMemberTooltip(RegistryAccess registries, SimpleMember member, @Nullable HatchFlags hatch) {
+        List<Component> lines = new ArrayList<>(member.getTooltipPreview(registries));
+        boolean hasHatches = hatch != null && !hatch.values().isEmpty();
+        if (hasHatches) {
+            lines.add(MIText.AcceptsHatches.text().withStyle(MITooltips.DEFAULT_STYLE));
+            for (var type : hatch.values()) {
+                lines.add(Component.literal("- ").withStyle(MITooltips.DEFAULT_STYLE).append(type.description().withStyle(MITooltips.HIGHLIGHT_STYLE)));
+            }
+        }
+        return lines;
     }
 }

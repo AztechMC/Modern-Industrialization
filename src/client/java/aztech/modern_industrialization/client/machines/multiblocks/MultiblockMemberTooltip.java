@@ -24,10 +24,8 @@
 
 package aztech.modern_industrialization.client.machines.multiblocks;
 
-import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMemberTooltipData;
-import java.util.ArrayList;
+import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -40,18 +38,7 @@ import org.joml.Matrix4f;
 
 public record MultiblockMemberTooltip(MultiblockMemberTooltipData data) implements ClientTooltipComponent {
     private List<Component> getLines() {
-        List<Component> lines = new ArrayList<>(data.member().getTooltipPreview(data.registries()));
-
-        var hatch = data.hatchFlags();
-        boolean hasHatches = hatch != null && !hatch.values().isEmpty();
-        if (hasHatches) {
-            lines.add(MIText.AcceptsHatches.text().withStyle(MITooltips.DEFAULT_STYLE));
-            for (var type : hatch.values()) {
-                lines.add(Component.literal("- ").withStyle(MITooltips.DEFAULT_STYLE).append(type.description().withStyle(MITooltips.HIGHLIGHT_STYLE)));
-            }
-        }
-
-        return lines;
+        return TextHelper.getMultiblockMemberTooltip(data.registries(), data.member(), data.hatchFlags());
     }
 
     @Override

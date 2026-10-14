@@ -44,6 +44,7 @@ public final class MIClientConfig {
     public final ModConfigSpec.BooleanValue barrelContentRendering;
     public final ModConfigSpec.BooleanValue hatchPlacementOverlay;
     public final ModConfigSpec.IntValue maxMultiblockHighlightOverlayRange;
+    public final ModConfigSpec.BooleanValue multiblockTooltipOverlay;
     public final ModConfigSpec.BooleanValue interMachineConnectedTextures;
 
     public final ModConfigSpec.BooleanValue fuelTooltips;
@@ -79,6 +80,10 @@ public final class MIClientConfig {
                 "Multiblock placement overlay range",
                 "Show valid positions in multiblocks when holding a hatch or wrench while within this many blocks. Set to 0 to disable.")
                 .defineInRange("maxMultiblockHighlightOverlayRange", 32, 0, Integer.MAX_VALUE);
+        this.multiblockTooltipOverlay = builder.start("multiblockTooltipOverlay",
+                "Multiblock Tooltip Overlay",
+                "Show block information when looking at the hologram display of a multiblock.")
+                .define("multiblockTooltipOverlay", true);
         this.interMachineConnectedTextures = builder.start("interMachineConnectedTextures",
                 "Inter-machine connected textures",
                 "Enable connected textures between machines that have the same casing. (Requires a suitable resource pack)")

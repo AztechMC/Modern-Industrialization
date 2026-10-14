@@ -73,11 +73,13 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                     continue;
                 }
 
+                boolean visible = false;
                 HatchFlags hatchFlag = matcher.getHatchFlags(pos);
                 if (hatchType != null) {
                     if (MIClientConfig.INSTANCE.hatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
                         // Highlight placeable hatches in green
                         MultiblockHighlight.enqueueHatchHighlight(pos);
+                        visible = true;
                     }
                 }
                 if (drawHighlights) {
@@ -93,10 +95,29 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                             // Enqueue red cube
                             MultiblockHighlight.enqueueErrorHighlight(pos, null, null);
                         }
+                        visible = true;
                     }
+                }
+                if (MIClientConfig.INSTANCE.multiblockTooltipOverlay.getAsBoolean() && visible && isTargetingPos(pos, !drawHighlights)) {
+                    MultiblockHighlight.enqueueHighlightTargetPos(pos, matcher.getSimpleMember(pos), matcher.getHatchFlags(pos));
                 }
             }
         }
+    }
+
+    private static boolean isTargetingPos(BlockPos pos, boolean isForHatch) {
+        var player = Minecraft.getInstance().player;
+        if (player == null) {
+            return false;
+        }
+        var eyePos = player.getEyePosition();
+        var view = player.getViewVector(1).scale(player.blockInteractionRange());
+        var endPos = eyePos.add(view);
+        var bounds = new AABB(pos);
+        if (!isForHatch) {
+            bounds = bounds.contract(0.5, 0.5, 0.5).move(0.25, 0.25, 0.25);
+        }
+        return bounds.clip(eyePos, endPos).isPresent();
     }
 
     private static boolean isHoldingWrench() {

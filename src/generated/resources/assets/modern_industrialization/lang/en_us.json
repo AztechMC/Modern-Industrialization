@@ -1143,6 +1143,8 @@
   "modern_industrialization.configuration.messages": "Messages",
   "modern_industrialization.configuration.missingRecipeViewerMessage": "Missing recipe viewer message",
   "modern_industrialization.configuration.missingRecipeViewerMessage.tooltip": "Enable login message when EMI, JEI and REI are all missing.",
+  "modern_industrialization.configuration.multiblockTooltipOverlay": "Multiblock Tooltip Overlay",
+  "modern_industrialization.configuration.multiblockTooltipOverlay.tooltip": "Show block information when looking at the hologram display of a multiblock.",
   "modern_industrialization.configuration.newVersionMessage": "New version message",
   "modern_industrialization.configuration.newVersionMessage.tooltip": "Display when a new version is available",
   "modern_industrialization.configuration.recipes": "Recipes",

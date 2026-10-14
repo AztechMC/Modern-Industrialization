@@ -52,6 +52,7 @@ import aztech.modern_industrialization.client.machines.models.MachineUnbakedMode
 import aztech.modern_industrialization.client.machines.models.UseBlockModelUnbakedModel;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockHighlight;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockMachineBER;
+import aztech.modern_industrialization.client.machines.multiblocks.MultiblockMemberTooltip;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockTankBER;
 import aztech.modern_industrialization.client.misc.VersionEvents;
 import aztech.modern_industrialization.client.pipes.MIPipesClient;
@@ -71,6 +72,7 @@ import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeT
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.MultiblockMemberTooltipData;
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.util.TextHelper;
@@ -131,7 +133,7 @@ public class MIClient {
         NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
         NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
         DeferredBarrelTextRenderer.init();
-        MultiblockHighlight.init();
+        MultiblockHighlight.init(modBus);
         MIPipesClient.setupClient(modBus);
         VersionEvents.init(ModLoadingContext.get().getActiveContainer());
 
@@ -260,6 +262,7 @@ public class MIClient {
         event.register(BarrelTooltipData.class, BarrelTooltipComponent::new);
         event.register(ConfigCardItem.TooltipData.class, ClientConfigCardTooltip::new);
         event.register(SteamDrillItem.SteamDrillTooltipData.class, SteamDrillTooltipComponent::new);
+        event.register(MultiblockMemberTooltipData.class, MultiblockMemberTooltip::new);
     }
 
     @SubscribeEvent

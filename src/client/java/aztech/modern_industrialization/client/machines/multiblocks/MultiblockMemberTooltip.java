@@ -62,6 +62,9 @@ public record MultiblockMemberTooltip(MultiblockMemberTooltipData data) implemen
 
     private ItemStack getItemToDisplay() {
         var items = data.member().getItemPreviewState(data.registries()).getItems();
+        if (items.length == 0) {
+            return ItemStack.EMPTY;
+        }
         int itemIndex = (int) ((System.currentTimeMillis() / 1500L) % items.length);
         return items[itemIndex];
     }

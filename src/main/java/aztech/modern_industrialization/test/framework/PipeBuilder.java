@@ -24,9 +24,13 @@
 
 package aztech.modern_industrialization.test.framework;
 
+import aztech.modern_industrialization.MIComponents;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.api.SavedPipeConfig;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.GameType;
 
 public class PipeBuilder {
@@ -57,5 +61,21 @@ public class PipeBuilder {
 
     public void removeConnection(Direction direction) {
         pipe.removeConnection(type, direction);
+    }
+
+    /**
+     * Applies a config to an existing connection, the same way a player using a Pipe Config Card would.
+     */
+    public void applyConfig(Direction direction, SavedPipeConfig config) {
+        var player = helper.makeMockPlayer(GameType.CREATIVE);
+        var card = MIItem.CONFIG_CARD.stack();
+        card.set(MIComponents.SAVED_CONFIG, config);
+        player.setItemInHand(InteractionHand.MAIN_HAND, card);
+        for (var node : pipe.getNodes()) {
+            if (node.getType() == type && node.customUse(pipe, player, InteractionHand.MAIN_HAND, direction)) {
+                return;
+            }
+        }
+        helper.fail("Could not apply config to connection " + direction, helper.relativePos(pipe.getBlockPos()));
     }
 }

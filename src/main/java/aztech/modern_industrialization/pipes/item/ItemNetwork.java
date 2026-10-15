@@ -213,7 +213,7 @@ public class ItemNetwork extends PipeNetwork {
     private static class WhitelistAggregate implements Aggregate {
         private final int priority;
         // Used when the inserted item doesn't have NBT
-        private final Map<Item, List<ItemSink>> map = new IdentityHashMap<>();
+        private final Map<Item, List<InsertTarget>> map = new IdentityHashMap<>();
         // Used when the inserted item has NBT.
         private final List<InsertTarget> targets;
 
@@ -225,14 +225,14 @@ public class ItemNetwork extends PipeNetwork {
                     ItemNetworkNode.ItemConnection conn = target.connection;
                     for (ItemStack stack : conn.stacks) {
                         if (stack.isComponentsPatchEmpty()) {
-                            map.computeIfAbsent(stack.getItem(), v -> new ArrayList<>()).add(target.target);
+                            map.computeIfAbsent(stack.getItem(), v -> new ArrayList<>()).add(target);
                         }
                     }
                 } else if (target.target.handler() instanceof WhitelistedItemStorage wis) {
                     WHITELIST_CACHED_SET.clear();
                     wis.getWhitelistedItems(WHITELIST_CACHED_SET);
                     for (Item item : WHITELIST_CACHED_SET) {
-                        map.computeIfAbsent(item, v -> new ArrayList<>()).add(target.target);
+                        map.computeIfAbsent(item, v -> new ArrayList<>()).add(target);
                     }
                 } else {
                     throw new IllegalStateException("Internal item pipe error! Should never happen!");
@@ -248,11 +248,23 @@ public class ItemNetwork extends PipeNetwork {
                 return insertTargets(targets, world, source, sourceSlot, maxAmount);
             }
 
-            List<ItemSink> targets = map.get(stack.getItem());
-            if (targets != null) {
-                return ItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount);
+            List<InsertTarget> targets = map.get(stack.getItem());
+            if (targets == null) {
+                return 0;
             }
-            return 0;
+
+            int moved = 0;
+            for (InsertTarget target : targets) {
+                // Never move items back into the connection they were extracted from.
+                if (source.connection() == target.connection()) {
+                    continue;
+                }
+                moved += target.target.moveAll(world, source, sourceSlot, maxAmount - moved);
+                if (moved >= maxAmount) {
+                    break;
+                }
+            }
+            return moved;
         }
 
         @Override

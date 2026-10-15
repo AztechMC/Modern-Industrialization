@@ -248,23 +248,11 @@ public class ItemNetwork extends PipeNetwork {
                 return insertTargets(targets, world, source, sourceSlot, maxAmount);
             }
 
-            List<InsertTarget> targets = map.get(stack.getItem());
-            if (targets == null) {
-                return 0;
+            List<InsertTarget> itemTargets = map.get(stack.getItem());
+            if (itemTargets != null) {
+                return insertTargets(itemTargets, world, source, sourceSlot, maxAmount);
             }
-
-            int moved = 0;
-            for (InsertTarget target : targets) {
-                // Never move items back into the connection they were extracted from.
-                if (source.connection() == target.connection()) {
-                    continue;
-                }
-                moved += target.target.moveAll(world, source, sourceSlot, maxAmount - moved);
-                if (moved >= maxAmount) {
-                    break;
-                }
-            }
-            return moved;
+            return 0;
         }
 
         @Override

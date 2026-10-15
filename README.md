@@ -16,8 +16,14 @@ Don't forget to post the *complete* log on a website like Pastebin or Gist.
 ## Suggestions for the mod
 The best way to give suggestions is to come have a chat on our Discord server. Link on CurseForge!
 
-## Contributing translations
-Have a look at [our Crowdin project](https://crowdin.com/project/modern-industrialization).
+## Contributing
+You are more than welcome to open pull requests! However, Modern Industrialization is more or less considered feature
+complete. For any new features please either open an issue or contact us on our Discord server's #dev-talk channel so
+it may be discussed and approved first, otherwise your pull request might end up being rejected.
+
+AI produced code or assets will be outright rejected.
+
+For translations, have a look at [our Crowdin project](https://crowdin.com/project/modern-industrialization).
 
 ## Creating an addon for Modern Industrialization
 Everything in the `aztechmc.modern_industrialization.api` package is the stable public API.

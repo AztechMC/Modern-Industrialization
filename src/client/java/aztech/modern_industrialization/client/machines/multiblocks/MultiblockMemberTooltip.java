@@ -26,19 +26,32 @@ package aztech.modern_industrialization.client.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMemberTooltipData;
 import aztech.modern_industrialization.util.TextHelper;
+import com.mojang.datafixers.util.Either;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.joml.Matrix4f;
 
 public record MultiblockMemberTooltip(MultiblockMemberTooltipData data) implements ClientTooltipComponent {
-    private List<Component> getLines() {
-        return TextHelper.getMultiblockMemberTooltip(data.registries(), data.member(), data.hatchFlags());
+    private List<ClientTooltipComponent> getLines() {
+        var minecraft = Minecraft.getInstance();
+        int screenWidth = minecraft.getWindow().getGuiScaledWidth();
+        var lines = TextHelper.getMultiblockMemberTooltip(data.registries(), data.member(), data.hatchFlags());
+        // Use NeoForge's gather tooltip method so that lines are wrapped when they would go off screen or extend the tooltip past the middle of the screenn
+        return ClientHooks.gatherTooltipComponentsFromElements(
+                ItemStack.EMPTY,
+                lines.stream().map(Either::<FormattedText, TooltipComponent>left).toList(),
+                screenWidth / 2,
+                screenWidth,
+                minecraft.getWindow().getGuiScaledHeight(),
+                minecraft.font);
     }
 
     @Override
@@ -52,7 +65,7 @@ public record MultiblockMemberTooltip(MultiblockMemberTooltipData data) implemen
         int maxWidth = 18;
         for (int index = 0; index < lines.size(); index++) {
             var line = lines.get(index);
-            int width = font.width(line) + (index == 0 ? 18 : 0);
+            int width = line.getWidth(font) + (index == 0 ? 18 : 0);
             if (width > maxWidth) {
                 maxWidth = width;
             }
@@ -81,7 +94,7 @@ public record MultiblockMemberTooltip(MultiblockMemberTooltipData data) implemen
             var line = lines.get(index);
             int lineX = x + (index == 0 ? 18 : 0);
             int lineY = y + 4 + (index * (font.lineHeight + 1)) + (index > 0 ? 4 : 0);
-            font.drawInBatch(line, lineX, lineY, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+            line.renderText(font, lineX, lineY, matrix, buffer);
         }
     }
 }

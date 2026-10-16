@@ -174,10 +174,10 @@ Methods that the event provides for creating blocks:
 ```js
 const member = event.memberOfCustom(
     /* BLOCK ID */
-    // Preview block id for in-world holograms
+    // The block to match against
     "minecraft:oak_log",
     /* BLOCK STATE BUILDER */
-    // Preview block state for in-world holograms
+    // The block state to check against. Initial value is the default block state for the block provided above
     (state) => state.setValue(BlockProperties.AXIS, Direction.up.axis)
 );
 ```

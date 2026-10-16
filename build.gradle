@@ -259,6 +259,7 @@ dependencies {
         exclude group: "maven.modrinth", module: "farmers-delight"
         exclude group: "dev.ftb.mods"
         exclude group: "dev.architectury"
+        exclude group: "mezz.jei"
     }
 }
 

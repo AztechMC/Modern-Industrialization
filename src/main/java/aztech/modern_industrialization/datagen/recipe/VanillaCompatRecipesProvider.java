@@ -34,6 +34,9 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.common.Tags;
 
 /**
  * Datagen for recipes that produce vanilla materials using MI machines.
@@ -112,6 +115,9 @@ public class VanillaCompatRecipesProvider extends MIRecipesProvider {
                 .addItemInput(Items.STRING, 4)
                 .addItemOutput(Items.WHITE_WOOL, 1)
                 .offerTo(exporter, "vanilla_recipes/compressor/string_to_wool");
+        generateGrasslike(exporter, Ingredient.of(Items.WHEAT_SEEDS), Items.GRASS_BLOCK);
+        generateGrasslike(exporter, Ingredient.of(Tags.Items.MUSHROOMS), Items.MYCELIUM);
+        generateGrasslike(exporter, Ingredient.of(Items.SPRUCE_SAPLING), Items.PODZOL);
     }
 
     private void generateCopperOxidation(RecipeOutput exporter, Item unaffected, Item exposed, Item weathered, Item oxidized) {
@@ -138,5 +144,14 @@ public class VanillaCompatRecipesProvider extends MIRecipesProvider {
                 .addItemOutput(to, 1);
 
         chemicalReactorRecipe.offerTo(exporter, "vanilla_recipes/chemical_reactor/waxing/" + BuiltInRegistries.ITEM.getKey(from).getPath());
+    }
+
+    private void generateGrasslike(RecipeOutput exporter, Ingredient from, Item to) {
+        new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 2, 320)
+                .addFluidInput(Fluids.WATER, 1000)
+                .addItemInput(Items.DIRT, 1)
+                .addItemInput(from, 1, 0)
+                .addItemOutput(to, 1)
+                .offerTo(exporter, "vanilla_recipes/chemical_reactor/grasslike/" + BuiltInRegistries.ITEM.getKey(to).getPath());
     }
 }

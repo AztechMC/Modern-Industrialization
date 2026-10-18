@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-06T12:51:24.623750012	Server Data (aggregated)
+// 1.21.1	2026-10-18T19:48:43.920910137	Server Data (aggregated)
 3ed44658dfe9569ce8f176ca3f3c3c82fe6feeaa data/modern_industrialization/recipe/alloy/mixer/battery_alloy/dust.json
 17019fa80e9403e189de444bc671ebd0e01cd445 data/modern_industrialization/recipe/alloy/mixer/battery_alloy/tiny_dust.json
 4f16b34fe53d232383c92af163f2227351f88801 data/modern_industrialization/recipe/alloy/mixer/bronze/dust.json
@@ -2517,6 +2517,9 @@ d70bd3f2f8578d65df020b3d9c9d2aa09f68723c data/modern_industrialization/recipe/up
 f37285eb6fa33f6ede740186556d6a21d14786b4 data/modern_industrialization/recipe/upgrade/unpacker/steel/macerator.json
 123b70878233b9658f3d12ee44e1599f04b214e0 data/modern_industrialization/recipe/upgrade/unpacker/steel/mixer.json
 fb66ea83678954fd6c05e14dd4b9a3a005795ff3 data/modern_industrialization/recipe/upgrade/unpacker/steel/water_pump.json
+2ed965c26fffa8685419429f7f7ab8cfe8a9206e data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/grasslike/grass_block.json
+a791ed8f38d47d3154f61de6907373e5e86f420a data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/grasslike/mycelium.json
+1207ded179f59a2c60cbaaccd8ac8227422fd18a data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/grasslike/podzol.json
 2a7c19e845faa63e91f014f13ab60147eb444eeb data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/waxing/chiseled_copper.json
 8860fe0f5f25672fcf2c549c3d7bdcb51cdef8c4 data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/waxing/copper_block.json
 0da38373dde4cf36bf505d607c255b33614af2bf data/modern_industrialization/recipe/vanilla_recipes/chemical_reactor/waxing/copper_bulb.json

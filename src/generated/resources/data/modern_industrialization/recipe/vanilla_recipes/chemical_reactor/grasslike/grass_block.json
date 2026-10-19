@@ -1,0 +1,28 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 320,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:dirt"
+    },
+    {
+      "amount": 1,
+      "item": "minecraft:wheat_seeds",
+      "probability": 0.0
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:grass_block"
+    }
+  ]
+}

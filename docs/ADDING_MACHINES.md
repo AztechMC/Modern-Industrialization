@@ -172,7 +172,7 @@ Methods that the event provides for creating blocks:
 - The block state builder is a function that takes in a `BlockState` and must return a `BlockState`.
 - For example, this will require the block to have the axis=Y property value:
 ```js
-const member = event.memberOfCustom(
+const member = event.memberOfBlockState(
     /* BLOCK ID */
     // The block to match against
     "minecraft:oak_log",

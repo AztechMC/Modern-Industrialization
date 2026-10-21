@@ -162,6 +162,19 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
                 .addCriterion("used_steel_upgrade", createSimpleCriterion(MIAdvancementTriggers.USED_STEEL_UPGRADE))
                 .save(consumer, existingFileHelper);
 
+        var matchesMultipleRecipes = newBuilder("matches_multiple_recipes")
+                .display(MIItem.WRENCH,
+                        "Error 418 - I'm a teapot",
+                        "Have a machine fail to start running because it matched multiple recipes.",
+                        null,
+                        AdvancementType.GOAL,
+                        true,
+                        true,
+                        true)
+                .parent(forgeHammer)
+                .addCriterion("matches_multiple_recipes", createSimpleCriterion(MIAdvancementTriggers.OVERLAPPING_RECIPES))
+                .save(consumer, existingFileHelper);
+
         // @formatter:off
         var steelWiremill = createBasic(consumer, "steel_wiremill", steelMachineCasing, "Neither a Wire nor a Mill", "Craft a Steel Wiremill", existingFileHelper);
         var steamQuarry = createMultiblock(consumer, "steam_quarry", steelMachineCasing, AdvancementType.GOAL, "From Minecraft to Craft", "Build a Steam Quarry and say goodbye to mining", existingFileHelper);

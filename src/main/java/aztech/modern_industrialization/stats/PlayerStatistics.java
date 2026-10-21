@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -134,6 +136,15 @@ public class PlayerStatistics {
             player.awardStat(Stats.ITEM_CRAFTED.get(what.asItem()), Ints.saturatedCast(amount));
         } else {
             pendingCraftedStats.mergeLong(what.asItem(), amount, Long::sum);
+        }
+    }
+
+    public void triggerAdvancement(Level level, Supplier<PlayerTrigger> trigger) {
+        if (uuid != null) {
+            var player = (ServerPlayer) level.getPlayerByUUID(uuid);
+            if (player != null) {
+                trigger.get().trigger(player);
+            }
         }
     }
 

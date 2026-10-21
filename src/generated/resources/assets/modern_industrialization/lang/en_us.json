@@ -76,6 +76,8 @@
   "advancements.modern_industrialization.large_steam_turbine.description": "Build a Large Steam Turbine",
   "advancements.modern_industrialization.lv_steam_turbine": "Better Than Solar Panels",
   "advancements.modern_industrialization.lv_steam_turbine.description": "Craft a Steam Turbine",
+  "advancements.modern_industrialization.matches_multiple_recipes": "Error 418 - I'm a teapot",
+  "advancements.modern_industrialization.matches_multiple_recipes.description": "Have a machine fail to start running because it matched multiple recipes.",
   "advancements.modern_industrialization.mixed_ingot_iridium": "Oreo Ingot",
   "advancements.modern_industrialization.mixed_ingot_iridium.description": "Craft a Mixed Ingot Iridium to craft Iridium Plates",
   "advancements.modern_industrialization.mv_diesel_generator": "Fast and Furious",

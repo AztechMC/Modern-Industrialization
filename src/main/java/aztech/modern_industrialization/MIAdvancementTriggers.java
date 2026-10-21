@@ -41,6 +41,7 @@ public final class MIAdvancementTriggers {
     public static final Supplier<PlayerTrigger> PLAYER_LOGGED_IN = DR.register("player_logged_in", PlayerTrigger::new);
     public static final Supplier<PlayerTrigger> USED_STEEL_UPGRADE = DR.register("used_steel_upgrade", PlayerTrigger::new);
     public static final Supplier<BuiltMultiblockTrigger> BUILT_MULTIBLOCK = DR.register("built_multiblock", BuiltMultiblockTrigger::new);
+    public static final Supplier<PlayerTrigger> OVERLAPPING_RECIPES = DR.register("overlapping_recipes", PlayerTrigger::new);
 
     public static void init(IEventBus modBus) {
         DR.register(modBus);

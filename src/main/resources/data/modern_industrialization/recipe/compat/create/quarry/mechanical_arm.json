@@ -12,23 +12,43 @@
   },
   "item_outputs": [
     {
-      "item": "create:asurine",
+      "item": "minecraft:andesite",
+      "amount": 16,
+      "probability": 0.25
+    },
+    {
+      "item": "create:limestone",
+      "amount": 16,
+      "probability": 0.25
+    },
+    {
+      "item": "create:scoria",
+      "amount": 16,
+      "probability": 0.25
+    },
+    {
+      "item": "create:zinc_ore",
       "amount": 1,
+      "probability": 0.4
+    },
+    {
+      "item": "create:asurine",
+      "amount": 8,
       "probability": 0.5
     },
     {
       "item": "create:crimsite",
-      "amount": 1,
+      "amount": 8,
       "probability": 0.5
     },
     {
       "item": "create:ochrum",
-      "amount": 1,
+      "amount": 8,
       "probability": 0.5
     },
     {
       "item": "create:veridium",
-      "amount": 1,
+      "amount": 8,
       "probability": 0.5
     }
   ]

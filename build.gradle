@@ -173,12 +173,12 @@ neoForge {
             sourceSet = sourceSets.client
             loadedMods = [mods.modern_industrialization_with_client]
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+            systemProperty 'neoforge.enabledGameTestNamespaces', "modern_industrialization"
         }
 
         server {
             server()
-            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+            systemProperty 'neoforge.enabledGameTestNamespaces', "modern_industrialization"
         }
 
         data {
@@ -195,7 +195,7 @@ neoForge {
         gameTestServer {
             type = "gameTestServer"
             gameDirectory = project.file("build/gametest")
-            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+            systemProperty 'neoforge.enabledGameTestNamespaces', "modern_industrialization"
         }
     }
 
@@ -251,17 +251,15 @@ dependencies {
 
     compileOnly "com.almostreliable.mods:almostunified-neoforge:${project.minecraft_version}-${project.au_version}:api"
 
-    if (project.runtime_include_create == "true") {
-        localRuntimeOnly ("com.simibubi.create:create-1.21.1:${project.create_version}") {
-            exclude group: "cc.tweaked"
-            exclude group: "top.theillusivec4.curios"
-            exclude group: "info.journeymap"
-            exclude group: "maven.modrinth", module: "journeymap"
-            exclude group: "maven.modrinth", module: "farmers-delight"
-            exclude group: "dev.ftb.mods"
-            exclude group: "dev.architectury"
-            exclude group: "mezz.jei"
-        }
+    localRuntimeOnly ("com.simibubi.create:create-1.21.1:${project.create_version}") {
+        exclude group: "cc.tweaked"
+        exclude group: "top.theillusivec4.curios"
+        exclude group: "info.journeymap"
+        exclude group: "maven.modrinth", module: "journeymap"
+        exclude group: "maven.modrinth", module: "farmers-delight"
+        exclude group: "dev.ftb.mods"
+        exclude group: "dev.architectury"
+        exclude group: "mezz.jei"
     }
 }
 

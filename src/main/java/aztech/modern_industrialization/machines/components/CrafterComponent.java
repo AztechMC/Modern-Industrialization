@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.util.Simulation.ACT;
 import static aztech.modern_industrialization.util.Simulation.SIMULATE;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIAdvancementTriggers;
 import aztech.modern_industrialization.api.machine.component.CrafterAccess;
 import aztech.modern_industrialization.api.machine.component.InventoryAccess;
 import aztech.modern_industrialization.compat.almostunified.AlmostUnifiedFacade;
@@ -238,7 +239,11 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         boolean recipeStarted = false;
         if (usedEnergy == 0 && isEnabled) {
             if (behavior.consumeEu(1, SIMULATE) == 1) {
+                boolean matchesMultipleRecipesBefore = matchesMultipleRecipes;
                 recipeStarted = updateActiveRecipe();
+                if (matchesMultipleRecipes && !matchesMultipleRecipesBefore) {
+                    behavior.getStatsOrDummy().triggerAdvancement(behavior.getCrafterWorld(), MIAdvancementTriggers.OVERLAPPING_RECIPES);
+                }
             }
         }
 

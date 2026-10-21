@@ -1,0 +1,28 @@
+{
+  "parent": "modern_industrialization:forge_hammer",
+  "criteria": {
+    "matches_multiple_recipes": {
+      "trigger": "modern_industrialization:overlapping_recipes"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.matches_multiple_recipes.description"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:wrench"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.matches_multiple_recipes"
+    }
+  },
+  "requirements": [
+    [
+      "matches_multiple_recipes"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

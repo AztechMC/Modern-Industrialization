@@ -144,7 +144,7 @@ public class MIClient {
             ClientKeyHandler.onEndTick(Minecraft.getInstance());
         });
         NeoForge.EVENT_BUS.addListener(ItemTooltipEvent.class, event -> {
-            MITooltips.attachTooltip(event.getItemStack(), event.getToolTip());
+            MITooltips.attachTooltip(event.getContext(), event.getItemStack(), event.getToolTip());
 
             // Apparently tooltips are accessed from the main menu, or something, hence the
             // != null check

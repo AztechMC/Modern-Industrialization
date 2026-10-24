@@ -37,6 +37,7 @@ import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import java.util.List;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 
 public class ItemHatch extends HatchBlockEntity {
     public ItemHatch(BEP bep, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
@@ -95,7 +96,7 @@ public class ItemHatch extends HatchBlockEntity {
     }
 
     @Override
-    public List<Component> getTooltips() {
+    public List<Component> getTooltips(Item.TooltipContext context) {
         return List.of(MITooltips.line(MIText.HatchCapacityItem)
                 .arg(inventory.getItemStacks().size())
                 .build());

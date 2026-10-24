@@ -41,6 +41,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 
 public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
     private final OverclockComponent overclockComponent;
@@ -94,7 +95,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
     }
 
     @Override
-    public List<Component> getTooltips() {
+    public List<Component> getTooltips(Item.TooltipContext context) {
         return overclockComponent.getTooltips();
     }
 }

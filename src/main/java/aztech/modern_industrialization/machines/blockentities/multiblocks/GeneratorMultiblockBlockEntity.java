@@ -42,6 +42,7 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 
 public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         EnergyListComponentHolder, MultiblockInventoryComponentHolder {
@@ -148,7 +149,7 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
-    public List<Component> getTooltips() {
+    public List<Component> getTooltips(Item.TooltipContext context) {
         return fluidConsumer.getTooltips();
     }
 }

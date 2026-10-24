@@ -45,6 +45,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluids;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
@@ -139,7 +140,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     }
 
     @Override
-    public List<Component> getTooltips() {
+    public List<Component> getTooltips(Item.TooltipContext context) {
         List<Component> tooltips = fuelBurning.getTooltips(true);
 
         tooltips.add(new MITooltips.Line(MIText.ContinuousOperation).build());

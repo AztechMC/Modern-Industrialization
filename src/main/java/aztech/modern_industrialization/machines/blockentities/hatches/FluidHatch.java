@@ -38,6 +38,7 @@ import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 
 public class FluidHatch extends HatchBlockEntity {
     public FluidHatch(BEP bep, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
@@ -96,7 +97,7 @@ public class FluidHatch extends HatchBlockEntity {
     }
 
     @Override
-    public List<Component> getTooltips() {
+    public List<Component> getTooltips(Item.TooltipContext context) {
         return List.of(MITooltips.line(MIText.HatchCapacityFluid)
                 .arg(FluidHelper.getFluidAmountLarge(inventory.getFluidStacks().getFirst().getCapacity()), t -> t.setStyle(MITooltips.NUMBER_TEXT))
                 .build());

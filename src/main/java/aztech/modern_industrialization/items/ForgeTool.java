@@ -25,6 +25,7 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import java.util.Locale;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -111,7 +112,7 @@ public class ForgeTool extends TieredItem {
 
         @Override
         public Ingredient getRepairIngredient() {
-            return Ingredient.of(TAG);
+            return Ingredient.of(MITags.item("ingots/steel"));
         }
 
         @Override

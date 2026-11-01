@@ -31,7 +31,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -43,10 +42,6 @@ public class ForgeTool extends TieredItem {
     public ForgeTool(Tier material, Properties p) {
         super(forgeHammerMaterial(material), p.stacksTo(1));
         TagsToGenerate.generateTag(TAG, this, "Forge Hammer Tools");
-    }
-
-    public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
-        return false;
     }
 
     private static Tier forgeHammerMaterial(Tier normalTier) {
@@ -78,7 +73,7 @@ public class ForgeTool extends TieredItem {
 
             @Override
             public Ingredient getRepairIngredient() {
-                return normalTier.getRepairIngredient();
+                return Ingredient.EMPTY;
             }
 
             @Override

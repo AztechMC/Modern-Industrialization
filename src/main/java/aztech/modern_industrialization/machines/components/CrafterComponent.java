@@ -254,8 +254,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         // PROCESS RECIPE TICK
         long eu = 0;
         boolean finishedRecipe = false; // whether the recipe finished this tick
-        if (activeRecipe != null && isEnabled) {
-            if (usedEnergy > 0 || recipeStarted) {
+        if (activeRecipe != null) {
+            if ((usedEnergy > 0 || recipeStarted) && isEnabled) {
                 recipeMaxEu = getRecipeMaxEu(activeRecipe.value().eu, recipeEnergy, efficiencyTicks);
                 eu = activeRecipe.value().conditionsMatch(conditionContext)
                         ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT)

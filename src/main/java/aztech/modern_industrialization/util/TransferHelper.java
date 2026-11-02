@@ -147,7 +147,7 @@ public class TransferHelper {
      * @param fluidSource      The fluid handler to be drained.
      * @param maxAmount        The largest amount of fluid that should be transferred.
      * @param doTransfer       True if the transfer should actually be done, false if it should be simulated.
-     * @return the fluidStack that was transferred from the source to the destination. null on failure.
+     * @return true if a transfer happened, false otherwise.
      */
     public static boolean tryFluidTransfer(IFluidHandler fluidDestination, IFluidHandler fluidSource, int maxAmount, boolean doTransfer) {
         boolean didTransfer = false;

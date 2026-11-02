@@ -115,11 +115,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         if (!level.isClientSide) {
             link();
             if (shapeValid.shapeValid) {
-                if (redstoneControl.doAllowNormalOperation(this)) {
-                    isActive.updateActive(NuclearGridHelper.simulate(nuclearGrid, efficiencyHistory), this);
-                } else {
-                    isActive.updateActive(false, this);
-                }
+                boolean useFuel = redstoneControl.doAllowNormalOperation(this);
+                isActive.updateActive(NuclearGridHelper.simulate(nuclearGrid, efficiencyHistory, useFuel) && useFuel, this);
                 efficiencyHistory.tick();
             } else {
                 isActive.updateActive(false, this);

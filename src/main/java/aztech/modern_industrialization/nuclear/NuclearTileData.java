@@ -192,7 +192,7 @@ public interface NuclearTileData {
                     return false;
                 }
             }
-            return A.getTemperature() == B.getTemperature() && A.getHeatTransferCoeff() == B.getTemperature()
+            return A.getTemperature() == B.getTemperature() && A.getHeatTransferCoeff() == B.getHeatTransferCoeff()
                     && A.getVariantAmount() == B.getVariantAmount() && A.getMeanNeutronGeneration() == B.getMeanNeutronGeneration()
                     && A.getVariant().equals(B.getVariant()) && A.getMeanEuGeneration() == B.getMeanEuGeneration();
         } else {

@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -149,31 +149,19 @@ public class TransferHelper {
      * @param doTransfer       True if the transfer should actually be done, false if it should be simulated.
      * @return the fluidStack that was transferred from the source to the destination. null on failure.
      */
-    public static FluidStack tryFluidTransfer(IFluidHandler fluidDestination, IFluidHandler fluidSource, int maxAmount, boolean doTransfer) {
+    public static boolean tryFluidTransfer(IFluidHandler fluidDestination, IFluidHandler fluidSource, int maxAmount, boolean doTransfer) {
+        boolean didTransfer = false;
         int tanks = fluidSource.getTanks();
         for (int i = 0; i < tanks; ++i) {
-            FluidStack toTry = fluidSource.getFluidInTank(i).copy();
+            var toTry = fluidSource.getFluidInTank(i).copy();
             if (toTry.getAmount() > maxAmount) {
                 toTry.setAmount(maxAmount);
             }
-            FluidStack drainable = fluidSource.drain(toTry, IFluidHandler.FluidAction.SIMULATE);
-            if (drainable.isEmpty()) {
-                continue;
-            }
-            int fillableAmount = fluidDestination.fill(drainable, IFluidHandler.FluidAction.SIMULATE);
-            if (fillableAmount > 0) {
-                drainable.setAmount(fillableAmount);
-                if (doTransfer) {
-                    FluidStack drained = fluidSource.drain(drainable, IFluidHandler.FluidAction.EXECUTE);
-                    if (!drained.isEmpty()) {
-                        drained.setAmount(fluidDestination.fill(drained, IFluidHandler.FluidAction.EXECUTE));
-                        return drained;
-                    }
-                } else {
-                    return drainable;
-                }
+            var drained = FluidUtil.tryFluidTransfer(fluidDestination, fluidSource, toTry, true);
+            if (!drained.isEmpty()) {
+                didTransfer = true;
             }
         }
-        return FluidStack.EMPTY;
+        return didTransfer;
     }
 }

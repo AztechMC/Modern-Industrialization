@@ -46,6 +46,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.Simulation;
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
@@ -540,7 +541,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     }
 
     protected static boolean takeItemInputs(List<ConfigurableItemStack> baseList, PlayerStatistics stats, MachineRecipe recipe, boolean simulate) {
-        List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
+        long[] used = simulate ? new long[baseList.size()] : null;
 
         boolean ok = true;
         for (MachineRecipe.ItemInput input : recipe.itemInputs) {
@@ -550,17 +551,32 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 }
             }
             int remainingAmount = input.amount();
-            for (ConfigurableItemStack stack : stacks) {
-                if (stack.getAmount() > 0 && stack.getResource().test(input.ingredient())) {
-                    int taken = Math.min((int) stack.getAmount(), remainingAmount);
-                    if (taken > 0 && !simulate) {
-                        stats.addUsedItems(stack.getResource().getItem(), taken);
-                    }
-                    stack.decrement(taken);
-                    remainingAmount -= taken;
-                    if (remainingAmount == 0)
-                        break;
+            for (int istack = 0; istack < baseList.size(); istack++) {
+                ConfigurableItemStack stack = baseList.get(istack);
+                long amount = stack.getAmount();
+                if (simulate) {
+                    amount -= used[istack];
                 }
+
+                if (amount <= 0 || !stack.getResource().test(input.ingredient())) {
+                    continue;
+                }
+
+                int taken = Math.min((int) amount, remainingAmount);
+                if (taken <= 0) {
+                    continue;
+                }
+
+                if (!simulate) {
+                    stats.addUsedItems(stack.getResource().getItem(), taken);
+                    stack.decrement(taken);
+                } else {
+                    used[istack] += taken;
+                }
+
+                remainingAmount -= taken;
+                if (remainingAmount == 0)
+                    break;
             }
             if (remainingAmount > 0)
                 ok = false;
@@ -574,8 +590,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     }
 
     protected static boolean takeFluidInputs(List<ConfigurableFluidStack> baseList, PlayerStatistics stats, MachineRecipe recipe, boolean oneInputPerStack, boolean simulate) {
-        List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
-        boolean[] usedStacks = oneInputPerStack ? new boolean[stacks.size()] : null;
+        boolean[] usedStacks = oneInputPerStack ? new boolean[baseList.size()] : null;
+        long[] used = simulate ? new long[baseList.size()] : null;
 
         boolean ok = true;
         for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
@@ -584,26 +600,42 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                     continue;
                 }
             }
+
             long remainingAmount = input.amount();
-            for (int istack = 0; istack < stacks.size(); ++istack) {
+            for (int istack = 0; istack < baseList.size(); ++istack) {
                 if (oneInputPerStack && usedStacks[istack]) {
                     continue;
                 }
-                ConfigurableFluidStack stack = stacks.get(istack);
-                if (fluidIngredientMatch(stack.getResource(), input.fluid())) {
-                    long taken = Math.min(remainingAmount, stack.getAmount());
-                    if (taken > 0) {
-                        if (oneInputPerStack) {
-                            usedStacks[istack] = true;
-                        }
-                        if (!simulate) {
-                            stats.addUsedFluids(stack.getResource().getFluid(), taken);
-                        }
-                        stack.decrement(taken);
-                        remainingAmount -= taken;
-                        if (remainingAmount == 0)
-                            break;
-                    }
+
+                ConfigurableFluidStack stack = baseList.get(istack);
+                long amount = stack.getAmount();
+                if (simulate) {
+                    amount -= used[istack];
+                }
+
+                if (amount <= 0 || !fluidIngredientMatch(stack.getResource(), input.fluid())) {
+                    continue;
+                }
+
+                long taken = Math.min(amount, remainingAmount);
+                if (taken <= 0) {
+                    continue;
+                }
+
+                if (oneInputPerStack) {
+                    usedStacks[istack] = true;
+                }
+
+                if (!simulate) {
+                    stats.addUsedFluids(stack.getResource().getFluid(), taken);
+                    stack.decrement(taken);
+                } else {
+                    used[istack] += taken;
+                }
+
+                remainingAmount -= taken;
+                if (remainingAmount == 0) {
+                    break;
                 }
             }
             if (remainingAmount > 0)
@@ -625,9 +657,28 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
     }
 
+    private record OptimizedUpdatedStacksArray<T>(List<T> baseList, T @Nullable[] updatedStacks, Function<T, T> copyFunction) {
+        public T get(int index) {
+            T stack = updatedStacks[index];
+            if (stack == null) {
+                stack = baseList.get(index);
+            }
+            return stack;
+        }
+
+        public T getToModify(T baseValue, int index) {
+            var simStack = updatedStacks[index];
+            if (simStack == null) {
+                simStack = copyFunction.apply(baseValue);
+                updatedStacks[index] = simStack;
+            }
+            return simStack;
+        }
+    }
+
     protected boolean putItemOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableItemStack> baseList = inventory.getItemOutputs();
-        List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
+        var simulatedStacks = simulate ? new OptimizedUpdatedStacksArray<>(baseList, new ConfigurableItemStack[baseList.size()], ConfigurableItemStack::new) : null;
 
         List<Integer> locksToToggle = new ArrayList<>();
         List<Item> lockItems = new ArrayList<>();
@@ -645,9 +696,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             // Try to insert in non-empty stacks or locked first, then also allow insertion
             // in empty stacks.
             for (int loopRun = 0; loopRun < 2; loopRun++) {
-                int stackId = 0;
-                for (ConfigurableItemStack stack : stacks) {
-                    stackId++;
+                for (int stackIndex = 0; stackIndex < baseList.size(); stackIndex++) {
+                    var stack = simulate ? simulatedStacks.get(stackIndex) : baseList.get(stackIndex);
                     ItemVariant key = stack.getResource();
                     if (stack.isResourceAllowedByLock(output.variant()) &&
                             (key.equals(output.variant()) || key.isBlank())) {
@@ -661,19 +711,21 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         if (ins > 0) {
                             if (key.isBlank()) {
                                 if (stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) {
-                                    stack.setAmount(ins);
-                                    stack.setKey(output.variant());
+                                    var stackToModify = simulate ? simulatedStacks.getToModify(stack, stackIndex) : stack;
+                                    stackToModify.setAmount(ins);
+                                    stackToModify.setKey(output.variant());
                                 } else {
                                     ins = 0;
                                 }
                             } else {
-                                stack.increment(ins);
+                                var stackToModify = simulate ? simulatedStacks.getToModify(stack, stackIndex) : stack;
+                                stackToModify.increment(ins);
                             }
                         }
                         remainingAmount -= ins;
                         // ins changed inside of previous if, need to check again!
                         if (ins > 0) {
-                            locksToToggle.add(stackId - 1);
+                            locksToToggle.add(stackIndex);
                             lockItems.add(output.variant().getItem());
                             if (!simulate) {
                                 behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), output.variant().getItem(), ins);
@@ -698,7 +750,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
 
     protected boolean putFluidOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableFluidStack> baseList = inventory.getFluidOutputs();
-        List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
+        var simulatedStacks = simulate ? new OptimizedUpdatedStacksArray<>(baseList, new ConfigurableFluidStack[baseList.size()], ConfigurableFluidStack::new) : null;
 
         List<Integer> locksToToggle = new ArrayList<>();
         List<Fluid> lockFluids = new ArrayList<>();
@@ -717,15 +769,16 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             // we insert in any stack
             outer:
             for (int tries = 0; tries < 2; ++tries) {
-                for (int j = 0; j < stacks.size(); j++) {
-                    ConfigurableFluidStack stack = stacks.get(j);
+                for (int j = 0; j < baseList.size(); j++) {
+                    ConfigurableFluidStack stack = simulate ? simulatedStacks.get(j) : baseList.get(j);
                     FluidVariant outputKey = FluidVariant.of(output.fluid());
                     if (stack.isResourceAllowedByLock(outputKey)
                             && ((tries == 1 && stack.isResourceBlank()) || stack.getResource().equals(outputKey))) {
                         long inserted = Math.min(output.amount(), stack.getRemainingSpace());
                         if (inserted > 0) {
-                            stack.setKey(outputKey);
-                            stack.increment(inserted);
+                            var stackToModify = simulate ? simulatedStacks.getToModify(stack, j) : stack;
+                            stackToModify.setKey(outputKey);
+                            stackToModify.increment(inserted);
                             locksToToggle.add(j);
                             lockFluids.add(output.fluid());
                             if (!simulate) {

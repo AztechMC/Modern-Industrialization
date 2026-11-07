@@ -32,10 +32,10 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -44,7 +44,7 @@ import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotJournal<ResourceAmount<K>>
         implements StorageView<K>, ConfigurableSlot {
-    private final Map<ChangeListener, Object> listeners = new Reference2ReferenceLinkedOpenHashMap<>();
+    private final Reference2ReferenceMap<ChangeListener, Object> listeners = new Reference2ReferenceLinkedOpenHashMap<>();
     protected K key = getBlankVariant();
     protected long amount = 0;
     @Nullable

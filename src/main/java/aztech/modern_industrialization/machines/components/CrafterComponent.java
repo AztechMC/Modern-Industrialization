@@ -46,6 +46,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.Simulation;
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
@@ -656,9 +657,40 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
     }
 
+    private record OptimizedUpdatedStacksArray<T>(List<T> baseList, T[] updatedStacks, Function<T, T> copyFunction) {
+        public int size() {
+            return baseList.size();
+        }
+
+        public T get(int index) {
+            T stack = null;
+            if (updatedStacks != null) {
+                stack = updatedStacks[index];
+            }
+            if (stack == null) {
+                stack = baseList.get(index);
+            }
+            return stack;
+        }
+
+        public T getToModify(T baseValue, int index) {
+            T stackToModify = baseValue;
+            if (updatedStacks != null) {
+                var simStack = updatedStacks[index];
+                if (simStack == null) {
+                    simStack = copyFunction.apply(baseValue);
+                    updatedStacks[index] = simStack;
+                }
+                stackToModify = simStack;
+            }
+            return stackToModify;
+        }
+    }
+
     protected boolean putItemOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableItemStack> baseList = inventory.getItemOutputs();
-        List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
+        ConfigurableItemStack[] updatedStacks = simulate ? new ConfigurableItemStack[baseList.size()] : null;
+        var stacks = new OptimizedUpdatedStacksArray<>(baseList, updatedStacks, ConfigurableItemStack::new);
 
         List<Integer> locksToToggle = new ArrayList<>();
         List<Item> lockItems = new ArrayList<>();
@@ -676,9 +708,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             // Try to insert in non-empty stacks or locked first, then also allow insertion
             // in empty stacks.
             for (int loopRun = 0; loopRun < 2; loopRun++) {
-                int stackId = 0;
-                for (ConfigurableItemStack stack : stacks) {
-                    stackId++;
+                for (int stackIndex = 0; stackIndex < stacks.size(); stackIndex++) {
+                    var stack = stacks.get(stackIndex);
                     ItemVariant key = stack.getResource();
                     if (stack.isResourceAllowedByLock(output.variant()) &&
                             (key.equals(output.variant()) || key.isBlank())) {
@@ -692,19 +723,21 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         if (ins > 0) {
                             if (key.isBlank()) {
                                 if (stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) {
-                                    stack.setAmount(ins);
-                                    stack.setKey(output.variant());
+                                    var stackToModify = stacks.getToModify(stack, stackIndex);
+                                    stackToModify.setAmount(ins);
+                                    stackToModify.setKey(output.variant());
                                 } else {
                                     ins = 0;
                                 }
                             } else {
-                                stack.increment(ins);
+                                var stackToModify = stacks.getToModify(stack, stackIndex);
+                                stackToModify.increment(ins);
                             }
                         }
                         remainingAmount -= ins;
                         // ins changed inside of previous if, need to check again!
                         if (ins > 0) {
-                            locksToToggle.add(stackId - 1);
+                            locksToToggle.add(stackIndex);
                             lockItems.add(output.variant().getItem());
                             if (!simulate) {
                                 behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), output.variant().getItem(), ins);

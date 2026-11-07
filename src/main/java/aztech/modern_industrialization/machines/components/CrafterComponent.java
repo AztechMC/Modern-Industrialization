@@ -658,15 +658,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     }
 
     private record OptimizedUpdatedStacksArray<T>(List<T> baseList, T[] updatedStacks, Function<T, T> copyFunction) {
-        public int size() {
-            return baseList.size();
-        }
-
         public T get(int index) {
-            T stack = null;
-            if (updatedStacks != null) {
-                stack = updatedStacks[index];
-            }
+            T stack = updatedStacks[index];
             if (stack == null) {
                 stack = baseList.get(index);
             }
@@ -674,23 +667,19 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
 
         public T getToModify(T baseValue, int index) {
-            T stackToModify = baseValue;
-            if (updatedStacks != null) {
-                var simStack = updatedStacks[index];
-                if (simStack == null) {
-                    simStack = copyFunction.apply(baseValue);
-                    updatedStacks[index] = simStack;
-                }
-                stackToModify = simStack;
+            var simStack = updatedStacks[index];
+            if (simStack == null) {
+                simStack = copyFunction.apply(baseValue);
+                updatedStacks[index] = simStack;
             }
-            return stackToModify;
+            return simStack;
         }
     }
 
     protected boolean putItemOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableItemStack> baseList = inventory.getItemOutputs();
-        ConfigurableItemStack[] updatedStacks = simulate ? new ConfigurableItemStack[baseList.size()] : null;
-        var stacks = new OptimizedUpdatedStacksArray<>(baseList, updatedStacks, ConfigurableItemStack::new);
+        int stacksCount = baseList.size();
+        var simulatedStacks = simulate ? new OptimizedUpdatedStacksArray<>(baseList, new ConfigurableItemStack[stacksCount], ConfigurableItemStack::new) : null;
 
         List<Integer> locksToToggle = new ArrayList<>();
         List<Item> lockItems = new ArrayList<>();
@@ -708,8 +697,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             // Try to insert in non-empty stacks or locked first, then also allow insertion
             // in empty stacks.
             for (int loopRun = 0; loopRun < 2; loopRun++) {
-                for (int stackIndex = 0; stackIndex < stacks.size(); stackIndex++) {
-                    var stack = stacks.get(stackIndex);
+                for (int stackIndex = 0; stackIndex < stacksCount; stackIndex++) {
+                    var stack = simulate ? simulatedStacks.get(stackIndex) : baseList.get(stackIndex);
                     ItemVariant key = stack.getResource();
                     if (stack.isResourceAllowedByLock(output.variant()) &&
                             (key.equals(output.variant()) || key.isBlank())) {
@@ -723,14 +712,14 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         if (ins > 0) {
                             if (key.isBlank()) {
                                 if (stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) {
-                                    var stackToModify = stacks.getToModify(stack, stackIndex);
+                                    var stackToModify = simulate ? simulatedStacks.getToModify(stack, stackIndex) : stack;
                                     stackToModify.setAmount(ins);
                                     stackToModify.setKey(output.variant());
                                 } else {
                                     ins = 0;
                                 }
                             } else {
-                                var stackToModify = stacks.getToModify(stack, stackIndex);
+                                var stackToModify = simulate ? simulatedStacks.getToModify(stack, stackIndex) : stack;
                                 stackToModify.increment(ins);
                             }
                         }

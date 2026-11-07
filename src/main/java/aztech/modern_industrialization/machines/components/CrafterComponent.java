@@ -678,8 +678,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
 
     protected boolean putItemOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableItemStack> baseList = inventory.getItemOutputs();
-        int stacksCount = baseList.size();
-        var simulatedStacks = simulate ? new OptimizedUpdatedStacksArray<>(baseList, new ConfigurableItemStack[stacksCount], ConfigurableItemStack::new) : null;
+        var simulatedStacks = simulate ? new OptimizedUpdatedStacksArray<>(baseList, new ConfigurableItemStack[baseList.size()], ConfigurableItemStack::new) : null;
 
         List<Integer> locksToToggle = new ArrayList<>();
         List<Item> lockItems = new ArrayList<>();
@@ -697,7 +696,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             // Try to insert in non-empty stacks or locked first, then also allow insertion
             // in empty stacks.
             for (int loopRun = 0; loopRun < 2; loopRun++) {
-                for (int stackIndex = 0; stackIndex < stacksCount; stackIndex++) {
+                for (int stackIndex = 0; stackIndex < baseList.size(); stackIndex++) {
                     var stack = simulate ? simulatedStacks.get(stackIndex) : baseList.get(stackIndex);
                     ItemVariant key = stack.getResource();
                     if (stack.isResourceAllowedByLock(output.variant()) &&

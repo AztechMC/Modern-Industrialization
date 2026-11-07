@@ -750,7 +750,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
 
     protected boolean putFluidOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableFluidStack> baseList = inventory.getFluidOutputs();
-        List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
+        var simulatedStacks = simulate ? new OptimizedUpdatedStacksArray<>(baseList, new ConfigurableFluidStack[baseList.size()], ConfigurableFluidStack::new) : null;
 
         List<Integer> locksToToggle = new ArrayList<>();
         List<Fluid> lockFluids = new ArrayList<>();
@@ -769,15 +769,16 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             // we insert in any stack
             outer:
             for (int tries = 0; tries < 2; ++tries) {
-                for (int j = 0; j < stacks.size(); j++) {
-                    ConfigurableFluidStack stack = stacks.get(j);
+                for (int j = 0; j < baseList.size(); j++) {
+                    ConfigurableFluidStack stack = simulate ? simulatedStacks.get(j) : baseList.get(j);
                     FluidVariant outputKey = FluidVariant.of(output.fluid());
                     if (stack.isResourceAllowedByLock(outputKey)
                             && ((tries == 1 && stack.isResourceBlank()) || stack.getResource().equals(outputKey))) {
                         long inserted = Math.min(output.amount(), stack.getRemainingSpace());
                         if (inserted > 0) {
-                            stack.setKey(outputKey);
-                            stack.increment(inserted);
+                            var stackToModify = simulate ? simulatedStacks.getToModify(stack, j) : stack;
+                            stackToModify.setKey(outputKey);
+                            stackToModify.increment(inserted);
                             locksToToggle.add(j);
                             lockFluids.add(output.fluid());
                             if (!simulate) {

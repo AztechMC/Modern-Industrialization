@@ -33,17 +33,19 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import aztech.modern_industrialization.util.Simulation;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
-import java.util.List;
-import java.util.Objects;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
+import java.util.Objects;
+
 public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotJournal<ResourceAmount<K>>
         implements StorageView<K>, ConfigurableSlot {
-    private final Reference2ReferenceMap<ChangeListener, Object> listeners = new Reference2ReferenceLinkedOpenHashMap<>();
+    @Nullable
+    private Reference2ReferenceMap<ChangeListener, Object> listeners;
     protected K key = getBlankVariant();
     protected long amount = 0;
     @Nullable
@@ -87,15 +89,22 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     }
 
     protected void notifyListeners() {
-        ChangeListener.notify(listeners);
+        if (listeners != null) {
+            ChangeListener.notify(listeners);
+        }
     }
 
     public void addListener(ChangeListener listener, Object token) {
+        if (listeners == null) {
+            listeners = new Reference2ReferenceLinkedOpenHashMap<>();
+        }
         listeners.put(listener, token);
     }
 
     public void removeListener(ChangeListener listener) {
-        listeners.remove(listener);
+        if (listeners != null) {
+            listeners.remove(listener);
+        }
     }
 
     protected abstract T getEmptyInstance();

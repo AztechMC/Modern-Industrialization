@@ -540,7 +540,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     }
 
     protected static boolean takeItemInputs(List<ConfigurableItemStack> baseList, PlayerStatistics stats, MachineRecipe recipe, boolean simulate) {
-        List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
+        long[] used = simulate ? new long[baseList.size()] : null;
 
         boolean ok = true;
         for (MachineRecipe.ItemInput input : recipe.itemInputs) {
@@ -550,17 +550,32 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 }
             }
             int remainingAmount = input.amount();
-            for (ConfigurableItemStack stack : stacks) {
-                if (stack.getAmount() > 0 && stack.getResource().test(input.ingredient())) {
-                    int taken = Math.min((int) stack.getAmount(), remainingAmount);
-                    if (taken > 0 && !simulate) {
-                        stats.addUsedItems(stack.getResource().getItem(), taken);
-                    }
-                    stack.decrement(taken);
-                    remainingAmount -= taken;
-                    if (remainingAmount == 0)
-                        break;
+            for (int istack = 0; istack < baseList.size(); istack++) {
+                ConfigurableItemStack stack = baseList.get(istack);
+                long amount = stack.getAmount();
+                if (simulate) {
+                    amount -= used[istack];
                 }
+
+                if (amount <= 0 || !stack.getResource().test(input.ingredient())) {
+                    continue;
+                }
+
+                int taken = Math.min((int) amount, remainingAmount);
+                if (taken <= 0) {
+                    continue;
+                }
+
+                if (!simulate) {
+                    stats.addUsedItems(stack.getResource().getItem(), taken);
+                    stack.decrement(taken);
+                } else {
+                    used[istack] += taken;
+                }
+
+                remainingAmount -= taken;
+                if (remainingAmount == 0)
+                    break;
             }
             if (remainingAmount > 0)
                 ok = false;
@@ -574,8 +589,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     }
 
     protected static boolean takeFluidInputs(List<ConfigurableFluidStack> baseList, PlayerStatistics stats, MachineRecipe recipe, boolean oneInputPerStack, boolean simulate) {
-        List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
-        boolean[] usedStacks = oneInputPerStack ? new boolean[stacks.size()] : null;
+        boolean[] usedStacks = oneInputPerStack ? new boolean[baseList.size()] : null;
+        long[] used = simulate ? new long[baseList.size()] : null;
 
         boolean ok = true;
         for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
@@ -584,26 +599,42 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                     continue;
                 }
             }
+
             long remainingAmount = input.amount();
-            for (int istack = 0; istack < stacks.size(); ++istack) {
+            for (int istack = 0; istack < baseList.size(); ++istack) {
                 if (oneInputPerStack && usedStacks[istack]) {
                     continue;
                 }
-                ConfigurableFluidStack stack = stacks.get(istack);
-                if (fluidIngredientMatch(stack.getResource(), input.fluid())) {
-                    long taken = Math.min(remainingAmount, stack.getAmount());
-                    if (taken > 0) {
-                        if (oneInputPerStack) {
-                            usedStacks[istack] = true;
-                        }
-                        if (!simulate) {
-                            stats.addUsedFluids(stack.getResource().getFluid(), taken);
-                        }
-                        stack.decrement(taken);
-                        remainingAmount -= taken;
-                        if (remainingAmount == 0)
-                            break;
-                    }
+
+                ConfigurableFluidStack stack = baseList.get(istack);
+                long amount = stack.getAmount();
+                if (simulate) {
+                    amount -= used[istack];
+                }
+
+                if (amount <= 0 || !fluidIngredientMatch(stack.getResource(), input.fluid())) {
+                    continue;
+                }
+
+                long taken = Math.min(amount, remainingAmount);
+                if (taken <= 0) {
+                    continue;
+                }
+
+                if (oneInputPerStack) {
+                    usedStacks[istack] = true;
+                }
+
+                if (!simulate) {
+                    stats.addUsedFluids(stack.getResource().getFluid(), taken);
+                    stack.decrement(taken);
+                } else {
+                    used[istack] += taken;
+                }
+
+                remainingAmount -= taken;
+                if (remainingAmount == 0) {
+                    break;
                 }
             }
             if (remainingAmount > 0)

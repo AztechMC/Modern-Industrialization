@@ -43,6 +43,10 @@ public abstract class ChangeListener {
     }
 
     public static void notify(Map<ChangeListener, Object> listeners) {
+        if (listeners.isEmpty()) {
+            return;
+        }
+        
         Iterator<Map.Entry<ChangeListener, Object>> it;
         if (listeners instanceof Reference2ObjectMap<ChangeListener, Object> map) {
             //noinspection unchecked

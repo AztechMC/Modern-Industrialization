@@ -657,7 +657,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
     }
 
-    private record OptimizedUpdatedStacksArray<T>(List<T> baseList, T[] updatedStacks, Function<T, T> copyFunction) {
+    private record OptimizedUpdatedStacksArray<T>(List<T> baseList, T @Nullable[] updatedStacks, Function<T, T> copyFunction) {
         public T get(int index) {
             T stack = updatedStacks[index];
             if (stack == null) {

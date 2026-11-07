@@ -31,11 +31,10 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.bas
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.SnapshotJournal;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import aztech.modern_industrialization.util.Simulation;
-import java.util.List;
-import java.util.Objects;
-
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
+import java.util.List;
+import java.util.Objects;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;

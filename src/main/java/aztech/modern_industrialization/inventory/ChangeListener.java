@@ -26,7 +26,6 @@ package aztech.modern_industrialization.inventory;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMaps;
-
 import java.util.List;
 
 public abstract class ChangeListener {

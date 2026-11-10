@@ -24,8 +24,9 @@
 
 package aztech.modern_industrialization.inventory;
 
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceMaps;
 import java.util.List;
-import java.util.Map;
 
 public abstract class ChangeListener {
     protected abstract void onChange();
@@ -38,8 +39,12 @@ public abstract class ChangeListener {
         }
     }
 
-    public static void notify(Map<ChangeListener, Object> listeners) {
-        for (var it = listeners.entrySet().iterator(); it.hasNext();) {
+    public static void notify(Reference2ReferenceMap<ChangeListener, Object> listeners) {
+        if (listeners.isEmpty()) {
+            return;
+        }
+
+        for (var it = Reference2ReferenceMaps.fastIterator(listeners); it.hasNext();) {
             var entry = it.next();
             if (entry.getKey().isValid(entry.getValue())) {
                 entry.getKey().onChange();

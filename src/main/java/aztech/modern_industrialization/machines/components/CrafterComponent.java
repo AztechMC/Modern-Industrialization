@@ -551,11 +551,11 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 }
             }
             int remainingAmount = input.amount();
-            for (int istack = 0; istack < baseList.size(); istack++) {
-                ConfigurableItemStack stack = baseList.get(istack);
+            for (int stackIndex = 0; stackIndex < baseList.size(); stackIndex++) {
+                ConfigurableItemStack stack = baseList.get(stackIndex);
                 long amount = stack.getAmount();
                 if (simulate) {
-                    amount -= used[istack];
+                    amount -= used[stackIndex];
                 }
 
                 if (amount <= 0 || !stack.getResource().test(input.ingredient())) {
@@ -571,7 +571,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                     stats.addUsedItems(stack.getResource().getItem(), taken);
                     stack.decrement(taken);
                 } else {
-                    used[istack] += taken;
+                    used[stackIndex] += taken;
                 }
 
                 remainingAmount -= taken;
@@ -602,15 +602,15 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             }
 
             long remainingAmount = input.amount();
-            for (int istack = 0; istack < baseList.size(); ++istack) {
-                if (oneInputPerStack && usedStacks[istack]) {
+            for (int stackIndex = 0; stackIndex < baseList.size(); ++stackIndex) {
+                if (oneInputPerStack && usedStacks[stackIndex]) {
                     continue;
                 }
 
-                ConfigurableFluidStack stack = baseList.get(istack);
+                ConfigurableFluidStack stack = baseList.get(stackIndex);
                 long amount = stack.getAmount();
                 if (simulate) {
-                    amount -= used[istack];
+                    amount -= used[stackIndex];
                 }
 
                 if (amount <= 0 || !fluidIngredientMatch(stack.getResource(), input.fluid())) {
@@ -623,14 +623,14 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 }
 
                 if (oneInputPerStack) {
-                    usedStacks[istack] = true;
+                    usedStacks[stackIndex] = true;
                 }
 
                 if (!simulate) {
                     stats.addUsedFluids(stack.getResource().getFluid(), taken);
                     stack.decrement(taken);
                 } else {
-                    used[istack] += taken;
+                    used[stackIndex] += taken;
                 }
 
                 remainingAmount -= taken;
@@ -657,7 +657,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
     }
 
-    private record OptimizedUpdatedStacksArray<T>(List<T> baseList, T @Nullable[] updatedStacks, Function<T, T> copyFunction) {
+    private record OptimizedUpdatedStacksArray<T>(List<T> baseList, T @Nullable [] updatedStacks, Function<T, T> copyFunction) {
         public T get(int index) {
             T stack = updatedStacks[index];
             if (stack == null) {
@@ -769,17 +769,17 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             // we insert in any stack
             outer:
             for (int tries = 0; tries < 2; ++tries) {
-                for (int j = 0; j < baseList.size(); j++) {
-                    ConfigurableFluidStack stack = simulate ? simulatedStacks.get(j) : baseList.get(j);
+                for (int stackIndex = 0; stackIndex < baseList.size(); stackIndex++) {
+                    ConfigurableFluidStack stack = simulate ? simulatedStacks.get(stackIndex) : baseList.get(stackIndex);
                     FluidVariant outputKey = FluidVariant.of(output.fluid());
                     if (stack.isResourceAllowedByLock(outputKey)
                             && ((tries == 1 && stack.isResourceBlank()) || stack.getResource().equals(outputKey))) {
                         long inserted = Math.min(output.amount(), stack.getRemainingSpace());
                         if (inserted > 0) {
-                            var stackToModify = simulate ? simulatedStacks.getToModify(stack, j) : stack;
+                            var stackToModify = simulate ? simulatedStacks.getToModify(stack, stackIndex) : stack;
                             stackToModify.setKey(outputKey);
                             stackToModify.increment(inserted);
-                            locksToToggle.add(j);
+                            locksToToggle.add(stackIndex);
                             lockFluids.add(output.fluid());
                             if (!simulate) {
                                 behavior.getStatsOrDummy().addProducedFluids(output.fluid(), inserted);

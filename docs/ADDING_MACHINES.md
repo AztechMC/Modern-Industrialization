@@ -178,7 +178,7 @@ const member = event.memberOfBlockState(
     "minecraft:oak_log",
     /* BLOCK STATE BUILDER */
     // The block state to check against. Initial value is the default block state for the block provided above
-    (state) => state.setValue(BlockProperties.AXIS, Direction.up.axis)
+    (state) => Block.withProperties(state, {axis: 'y'})
 );
 ```
 

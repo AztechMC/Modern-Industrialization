@@ -46,9 +46,7 @@ public final class MIArmorMaterials {
             Map.of(),
             0,
             SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> {
-                throw new UnsupportedOperationException("Cannot repair Diesel Jetpack");
-            },
+            () -> Ingredient.EMPTY,
             List.of(new ArmorMaterial.Layer(location)),
             0,
             0));
@@ -56,9 +54,7 @@ public final class MIArmorMaterials {
             Map.of(),
             0,
             SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> {
-                throw new UnsupportedOperationException("Cannot repair GraviChestPlate");
-            },
+            () -> Ingredient.EMPTY,
             List.of(new ArmorMaterial.Layer(location)),
             0,
             0));
@@ -78,9 +74,7 @@ public final class MIArmorMaterials {
             Map.of(),
             0,
             SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> {
-                throw new UnsupportedOperationException("Cannot repair quantum armor");
-            },
+            () -> Ingredient.EMPTY,
             List.of(new ArmorMaterial.Layer(location)),
             0,
             0));

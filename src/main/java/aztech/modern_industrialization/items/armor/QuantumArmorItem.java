@@ -34,7 +34,7 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class QuantumArmorItem extends ArmorItem {
     public QuantumArmorItem(ArmorItem.Type type, Properties settings) {
-        super(MIArmorMaterials.QUANTUM, type, settings.stacksTo(1).attributes(buildModifiers(type)));
+        super(MIArmorMaterials.QUANTUM, type, settings.stacksTo(1).attributes(buildModifiers(type)).setNoRepair());
     }
 
     private static ItemAttributeModifiers buildModifiers(ArmorItem.Type type) {

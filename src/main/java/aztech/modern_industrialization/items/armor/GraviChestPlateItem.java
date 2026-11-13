@@ -44,7 +44,7 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 public class GraviChestPlateItem extends ArmorItem implements ActivatableItem, ISimpleEnergyItem {
     public GraviChestPlateItem(Properties settings) {
         super(MIArmorMaterials.GRAVICHESTPLATE, Type.CHESTPLATE,
-                settings.stacksTo(1).rarity(Rarity.EPIC).component(MIComponents.ACTIVATED.get(), false));
+                settings.stacksTo(1).rarity(Rarity.EPIC).component(MIComponents.ACTIVATED.get(), false).setNoRepair());
     }
 
     @Override

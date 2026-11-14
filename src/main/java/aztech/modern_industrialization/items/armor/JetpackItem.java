@@ -58,7 +58,7 @@ public class JetpackItem extends ArmorItem implements ActivatableItem {
 
     public JetpackItem(Properties settings) {
         super(MIArmorMaterials.DIESEL_JETPACK, Type.CHESTPLATE,
-                settings.stacksTo(1).rarity(Rarity.UNCOMMON).component(MIComponents.ACTIVATED.get(), false));
+                settings.stacksTo(1).rarity(Rarity.UNCOMMON).component(MIComponents.ACTIVATED.get(), false).setNoRepair());
     }
 
     @Override

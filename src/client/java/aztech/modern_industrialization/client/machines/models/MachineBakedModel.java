@@ -147,7 +147,8 @@ public class MachineBakedModel implements IDynamicBakedModel {
                 var facingDirection = Objects.requireNonNullElse(data.frontDirection, Direction.NORTH);
                 TextureAtlasSprite sprite = getSprite(sprites, side, facingDirection, false);
                 if (sprite != null) {
-                    quads.add(ModelHelper.bakeSprite(vc, side, sprite, -Z_OFFSET));
+                    int uvRotation = side == Direction.UP ? facingDirection.get2DDataValue() : 0;
+                    quads.add(ModelHelper.bakeSprite(vc, side, sprite, -Z_OFFSET, uvRotation));
                 }
             }
         }

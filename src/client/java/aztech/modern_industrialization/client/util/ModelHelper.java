@@ -48,6 +48,10 @@ public class ModelHelper {
     }
 
     public static BakedQuad bakeSprite(QuadBakingVertexConsumer vc, Direction d, TextureAtlasSprite sprite, float depth) {
+        return bakeSprite(vc, d, sprite, depth, 0);
+    }
+
+    public static BakedQuad bakeSprite(QuadBakingVertexConsumer vc, Direction d, TextureAtlasSprite sprite, float depth, int uvRotation) {
         vc.setTintIndex(-1);
         vc.setDirection(d);
         vc.setSprite(sprite);
@@ -62,7 +66,8 @@ public class ModelHelper {
         for (int i = 0; i < 4; ++i) {
             vc.addVertex(pos[i].x, pos[i].y, pos[i].z);
             vc.setColor(255, 255, 255, 255);
-            vc.setUv(uv[i].x, uv[i].y);
+            var rotatedUv = uv[(i + uvRotation) % 4];
+            vc.setUv(rotatedUv.x, rotatedUv.y);
             vc.setLight(0);
             var normal = d.getNormal();
             vc.setNormal(normal.getX(), normal.getY(), normal.getZ());

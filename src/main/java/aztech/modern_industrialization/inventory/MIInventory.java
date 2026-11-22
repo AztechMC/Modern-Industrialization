@@ -51,6 +51,7 @@ public final class MIInventory implements MachineComponent {
     public final MIFluidStorage fluidStorage;
     public final SlotPositions itemPositions;
     public final SlotPositions fluidPositions;
+    private final int[] itemMaxCapacities;
 
     /**
      * Build a new MI inventory. If you need to access the stacks, make sure to
@@ -63,6 +64,10 @@ public final class MIInventory implements MachineComponent {
         this.fluidStorage = new MIFluidStorage(new ArrayList<>(fluidStacks));
         this.itemPositions = itemPositions;
         this.fluidPositions = fluidPositions;
+        this.itemMaxCapacities = new int[itemStacks.size()];
+        for (int i = 0; i < itemStacks.size(); ++i) {
+            itemMaxCapacities[i] = itemStacks.get(i).getMaxCapacity();
+        }
         if (itemPositions.size() != itemStacks.size()) {
             throw new IllegalArgumentException(
                     "Mismatched item slots and positions. Slot count: " + itemStacks.size() + ", position count: " + itemPositions.size());
@@ -145,6 +150,11 @@ public final class MIInventory implements MachineComponent {
         }
 
         SlotConfig.readSlotList(itemStorage.stacks, newItemStacks);
+        // Slot caps are structural: saved NBT only stores the player-adjustable adjCap, so restore the machine's caps
+        // after the swap (old worlds have adjCap: 64 for slots that are now capped).
+        for (int i = 0; i < itemMaxCapacities.length && i < itemStorage.stacks.size(); ++i) {
+            itemStorage.stacks.get(i).setMaxCapacity(itemMaxCapacities[i]);
+        }
         SlotConfig.readSlotList(fluidStorage.stacks, newFluidStacks);
     }
 

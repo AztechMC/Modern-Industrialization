@@ -310,11 +310,13 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
         Optional<TooltipComponent> data = vanillaStack.getTooltipImage();
         // Append capacity
-        var capacityText = Component.literal(String.valueOf(stack.getAdjustedCapacity()));
-        if (stack.getAdjustedCapacity() != 64) {
-            capacityText.setStyle(TextHelper.YELLOW_BOLD);
+        if (stack.getMaxCapacity() > 1) {
+            var capacityText = Component.literal(String.valueOf(stack.getAdjustedCapacity()));
+            if (stack.getAdjustedCapacity() != 64) {
+                capacityText.setStyle(TextHelper.YELLOW_BOLD);
+            }
+            textTooltip.add(MIText.ConfigurableSlotCapacity.text(capacityText).setStyle(TextHelper.GRAY_TEXT));
         }
-        textTooltip.add(MIText.ConfigurableSlotCapacity.text(capacityText).setStyle(TextHelper.GRAY_TEXT));
         // Render
         guiGraphics.renderTooltip(font, textTooltip, data, mouseX, mouseY);
     }
@@ -323,14 +325,16 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     public boolean mouseScrolled(double mouseX, double mouseY, double amountX, double amountY) {
         if (hoveredSlot instanceof ConfigurableItemStack.ConfigurableItemSlot confSlot) {
             ConfigurableItemStack stack = confSlot.getConfStack();
-            boolean isIncrease = amountY > 0;
-            boolean isShiftDown = hasShiftDown();
-            // Client side update
-            stack.adjustCapacity(isIncrease, isShiftDown);
-            // Server side update
-            new AdjustSlotCapacityPacket(menu.containerId, menu.slots.indexOf(hoveredSlot), isIncrease, isShiftDown)
-                    .sendToServer();
-            return true;
+            if (stack.getMaxCapacity() > 1) {
+                boolean isIncrease = amountY > 0;
+                boolean isShiftDown = hasShiftDown();
+                // Client side update
+                stack.adjustCapacity(isIncrease, isShiftDown);
+                // Server side update
+                new AdjustSlotCapacityPacket(menu.containerId, menu.slots.indexOf(hoveredSlot), isIncrease, isShiftDown)
+                        .sendToServer();
+                return true;
+            }
         }
         return false;
     }

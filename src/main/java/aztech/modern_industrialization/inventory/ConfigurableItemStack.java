@@ -50,6 +50,7 @@ import org.jspecify.annotations.Nullable;
  */
 public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> implements ItemAccess {
     private int adjustedCapacity = 64;
+    private int maxCapacity = 64;
 
     private @Nullable ItemStack cachedItemStack;
 
@@ -57,13 +58,17 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
     public ConfigurableItemStack(CompoundTag compound, HolderLookup.Provider registries) {
         super(compound, registries);
-        this.adjustedCapacity = compound.getInt("adjCap");
+        this.maxCapacity = compound.contains("maxCap") ? compound.getInt("maxCap") : 64;
+        this.adjustedCapacity = Mth.clamp(compound.getInt("adjCap"), 0, maxCapacity);
     }
 
     @Override
     public CompoundTag toNbt(HolderLookup.Provider registries) {
         CompoundTag nbt = super.toNbt(registries);
         nbt.putInt("adjCap", this.adjustedCapacity);
+        if (maxCapacity != 64) {
+            nbt.putInt("maxCap", maxCapacity);
+        }
         return nbt;
     }
 
@@ -71,6 +76,12 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         ConfigurableItemStack stack = new ConfigurableItemStack();
         stack.playerInsert = true;
         stack.pipesInsert = true;
+        return stack;
+    }
+
+    public static ConfigurableItemStack standardInputSlot(int maxCapacity) {
+        ConfigurableItemStack stack = standardInputSlot();
+        stack.setMaxCapacity(maxCapacity);
         return stack;
     }
 
@@ -104,6 +115,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     public ConfigurableItemStack(ConfigurableItemStack other) {
         super(other);
         this.adjustedCapacity = other.adjustedCapacity;
+        this.maxCapacity = other.maxCapacity;
     }
 
     @Override
@@ -115,12 +127,12 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         if (!super.equals(o))
             return false;
         ConfigurableItemStack that = (ConfigurableItemStack) o;
-        return adjustedCapacity == that.adjustedCapacity;
+        return adjustedCapacity == that.adjustedCapacity && maxCapacity == that.maxCapacity;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), adjustedCapacity);
+        return Objects.hash(super.hashCode(), adjustedCapacity, maxCapacity);
     }
 
     @Override
@@ -145,20 +157,22 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
     @Override
     public long getCapacity() {
-        return key.isBlank() ? adjustedCapacity : Math.min(adjustedCapacity, key.getMaxStackSize());
+        long capacity = Math.min(adjustedCapacity, maxCapacity);
+        return key.isBlank() ? capacity : Math.min(capacity, key.getMaxStackSize());
     }
 
     @Override
     public long getRemainingCapacityFor(ItemVariant key) {
-        if (adjustedCapacity < amount) {
+        long capacity = Math.min(adjustedCapacity, maxCapacity);
+        if (capacity < amount) {
             return 0; // Make sure we don't get negative counts if this happens!
         }
-        return Math.min(key.getMaxStackSize(), adjustedCapacity) - amount;
+        return Math.min(key.getMaxStackSize(), capacity) - amount;
     }
 
     @Override
     public long getTotalCapacityFor(Item instance) {
-        return Math.min(ItemVariant.of(instance).getMaxStackSize(), adjustedCapacity);
+        return Math.min(ItemVariant.of(instance).getMaxStackSize(), Math.min(adjustedCapacity, maxCapacity));
     }
 
     /**
@@ -181,12 +195,27 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         if (!isIncrease) {
             delta = -delta;
         }
-        adjustedCapacity = Mth.clamp(adjustedCapacity + delta, 0, 64);
+        adjustedCapacity = Mth.clamp(adjustedCapacity + delta, 0, maxCapacity);
         notifyListeners();
     }
 
     public int getAdjustedCapacity() {
         return adjustedCapacity;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        maxCapacity = Mth.clamp(maxCapacity, 0, 64);
+        if (this.maxCapacity != maxCapacity) {
+            this.maxCapacity = maxCapacity;
+            if (adjustedCapacity > maxCapacity) {
+                adjustedCapacity = maxCapacity;
+            }
+            notifyListeners();
+        }
     }
 
     @Override

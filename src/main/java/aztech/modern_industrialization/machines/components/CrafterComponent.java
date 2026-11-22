@@ -154,6 +154,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     private ResourceLocation delayedActiveRecipe;
 
     private boolean matchesMultipleRecipes;
+    private boolean finishedThisTick;
+    private boolean clearLocksNextTick;
 
     private long usedEnergy;
     private long recipeEnergy;
@@ -170,6 +172,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
 
     @Override
     public float getProgress() {
+        if (finishedThisTick) {
+            return 1f;
+        }
         return (float) usedEnergy / recipeEnergy;
     }
 
@@ -202,6 +207,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     }
 
     public void decreaseEfficiencyTicks() {
+        resetFinishedState();
         efficiencyTicks = Math.max(efficiencyTicks - 1, 0);
         clearActiveRecipeIfPossible();
     }
@@ -230,6 +236,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         if (behavior.getCrafterWorld().isClientSide()) {
             throw new IllegalStateException("May not call client side.");
         }
+        resetFinishedState();
         boolean isActive;
         boolean isEnabled = behavior.isEnabled();
 
@@ -267,9 +274,10 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 if (usedEnergy == recipeEnergy) {
                     putItemOutputs(activeRecipe.value(), false, false);
                     putFluidOutputs(activeRecipe.value(), false, false);
-                    clearLocks();
+                    clearLocksNextTick = true;
                     usedEnergy = 0;
                     finishedRecipe = true;
+                    finishedThisTick = true;
                     behavior.onCraft();
                 }
             } else if (behavior.isOverdriving()) {
@@ -304,8 +312,12 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             }
         }
 
-        // If the recipe is done, allow starting another one when the efficiency reaches zero
-        clearActiveRecipeIfPossible();
+        // If the recipe is done, allow starting another one when the efficiency reaches zero.
+        // A recipe that finished this tick is kept so the following GUI sync reports 100% instead of blanking.
+        // Only matters when maxEfficiencyTicks == 0; otherwise the recipe is retained anyway.
+        if (!finishedRecipe) {
+            clearActiveRecipeIfPossible();
+        }
 
         return isActive;
     }
@@ -516,6 +528,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
         tag.putInt("efficiencyTicks", this.efficiencyTicks);
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
+        tag.putBoolean("clearLocksNextTick", this.clearLocksNextTick);
     }
 
     public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
@@ -529,6 +542,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
         this.efficiencyTicks = tag.getInt("efficiencyTicks");
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
+        this.clearLocksNextTick = tag.getBoolean("clearLocksNextTick");
     }
 
     public static boolean doInputsMatch(List<ConfigurableItemStack> itemInputs, List<ConfigurableFluidStack> fluidInputs, MachineRecipe recipe) {
@@ -803,6 +817,18 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             }
         }
         return ok;
+    }
+
+    /**
+     * Runs at the start of every tick, after the completion tick's GUI sync: the finished craft drops its 100%
+     * progress and output locks here.
+     */
+    private void resetFinishedState() {
+        finishedThisTick = false;
+        if (clearLocksNextTick) {
+            clearLocks();
+            clearLocksNextTick = false;
+        }
     }
 
     protected void clearLocks() {

@@ -458,6 +458,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu implements M
             }
 
             totalRemainingAmount -= insertedAmount;
+            if (fillAction == 0) return;
         }
     }
 }

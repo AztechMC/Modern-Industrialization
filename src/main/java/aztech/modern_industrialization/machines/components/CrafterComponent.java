@@ -154,8 +154,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     private ResourceLocation delayedActiveRecipe;
 
     private boolean matchesMultipleRecipes;
-    private boolean finishedThisTick;
-    private boolean clearLocksNextTick;
+    private boolean finishedRecipe;
 
     private long usedEnergy;
     private long recipeEnergy;
@@ -172,7 +171,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
 
     @Override
     public float getProgress() {
-        if (finishedThisTick) {
+        if (finishedRecipe) {
             return 1f;
         }
         return (float) usedEnergy / recipeEnergy;
@@ -261,7 +260,6 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
 
         // PROCESS RECIPE TICK
         long eu = 0;
-        boolean finishedRecipe = false; // whether the recipe finished this tick
         if (activeRecipe != null) {
             if ((usedEnergy > 0 || recipeStarted) && isEnabled) {
                 recipeMaxEu = getRecipeMaxEu(activeRecipe.value().eu, recipeEnergy, efficiencyTicks);
@@ -274,10 +272,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 if (usedEnergy == recipeEnergy) {
                     putItemOutputs(activeRecipe.value(), false, false);
                     putFluidOutputs(activeRecipe.value(), false, false);
-                    clearLocksNextTick = true;
                     usedEnergy = 0;
                     finishedRecipe = true;
-                    finishedThisTick = true;
                     behavior.onCraft();
                 }
             } else if (behavior.isOverdriving()) {
@@ -528,7 +524,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
         tag.putInt("efficiencyTicks", this.efficiencyTicks);
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
-        tag.putBoolean("clearLocksNextTick", this.clearLocksNextTick);
+        tag.putBoolean("finishedRecipe", this.finishedRecipe);
     }
 
     public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
@@ -542,7 +538,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
         this.efficiencyTicks = tag.getInt("efficiencyTicks");
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
-        this.clearLocksNextTick = tag.getBoolean("clearLocksNextTick");
+        this.finishedRecipe = tag.getBoolean("finishedRecipe");
     }
 
     public static boolean doInputsMatch(List<ConfigurableItemStack> itemInputs, List<ConfigurableFluidStack> fluidInputs, MachineRecipe recipe) {
@@ -824,10 +820,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
      * progress and output locks here.
      */
     private void resetFinishedState() {
-        finishedThisTick = false;
-        if (clearLocksNextTick) {
+        if (finishedRecipe) {
+            finishedRecipe = false;
             clearLocks();
-            clearLocksNextTick = false;
         }
     }
 

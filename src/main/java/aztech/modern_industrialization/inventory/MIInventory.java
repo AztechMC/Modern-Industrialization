@@ -51,7 +51,6 @@ public final class MIInventory implements MachineComponent {
     public final MIFluidStorage fluidStorage;
     public final SlotPositions itemPositions;
     public final SlotPositions fluidPositions;
-    private final int[] itemMaxCapacities;
 
     /**
      * Build a new MI inventory. If you need to access the stacks, make sure to
@@ -64,10 +63,6 @@ public final class MIInventory implements MachineComponent {
         this.fluidStorage = new MIFluidStorage(new ArrayList<>(fluidStacks));
         this.itemPositions = itemPositions;
         this.fluidPositions = fluidPositions;
-        this.itemMaxCapacities = new int[itemStacks.size()];
-        for (int i = 0; i < itemStacks.size(); ++i) {
-            itemMaxCapacities[i] = itemStacks.get(i).getMaxCapacity();
-        }
         if (itemPositions.size() != itemStacks.size()) {
             throw new IllegalArgumentException(
                     "Mismatched item slots and positions. Slot count: " + itemStacks.size() + ", position count: " + itemPositions.size());
@@ -142,6 +137,11 @@ public final class MIInventory implements MachineComponent {
         NbtHelper.getList(tag, "items", newItemStacks, t -> new ConfigurableItemStack(t, registries));
         NbtHelper.getList(tag, "fluids", newFluidStacks, t -> new ConfigurableFluidStack(t, registries));
 
+        // Old saves have no maxCap in their stack NBT, so take the cap from the slot definition instead.
+        for (int i = 0; i < newItemStacks.size() && i < itemStorage.stacks.size(); ++i) {
+            newItemStacks.get(i).setMaxCapacity(itemStorage.stacks.get(i).getMaxCapacity());
+        }
+
         if (isUpgradingMachine) {
             // Increase fluid slot capacities if upgrading
             for (int i = 0; i < newFluidStacks.size() && i < fluidStorage.stacks.size(); ++i) {
@@ -150,11 +150,6 @@ public final class MIInventory implements MachineComponent {
         }
 
         SlotConfig.readSlotList(itemStorage.stacks, newItemStacks);
-        // NBT written before maxCap existed has no maxCap and keeps the old adjCap (64), so restore the machine's
-        // structural caps after the swap. This is a no-op for slots whose NBT already carries maxCap.
-        for (int i = 0; i < itemMaxCapacities.length && i < itemStorage.stacks.size(); ++i) {
-            itemStorage.stacks.get(i).setMaxCapacity(itemMaxCapacities[i]);
-        }
         SlotConfig.readSlotList(fluidStorage.stacks, newFluidStacks);
     }
 

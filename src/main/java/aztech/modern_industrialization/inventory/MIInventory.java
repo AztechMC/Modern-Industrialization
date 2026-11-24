@@ -150,8 +150,8 @@ public final class MIInventory implements MachineComponent {
         }
 
         SlotConfig.readSlotList(itemStorage.stacks, newItemStacks);
-        // Slot caps are structural: saved NBT only stores the player-adjustable adjCap, so restore the machine's caps
-        // after the swap (old worlds have adjCap: 64 for slots that are now capped).
+        // NBT written before maxCap existed has no maxCap and keeps the old adjCap (64), so restore the machine's
+        // structural caps after the swap. This is a no-op for slots whose NBT already carries maxCap.
         for (int i = 0; i < itemMaxCapacities.length && i < itemStorage.stacks.size(); ++i) {
             itemStorage.stacks.get(i).setMaxCapacity(itemMaxCapacities[i]);
         }

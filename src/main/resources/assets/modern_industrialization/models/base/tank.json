@@ -1,5 +1,4 @@
 {
-	"credit": "Made by NepsT_T with Blockbench",
 	"parent": "minecraft:block/cube_all",
 	"render_type": "cutout",
 	"textures": {

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.inventory.MoveRecipeHandler;
 import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import com.google.common.primitives.Ints;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -383,7 +384,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu implements M
             player.getInventory().placeItemBackInInventory(input.remove(input.getItem().getCount()));
         }
 
-        int recipeAmount = amount * recipe.count();
+        int recipeAmount = Ints.saturatedCast((long) amount * recipe.count());
         int totalRemainingAmount = recipeAmount;
         while (totalRemainingAmount > 0) {
             int targetStackSize = Math.min(recipeAmount, input.getMaxStackSize(input.getItem()));

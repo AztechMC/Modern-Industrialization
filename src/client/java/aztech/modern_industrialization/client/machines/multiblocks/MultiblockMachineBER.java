@@ -143,7 +143,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
             BlockItem blockItem = (BlockItem) item;
             if (blockItem.getBlock() instanceof MachineBlock) {
                 MachineBlock block = (MachineBlock) blockItem.getBlock();
-                BlockEntity be = block.newBlockEntity(new BlockPos(0, 0, 0), block.defaultBlockState());
+                BlockEntity be = block.getBlockEntityInstance();
                 if (be instanceof HatchBlockEntity hatch) {
                     return hatch.getHatchType();
                 }

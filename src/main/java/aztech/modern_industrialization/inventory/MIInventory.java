@@ -137,6 +137,11 @@ public final class MIInventory implements MachineComponent {
         NbtHelper.getList(tag, "items", newItemStacks, t -> new ConfigurableItemStack(t, registries));
         NbtHelper.getList(tag, "fluids", newFluidStacks, t -> new ConfigurableFluidStack(t, registries));
 
+        // Old saves have no maxCap in their stack NBT, so take the cap from the slot definition instead.
+        for (int i = 0; i < newItemStacks.size() && i < itemStorage.stacks.size(); ++i) {
+            newItemStacks.get(i).setMaxCapacity(itemStorage.stacks.get(i).getMaxCapacity());
+        }
+
         if (isUpgradingMachine) {
             // Increase fluid slot capacities if upgrading
             for (int i = 0; i < newFluidStacks.size() && i < fluidStorage.stacks.size(); ++i) {

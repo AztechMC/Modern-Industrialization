@@ -77,7 +77,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
 
         if (!isFluid) {
             List<ConfigurableItemStack> itemStack = new ArrayList<>();
-            itemStack.add(ConfigurableItemStack.standardInputSlot());
+            itemStack.add(ConfigurableItemStack.standardInputSlot(1));
             itemStack.add(ConfigurableItemStack.standardOutputSlot());
             itemStack.add(ConfigurableItemStack.standardOutputSlot());
             inventory = new MIInventory(itemStack, Collections.emptyList(), slotPos, SlotPositions.empty());

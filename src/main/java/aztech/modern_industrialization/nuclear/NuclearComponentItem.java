@@ -45,7 +45,7 @@ public class NuclearComponentItem extends Item implements NuclearComponent<ItemV
     public static ItemDefinition<NuclearComponentItem> of(String englishName, String id, int maxTemperature, double heatConduction,
             NeutronBehaviour neutronBehaviour) {
         return MIItem
-                .item(englishName, id, (settings) -> new NuclearComponentItem(settings.stacksTo(1), maxTemperature, heatConduction, neutronBehaviour),
+                .item(englishName, id, (settings) -> new NuclearComponentItem(settings, maxTemperature, heatConduction, neutronBehaviour),
                         SortOrder.NUCLEAR.create(NuclearOrder.HEAT_EXCHANGER).and(heatConduction));
     }
 
